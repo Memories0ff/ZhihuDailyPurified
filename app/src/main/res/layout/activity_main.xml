@@ -17,34 +17,51 @@
         android:orientation="vertical"
         tools:context=".test.MainActivity">
 
-        <TextView
-            android:id="@+id/tvResult"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@{content}" />
+        <!--        <TextView-->
+        <!--            android:id="@+id/tvResult"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:text="@{content}" />-->
+
+        <!--        <Button-->
+        <!--            android:id="@+id/btnDownload"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:text="下载" />-->
+
+        <!--        <ImageView-->
+        <!--            android:id="@+id/ivImage"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content" />-->
+
+        <!--        <Button-->
+        <!--            android:id="@+id/btnSave"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:text="保存" />-->
+
+        <!--        <Button-->
+        <!--            android:id="@+id/btnClear"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:text="清理缓存" />-->
+
+        <com.youth.banner.Banner
+            android:id="@+id/banner"
+            android:layout_width="match_parent"
+            android:layout_height="400dp" />
 
         <Button
-            android:id="@+id/btnDownload"
+            android:id="@+id/btn_data"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="下载" />
-
-        <ImageView
-            android:id="@+id/ivImage"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:text="获取数据" />
 
         <Button
-            android:id="@+id/btnSave"
+            android:id="@+id/btn_update"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="保存" />
-
-        <Button
-            android:id="@+id/btnClear"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="清理缓存" />
+            android:text="更新界面" />
 
     </LinearLayout>
 </layout>

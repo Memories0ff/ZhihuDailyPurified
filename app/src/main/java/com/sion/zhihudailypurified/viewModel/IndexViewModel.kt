@@ -18,18 +18,24 @@ class IndexViewModel : BaseViewModel() {
             .setEnablePlaceholders(false).build()
     ).build()
 
-    val topStories = MutableLiveData<MutableList<TopStoryBean>>()
-
-    val bannerRunning = MutableLiveData<Boolean>()
+    val topStories = MutableLiveData<MutableList<TopStoryBean>>().apply {
+        value = arrayListOf()
+    }
+    val updateTopStories = MutableLiveData<Boolean>()
 
     fun obtainTopStories() {
         apiServices.obtainLatest().callIO(
             onFailure = {
                 it.printStackTrace()
             },
+            onResponseFailure = { response ->
+                topStories.value = arrayListOf()
+            },
             onResponseSuccess = { response ->
                 response.body()?.let {
-                    topStories.value = it.top_stories
+                    topStories.value!!.clear()
+                    topStories.value!!.addAll(it.top_stories)
+                    updateTopStories.value = true
                 }
             }
         )

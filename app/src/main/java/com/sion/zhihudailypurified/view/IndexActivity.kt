@@ -6,7 +6,7 @@ import com.sion.zhihudailypurified.R
 import com.sion.zhihudailypurified.adapter.StoriesAdapter
 import com.sion.zhihudailypurified.base.BaseActivity
 import com.sion.zhihudailypurified.databinding.ActivityIndexBinding
-import com.sion.zhihudailypurified.entity.TopStoryBean
+import com.sion.zhihudailypurified.utils.logi
 import com.sion.zhihudailypurified.viewModel.IndexViewModel
 
 class IndexActivity : BaseActivity<ActivityIndexBinding, IndexViewModel>() {
@@ -24,9 +24,11 @@ class IndexActivity : BaseActivity<ActivityIndexBinding, IndexViewModel>() {
         ui.rvStories.adapter = adapter
         ui.rvStories.layoutManager = LinearLayoutManager(this)
         vm.stories.observe(this, Observer(adapter::submitList))
-//        vm.topStories.observe(this, Observer {
-//            adapter.updateBanner()
-//        })
+        vm.updateTopStories.observe(this, Observer {
+            if (it) {
+                adapter.bannerAdapter!!.notifyDataSetChanged()
+            }
+        })
     }
 
     override fun initData() {
@@ -35,11 +37,11 @@ class IndexActivity : BaseActivity<ActivityIndexBinding, IndexViewModel>() {
 
     override fun onStart() {
         super.onStart()
-        vm.bannerRunning.value = true
+        (ui.rvStories.adapter as StoriesAdapter).banner?.start()
     }
 
     override fun onStop() {
         super.onStop()
-        vm.bannerRunning.value = false
+        (ui.rvStories.adapter as StoriesAdapter).banner?.stop()
     }
 }
