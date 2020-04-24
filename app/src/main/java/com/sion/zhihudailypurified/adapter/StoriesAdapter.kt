@@ -1,6 +1,7 @@
 package com.sion.zhihudailypurified.adapter
 
 import android.app.Activity
+import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -12,6 +13,7 @@ import com.sion.zhihudailypurified.R
 import com.sion.zhihudailypurified.databinding.IndexBannerItemBinding
 import com.sion.zhihudailypurified.databinding.IndexStoriesItemBinding
 import com.sion.zhihudailypurified.entity.StoryBean
+import com.sion.zhihudailypurified.view.ContentActivity
 import com.sion.zhihudailypurified.view.IndexActivity
 import com.youth.banner.Banner
 import com.youth.banner.indicator.CircleIndicator
@@ -60,6 +62,15 @@ class StoriesAdapter :
             is StoryViewHolder -> {
                 val binding = holder.binding
                 binding.story = getItem(position - 1)
+                binding.root.setOnClickListener {
+                    (binding.root.context as IndexActivity).startActivity(
+                        Intent(
+                            it.context,
+                            ContentActivity::class.java
+                        ).apply {
+                            putExtra(ContentActivity.STORY_ID, binding.story!!.id)
+                        })
+                }
             }
             is TopStoryViewHolder -> {
                 holder.binding.banner.start()

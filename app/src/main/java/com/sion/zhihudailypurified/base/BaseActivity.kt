@@ -21,8 +21,17 @@ abstract class BaseActivity<B : ViewDataBinding, VM : BaseViewModel> : AppCompat
 
     protected abstract fun initData()
 
+    protected open fun recoverData(savedInstanceState: Bundle?) {
+
+    }
+
+    protected open fun beforeDestory() {
+
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        recoverData(savedInstanceState)
         ui = DataBindingUtil.setContentView(this, setLayoutId())
         vm = setViewModel()
         vm.toastMessage.observe(this, Observer {
@@ -32,12 +41,9 @@ abstract class BaseActivity<B : ViewDataBinding, VM : BaseViewModel> : AppCompat
         initData()
     }
 
-    override fun onStart() {
-        super.onStart()
-    }
-
-    override fun onResume() {
-        super.onResume()
+    override fun onDestroy() {
+        beforeDestory()
+        super.onDestroy()
     }
 
 }
