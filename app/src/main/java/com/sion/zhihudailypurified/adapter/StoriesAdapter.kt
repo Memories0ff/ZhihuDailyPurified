@@ -1,8 +1,5 @@
 package com.sion.zhihudailypurified.adapter
 
-import android.app.Activity
-import android.content.Intent
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
@@ -13,7 +10,6 @@ import com.sion.zhihudailypurified.R
 import com.sion.zhihudailypurified.databinding.IndexBannerItemBinding
 import com.sion.zhihudailypurified.databinding.IndexStoriesItemBinding
 import com.sion.zhihudailypurified.entity.StoryBean
-import com.sion.zhihudailypurified.view.ContentActivity
 import com.sion.zhihudailypurified.view.IndexActivity
 import com.youth.banner.Banner
 import com.youth.banner.indicator.CircleIndicator
@@ -38,9 +34,13 @@ class StoriesAdapter :
                         parent,
                         false
                     )
-                    bannerBinding.banner.adapter = bannerAdapter!!
-                    bannerBinding.banner.indicator = CircleIndicator(parent.context)
-                    banner = bannerBinding.banner
+                    bannerBinding.banner.apply {
+                        adapter = bannerAdapter!!
+                        indicator = CircleIndicator(parent.context)
+                        scrollTime = 100
+                        currentItem = 0
+                        banner = this
+                    }
                     bannerBinding.executePendingBindings()
                 }
                 return TopStoryViewHolder(bannerBinding)
@@ -63,13 +63,7 @@ class StoriesAdapter :
                 val binding = holder.binding
                 binding.story = getItem(position - 1)
                 binding.root.setOnClickListener {
-                    (binding.root.context as IndexActivity).startActivity(
-                        Intent(
-                            it.context,
-                            ContentActivity::class.java
-                        ).apply {
-                            putExtra(ContentActivity.STORY_ID, binding.story!!.id)
-                        })
+                    (binding.root.context as IndexActivity).switchToContent(binding.story!!.id)
                 }
             }
             is TopStoryViewHolder -> {

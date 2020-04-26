@@ -5,11 +5,14 @@ import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import com.sion.zhihudailypurified.base.BaseViewModel
 import com.sion.zhihudailypurified.datasource.StoriesDataSourceFactory
+import com.sion.zhihudailypurified.entity.StoryContentBean
 import com.sion.zhihudailypurified.entity.TopStoryBean
 import com.sion.zhihudailypurified.network.apiServices
 import com.sion.zhihudailypurified.network.callIO
 
 class IndexViewModel : BaseViewModel() {
+
+    //新闻列表
 
     val stories = LivePagedListBuilder(
         StoriesDataSourceFactory(),
@@ -37,6 +40,26 @@ class IndexViewModel : BaseViewModel() {
                     topStories.value!!.addAll(it.top_stories)
                     updateTopStories.value = true
                 }
+            }
+        )
+    }
+
+
+    //新闻内容
+
+
+    val content = MutableLiveData<StoryContentBean>()
+
+    fun obtainStoryContent(id: Int) {
+        apiServices.obtainContent(id.toString()).callIO(
+            onFailure = {
+                it.printStackTrace()
+            },
+            onResponseFailure = {
+
+            },
+            onResponseSuccess = { response ->
+                content.value = response.body()
             }
         )
     }
