@@ -1,17 +1,19 @@
 package com.sion.zhihudailypurified.base
 
+import android.app.Activity
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModel
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
-import com.sion.zhihudailypurified.utils.toast
 
-abstract class BaseActivity<B : ViewDataBinding, VM : BaseViewModel> : AppCompatActivity() {
+abstract class BaseFragment<B : ViewDataBinding, VM : BaseViewModel> : Fragment() {
 
     lateinit var ui: B
+
     lateinit var vm: VM
 
     protected abstract fun setLayoutId(): Int
@@ -27,19 +29,21 @@ abstract class BaseActivity<B : ViewDataBinding, VM : BaseViewModel> : AppCompat
     }
 
     final override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         recoverData(savedInstanceState)
-        ui = DataBindingUtil.setContentView(this, setLayoutId())
         vm = ViewModelProviders.of(this).get(setViewModel())
-        vm.toastMessage.observe(this, Observer {
-            toast(it)
-        })
-        initView()
-        initData()
+        super.onCreate(savedInstanceState)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    final override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        ui = DataBindingUtil.inflate(inflater, setLayoutId(), container, false)
+        initView()
+        initData()
+        return ui.root
     }
+
 
 }

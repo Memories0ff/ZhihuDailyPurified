@@ -10,11 +10,12 @@ import com.sion.zhihudailypurified.R
 import com.sion.zhihudailypurified.databinding.IndexBannerItemBinding
 import com.sion.zhihudailypurified.databinding.IndexStoriesItemBinding
 import com.sion.zhihudailypurified.entity.StoryBean
-import com.sion.zhihudailypurified.view.IndexActivity
+import com.sion.zhihudailypurified.view.activity.IndexActivity
+import com.sion.zhihudailypurified.view.fragment.StoriesFragment
 import com.youth.banner.Banner
 import com.youth.banner.indicator.CircleIndicator
 
-class StoriesAdapter :
+class StoriesAdapter(private val fragment: StoriesFragment) :
     PagedListAdapter<StoryBean, RecyclerView.ViewHolder>(
         diffCallback
     ) {
@@ -26,10 +27,10 @@ class StoriesAdapter :
         when (viewType) {
             BANNER -> {
                 val bannerBinding: IndexBannerItemBinding
-                (parent.context as IndexActivity).let {
+                fragment.let {
                     bannerAdapter = TopStoryBannerAdapter(it.vm.topStories.value!!)
                     bannerBinding = DataBindingUtil.inflate(
-                        LayoutInflater.from(it),
+                        LayoutInflater.from(it.activity),
                         R.layout.index_banner_item,
                         parent,
                         false
@@ -63,7 +64,10 @@ class StoriesAdapter :
                 val binding = holder.binding
                 binding.story = getItem(position - 1)
                 binding.root.setOnClickListener {
-                    (binding.root.context as IndexActivity).switchToContent(binding.story!!.id)
+                    (fragment.activity as IndexActivity).switchToContent(
+                        fragment,
+                        binding.story!!.id
+                    )
                 }
             }
             is TopStoryViewHolder -> {

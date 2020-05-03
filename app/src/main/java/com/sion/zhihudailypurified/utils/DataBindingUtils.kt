@@ -15,25 +15,25 @@ fun loadImage(iv: ImageView, url: String) {
         .into(iv)
 }
 
-@BindingAdapter("bind:webContent")
-fun loadWebPage(wv: WebView, content: String) {
-    wv.settings.apply {
-        setSupportZoom(false)
-        builtInZoomControls = false
-        displayZoomControls = true
-        allowFileAccess = false
-        defaultTextEncodingName = "utf-8"
-    }
-    wv.apply {
-//        webViewClient = object : WebViewClient() {
-//            override fun shouldOverrideUrlLoading(
-//                view: WebView?,
-//                request: WebResourceRequest?
-//            ): Boolean {
-//                view?.loadUrl(url)
-//                return true
-//            }
-//        }
-        loadData(content, "text/html;charset=UTF-8", null)
-    }
-}
+//@BindingAdapter("bind:webContent")
+//fun loadWebPage(wv: WebView, content: String) {
+//    wv.settings.apply {
+//        setSupportZoom(false)
+//        builtInZoomControls = false
+//        displayZoomControls = true
+//        allowFileAccess = false
+//        defaultTextEncodingName = "utf-8"
+//    }
+//    wv.apply {
+////        webViewClient = object : WebViewClient() {
+////            override fun shouldOverrideUrlLoading(
+////                view: WebView?,
+////                request: WebResourceRequest?
+////            ): Boolean {
+////                view?.loadUrl(url)
+////                return true
+////            }
+////        }
+//        loadData(content, "text/html;charset=UTF-8", null)
+//    }
+//}

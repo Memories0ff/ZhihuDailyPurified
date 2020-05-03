@@ -1,4 +1,4 @@
-package com.sion.zhihudailypurified.viewModel
+package com.sion.zhihudailypurified.viewModel.fragment
 
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.LivePagedListBuilder
@@ -10,8 +10,7 @@ import com.sion.zhihudailypurified.entity.TopStoryBean
 import com.sion.zhihudailypurified.network.apiServices
 import com.sion.zhihudailypurified.network.callIO
 
-class IndexViewModel : BaseViewModel() {
-
+class StoriesViewModel : BaseViewModel() {
     //新闻列表
 
     val stories = LivePagedListBuilder(
@@ -40,26 +39,6 @@ class IndexViewModel : BaseViewModel() {
                     topStories.value!!.addAll(it.top_stories)
                     updateTopStories.value = true
                 }
-            }
-        )
-    }
-
-
-    //新闻内容
-
-
-    val content = MutableLiveData<StoryContentBean>()
-
-    fun obtainStoryContent(id: Int) {
-        apiServices.obtainContent(id.toString()).callIO(
-            onFailure = {
-                it.printStackTrace()
-            },
-            onResponseFailure = {
-
-            },
-            onResponseSuccess = { response ->
-                content.value = response.body()
             }
         )
     }

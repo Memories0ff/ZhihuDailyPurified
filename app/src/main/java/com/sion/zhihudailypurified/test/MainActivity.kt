@@ -14,8 +14,8 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>() {
         return R.layout.activity_main
     }
 
-    override fun setViewModel(): MainViewModel {
-        return MainViewModel()
+    override fun setViewModel(): Class<MainViewModel> {
+        return MainViewModel::class.java
     }
 
     override fun initView() {

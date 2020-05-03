@@ -3,6 +3,7 @@ package com.sion.zhihudailypurified.utils
 import android.app.Activity
 import android.util.Log
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 
 fun Activity.toast(s: String) {
     Toast.makeText(this, s, Toast.LENGTH_SHORT).show()
