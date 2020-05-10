@@ -1,6 +1,7 @@
 package com.sion.zhihudailypurified.entity;
 
 import androidx.annotation.Nullable;
+import androidx.databinding.ObservableField;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.Index;
@@ -37,7 +38,7 @@ public class StoryBean {
     private String date;
     //是否已读
     @Ignore
-    private boolean isRead;
+    private ObservableField<Boolean> isRead = new ObservableField<>();
     //同一天story加载顺序（仿照json数据的顺序加载）
     private int loadingOrder;
 
@@ -113,12 +114,12 @@ public class StoryBean {
         this.date = date;
     }
 
-    public boolean getIsRead() {
+    public ObservableField<Boolean> getIsRead() {
         return isRead;
     }
 
     public void setIsRead(boolean isRead) {
-        this.isRead = isRead;
+        this.isRead.set(isRead);
     }
 
     public int getLoadingOrder() {
