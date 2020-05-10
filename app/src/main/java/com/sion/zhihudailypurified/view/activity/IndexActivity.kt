@@ -1,10 +1,9 @@
 package com.sion.zhihudailypurified.view.activity
 
-import android.os.Bundle
 import com.sion.zhihudailypurified.R
 import com.sion.zhihudailypurified.base.BaseActivity
 import com.sion.zhihudailypurified.databinding.ActivityIndexBinding
-import com.sion.zhihudailypurified.view.fragment.ContentFragment
+import com.sion.zhihudailypurified.view.fragment.ContentsDisplayFragment
 import com.sion.zhihudailypurified.view.fragment.StoriesFragment
 import com.sion.zhihudailypurified.viewModel.activity.IndexViewModel
 
@@ -22,7 +21,8 @@ class IndexActivity : BaseActivity<ActivityIndexBinding, IndexViewModel>() {
         supportFragmentManager.beginTransaction()
             .add(
                 R.id.flFragmentContainer,
-                StoriesFragment()
+                StoriesFragment(),
+                StoriesFragment.TAG
             )
             .commit()
     }
@@ -32,14 +32,13 @@ class IndexActivity : BaseActivity<ActivityIndexBinding, IndexViewModel>() {
     }
 
 
-    fun switchToContent(fragment: StoriesFragment, storyId: Int) {
+    fun switchToContent(fragment: StoriesFragment, displayType: Int, initialPos: Int) {
         supportFragmentManager.beginTransaction()
             .hide(fragment)
             .add(
                 R.id.flFragmentContainer,
-                ContentFragment().apply {
-                    arguments = Bundle().apply { putInt(ContentFragment.STORY_ID, storyId) }
-                }
+                ContentsDisplayFragment(displayType, initialPos),
+                ContentsDisplayFragment.TAG
             )
             .addToBackStack(null)
             .commit()

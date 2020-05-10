@@ -31,6 +31,10 @@ class StoriesFragment : BaseFragment<FragmentStoriesListBinding, StoriesViewMode
             }
         })
 
+        vm.lastPos.observe(this, Observer {
+            ui.rvStories.smoothScrollToPosition(it)
+        })
+
     }
 
     override fun initData() {
@@ -45,5 +49,9 @@ class StoriesFragment : BaseFragment<FragmentStoriesListBinding, StoriesViewMode
     override fun onStop() {
         super.onStop()
         (ui.rvStories.adapter as StoriesAdapter).banner?.stop()
+    }
+
+    companion object {
+        const val TAG = "STORIES_FRAGMENT"
     }
 }

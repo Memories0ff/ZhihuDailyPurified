@@ -25,6 +25,9 @@ class StoriesViewModel : BaseViewModel() {
     }
     val updateTopStories = MutableLiveData<Boolean>()
 
+    //退出前文章的位置，给其赋值则列表滚动到对应位置
+    val lastPos = MutableLiveData<Int>()
+
     fun obtainTopStories() {
         apiServices.obtainLatest().callIO(
             onFailure = {

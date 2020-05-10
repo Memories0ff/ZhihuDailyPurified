@@ -8,7 +8,7 @@ import androidx.databinding.BindingAdapter
 import com.bumptech.glide.Glide
 import com.sion.zhihudailypurified.App
 
-@BindingAdapter("bind:imageUrl")
+@BindingAdapter("imageUrl")
 fun loadImage(iv: ImageView, url: String) {
     Glide.with(App.getAppContext())
         .load(url)

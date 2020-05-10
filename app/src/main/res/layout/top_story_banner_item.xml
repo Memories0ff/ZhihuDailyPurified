@@ -17,9 +17,9 @@
         android:orientation="vertical">
 
         <ImageView
+            imageUrl="@{topStory.image}"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            bind:imageUrl="@{topStory.image}" />
+            android:layout_height="match_parent" />
 
         <LinearLayout
             android:layout_width="wrap_content"

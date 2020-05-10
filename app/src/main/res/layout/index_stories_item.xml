@@ -8,6 +8,8 @@
         <variable
             name="story"
             type="com.sion.zhihudailypurified.entity.StoryBean" />
+
+        <import type="android.graphics.Color" />
     </data>
 
     <LinearLayout
@@ -26,7 +28,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@{story.title}"
-                android:textColor="#FF000000"
+                android:textColor="@{story.isRead ? Color.parseColor(`#7F000000`) : Color.parseColor(`#FF000000`)}"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 tools:text="美国现在的疫情发展到什么程度了？" />
@@ -47,6 +49,7 @@
             android:layout_weight="1" />
 
         <ImageView
+            imageUrl="@{story.images[0]}"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="center_vertical"
@@ -56,7 +59,6 @@
             android:layout_marginBottom="15dp"
             android:background="#CCCCCC"
             android:scaleType="fitCenter"
-            bind:imageUrl="@{story.images[0]}"
             tools:src="@mipmap/ic_launcher" />
     </LinearLayout>
 

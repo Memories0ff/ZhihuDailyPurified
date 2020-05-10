@@ -1,5 +1,7 @@
 package com.sion.zhihudailypurified.adapter
 
+import android.app.Activity
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
@@ -10,7 +12,10 @@ import com.sion.zhihudailypurified.R
 import com.sion.zhihudailypurified.databinding.IndexBannerItemBinding
 import com.sion.zhihudailypurified.databinding.IndexStoriesItemBinding
 import com.sion.zhihudailypurified.entity.StoryBean
+import com.sion.zhihudailypurified.sharedPreference.spGetBoolean
+import com.sion.zhihudailypurified.sharedPreference.spPutBoolean
 import com.sion.zhihudailypurified.view.activity.IndexActivity
+import com.sion.zhihudailypurified.view.fragment.ContentsDisplayFragment
 import com.sion.zhihudailypurified.view.fragment.StoriesFragment
 import com.youth.banner.Banner
 import com.youth.banner.indicator.CircleIndicator
@@ -41,6 +46,14 @@ class StoriesAdapter(private val fragment: StoriesFragment) :
                         scrollTime = 100
                         currentItem = 0
                         banner = this
+                        setOnBannerListener { _, position ->
+                            Log.d(this.javaClass.name, "$position")
+                            (fragment.activity as IndexActivity).switchToContent(
+                                fragment,
+                                ContentsDisplayFragment.TOP_STORIES,
+                                position
+                            )
+                        }
                     }
                     bannerBinding.executePendingBindings()
                 }
@@ -63,11 +76,24 @@ class StoriesAdapter(private val fragment: StoriesFragment) :
             is StoryViewHolder -> {
                 val binding = holder.binding
                 binding.story = getItem(position - 1)
+//                binding.story!!.isRead =
+//                    spGetBoolean(binding.story!!.id.toString(), fragment.activity as Activity)
                 binding.root.setOnClickListener {
                     (fragment.activity as IndexActivity).switchToContent(
                         fragment,
-                        binding.story!!.id
+                        ContentsDisplayFragment.STORIES,
+                        position - 1
                     )
+                    //???????????????????????????????应该在进入fragment并显示后执行此操作，否则左右滑动不会标记或标记上预加载的未读的新闻
+//                    if (!binding.story!!.isRead) {
+//                        binding.story!!.isRead = true
+//                        spPutBoolean(
+//                            binding.story!!.id.toString(),
+//                            true,
+//                            fragment.activity as Activity
+//                        )
+//                    }
+                    //???????????????????????????????
                 }
             }
             is TopStoryViewHolder -> {

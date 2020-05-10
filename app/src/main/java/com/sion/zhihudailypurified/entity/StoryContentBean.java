@@ -1,11 +1,18 @@
 package com.sion.zhihudailypurified.entity;
 
+import androidx.room.Embedded;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
+import androidx.room.TypeConverters;
+
+import com.sion.zhihudailypurified.db.ListJsonConverter;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
 @Entity
+@TypeConverters(ListJsonConverter.class)
 public class StoryContentBean {
 
     /**
@@ -93,6 +100,8 @@ public class StoryContentBean {
     private List<String> js;
     private List<String> images;
     private List<String> css;
+    @Embedded
+    private StoryContentExtraBean extra;
 
     public String getBody() {
         return body;
@@ -196,5 +205,14 @@ public class StoryContentBean {
 
     public void setCss(List<String> css) {
         this.css = css;
+    }
+
+    @NotNull
+    public StoryContentExtraBean getExtra() {
+        return extra;
+    }
+
+    public void setExtra(@NotNull StoryContentExtraBean extra) {
+        this.extra = extra;
     }
 }

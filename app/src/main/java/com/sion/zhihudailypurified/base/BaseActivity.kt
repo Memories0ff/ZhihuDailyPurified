@@ -1,7 +1,11 @@
 package com.sion.zhihudailypurified.base
 
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.getSystemService
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.Observer
@@ -34,12 +38,43 @@ abstract class BaseActivity<B : ViewDataBinding, VM : BaseViewModel> : AppCompat
         vm.toastMessage.observe(this, Observer {
             toast(it)
         })
+        vm.isOnline.value = isOnline()
         initView()
         initData()
     }
 
     override fun onDestroy() {
         super.onDestroy()
+    }
+
+    //WiFi是否连接
+    fun isWiFiOnline(): Boolean {
+        val connMgr = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val networkInfo = connMgr.getNetworkCapabilities(connMgr.activeNetwork)
+        return networkInfo?.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) ?: false
+    }
+
+    //移动数据是否连接
+    fun isCellularOnline(): Boolean {
+        val connMgr = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val networkInfo = connMgr.getNetworkCapabilities(connMgr.activeNetwork)
+        return networkInfo?.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) ?: false
+    }
+
+    //网络是否连接
+    fun isOnline(): Boolean {
+        val connMgr = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val networkInfo = connMgr.getNetworkCapabilities(connMgr.activeNetwork) ?: return false
+        for (i in listOf(
+            NetworkCapabilities.TRANSPORT_WIFI,
+            NetworkCapabilities.TRANSPORT_CELLULAR,
+            NetworkCapabilities.TRANSPORT_ETHERNET
+        )) {
+            if (networkInfo.hasTransport(i)) {
+                return true
+            }
+        }
+        return false
     }
 
 }

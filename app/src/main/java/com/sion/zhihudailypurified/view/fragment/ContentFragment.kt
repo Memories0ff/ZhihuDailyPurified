@@ -74,7 +74,7 @@ class ContentFragment : BaseFragment<FragmentContentBinding, ContentViewModel>()
     override fun onDestroy() {
         webView.let { webView ->
             // 如果先调用destroy()方法，则会命中if (isDestroyed()) return;这一行代码，需要先onDetachedFromWindow()，再
-            // destory()
+            // destroy()
             val parent = webView.getParent();
             if (parent != null) {
                 (parent as ViewGroup).removeView(webView);
@@ -92,6 +92,7 @@ class ContentFragment : BaseFragment<FragmentContentBinding, ContentViewModel>()
     }
 
     companion object {
+        const val TAG = "CONTENT_FRAGMENT"
         const val STORY_ID = "STORY_ID"
     }
 

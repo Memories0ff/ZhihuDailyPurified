@@ -2,12 +2,17 @@ package com.sion.zhihudailypurified.entity;
 
 import androidx.annotation.Nullable;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
+import androidx.room.TypeConverters;
+
+import com.sion.zhihudailypurified.db.ListJsonConverter;
 
 import java.util.List;
 
 @Entity(indices = {@Index(value = {"date"})})
+@TypeConverters(ListJsonConverter.class)
 public class StoryBean {
     /**
      * image_hue : 0x2e2027
@@ -30,7 +35,11 @@ public class StoryBean {
     private int type;
     private List<String> images;
     private String date;
-    private boolean isReaded;
+    //是否已读
+    @Ignore
+    private boolean isRead;
+    //同一天story加载顺序（仿照json数据的顺序加载）
+    private int loadingOrder;
 
     public String getImage_hue() {
         return image_hue;
@@ -104,13 +113,22 @@ public class StoryBean {
         this.date = date;
     }
 
-    public boolean isReaded() {
-        return isReaded;
+    public boolean getIsRead() {
+        return isRead;
     }
 
-    public void setReaded(boolean readed) {
-        isReaded = readed;
+    public void setIsRead(boolean isRead) {
+        this.isRead = isRead;
     }
+
+    public int getLoadingOrder() {
+        return loadingOrder;
+    }
+
+    public void setLoadingOrder(int loadingOrder) {
+        this.loadingOrder = loadingOrder;
+    }
+
 
     @Override
     public boolean equals(@Nullable Object obj) {
