@@ -1,6 +1,5 @@
 package com.sion.zhihudailypurified.base
 
-import android.app.Activity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -24,9 +23,7 @@ abstract class BaseFragment<B : ViewDataBinding, VM : BaseViewModel> : Fragment(
 
     protected abstract fun initData()
 
-    protected open fun recoverData(savedInstanceState: Bundle?) {
-
-    }
+    protected open fun recoverData(savedInstanceState: Bundle?) {}
 
     final override fun onCreate(savedInstanceState: Bundle?) {
         recoverData(savedInstanceState)

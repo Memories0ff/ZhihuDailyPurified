@@ -1,6 +1,5 @@
 package com.sion.zhihudailypurified.adapter
 
-import android.app.Activity
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -12,8 +11,6 @@ import com.sion.zhihudailypurified.R
 import com.sion.zhihudailypurified.databinding.IndexBannerItemBinding
 import com.sion.zhihudailypurified.databinding.IndexStoriesItemBinding
 import com.sion.zhihudailypurified.entity.StoryBean
-import com.sion.zhihudailypurified.sharedPreference.spGetBoolean
-import com.sion.zhihudailypurified.sharedPreference.spPutBoolean
 import com.sion.zhihudailypurified.view.activity.IndexActivity
 import com.sion.zhihudailypurified.view.fragment.ContentsDisplayFragment
 import com.sion.zhihudailypurified.view.fragment.StoriesFragment
@@ -77,21 +74,13 @@ class StoriesAdapter(private val fragment: StoriesFragment) :
                 val binding = holder.binding
                 binding.story = getItem(position - 1)
                 //获取是否已读
-                binding.story!!.isRead.set(
-                    spGetBoolean(
-                        binding.story!!.id.toString(),
-                        fragment.activity as Activity
-                    )
-                )
+                binding.story!!.isRead.set(fragment.vm.isRead(position - 1, fragment.activity!!))
                 binding.root.setOnClickListener {
                     (fragment.activity as IndexActivity).switchToContent(
                         fragment,
                         ContentsDisplayFragment.STORIES,
                         position - 1
                     )
-                    //点击进入，标记为已读
-                    binding.story!!.isRead.set(true)
-                    spPutBoolean(binding.story!!.id.toString(), true, fragment.activity as Activity)
                 }
             }
             is TopStoryViewHolder -> {

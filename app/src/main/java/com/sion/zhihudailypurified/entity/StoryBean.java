@@ -115,6 +115,9 @@ public class StoryBean {
     }
 
     public ObservableField<Boolean> getIsRead() {
+        if (isRead.get() == null) {
+            isRead.set(false);
+        }
         return isRead;
     }
 

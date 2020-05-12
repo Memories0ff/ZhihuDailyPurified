@@ -14,7 +14,7 @@ class ContentsVPAdapter(private val displayType: Int, private val fa: FragmentAc
         BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT
     ) {
 
-    override fun getItem(position: Int): Fragment = ContentFragment().apply {
+    override fun getItem(position: Int): Fragment = ContentFragment(displayType).apply {
         arguments = Bundle().apply {
             putInt(
                 ContentFragment.STORY_ID,

@@ -1,10 +1,14 @@
 package com.sion.zhihudailypurified.viewModel.fragment
 
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import com.sion.zhihudailypurified.base.BaseViewModel
 import com.sion.zhihudailypurified.db.dbContentServices
 import com.sion.zhihudailypurified.entity.StoryContentBean
 import com.sion.zhihudailypurified.network.apiServices
+import com.sion.zhihudailypurified.sharedPreference.spPutBoolean
+import com.sion.zhihudailypurified.view.fragment.ContentsDisplayFragment
+import com.sion.zhihudailypurified.view.fragment.StoriesFragment
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -48,5 +52,38 @@ class ContentViewModel : BaseViewModel() {
             }
             content.value = storyContent
         }
+    }
+
+    //标记为已读
+    fun markRead(displayType: Int, storyContentBean: StoryContentBean, fragment: Fragment) {
+        if (displayType == ContentsDisplayFragment.STORIES) {
+            val position = (fragment.activity!!.supportFragmentManager
+                .findFragmentByTag(ContentsDisplayFragment.TAG) as ContentsDisplayFragment)
+                .ui.vpContents.currentItem
+            (fragment.activity!!.supportFragmentManager
+                .findFragmentByTag(StoriesFragment.TAG) as StoriesFragment)
+                .vm.stories.value!![position]!!.let {
+                if (!it.isRead.get()!!) {
+                    it.isRead.set(true)
+                    spPutBoolean(it.id.toString(), true, fragment.requireActivity())
+                }
+            }
+        }
+        if (displayType == ContentsDisplayFragment.TOP_STORIES) {
+            (fragment.activity!!.supportFragmentManager
+                .findFragmentByTag(StoriesFragment.TAG) as StoriesFragment)
+                .vm.stories.value!!.find {
+                    it.id == storyContentBean.id
+                }?.isRead?.set(true)
+
+            spPutBoolean(storyContentBean.id.toString(), true, fragment.requireActivity())
+        }
+    }
+
+    //点赞数评论数更新
+    fun updateExtraInfo(storyContentBean: StoryContentBean, fragment: Fragment) {
+        (fragment.activity!!.supportFragmentManager
+            .findFragmentByTag(ContentsDisplayFragment.TAG) as ContentsDisplayFragment)
+            .ui.contentExtraField!!.set(storyContentBean.extra)
     }
 }

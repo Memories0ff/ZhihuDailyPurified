@@ -1,18 +1,115 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
+        <import type="com.sion.zhihudailypurified.entity.StoryContentExtraBean" />
+
+        <variable
+            name="contentExtraField"
+            type="androidx.databinding.ObservableField&lt;StoryContentExtraBean>" />
+
     </data>
 
-    <FrameLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
         <androidx.viewpager.widget.ViewPager
             android:id="@+id/vpContents"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="0dp"
+            android:layout_weight="1" />
 
-    </FrameLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:background="#FFE7E7E7"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="55dp"
+                android:layout_height="match_parent"
+                android:layout_margin="5dp"
+                android:src="@mipmap/ic_launcher" />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:layout_margin="5dp"
+                android:background="#FFFFFFFF" />
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1" />
+
+            <FrameLayout
+                android:id="@+id/llBtnComments"
+                android:layout_width="65dp"
+                android:layout_height="match_parent"
+                android:layout_margin="5dp">
+
+                <ImageView
+                    android:layout_width="55dp"
+                    android:layout_height="match_parent"
+                    android:src="@mipmap/ic_launcher" />
+
+                <TextView
+                    android:id="@+id/tvCommentsNum"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:text="@{String.valueOf(contentExtraField.comments)}"
+                    android:textColor="#FF000000"
+                    android:textSize="12sp"
+                    tools:text="123" />
+
+            </FrameLayout>
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1" />
+
+            <FrameLayout
+                android:id="@+id/llBtnLikes"
+                android:layout_width="65dp"
+                android:layout_height="match_parent"
+                android:layout_margin="5dp">
+
+                <ImageView
+                    android:layout_width="55dp"
+                    android:layout_height="match_parent"
+                    android:src="@mipmap/ic_launcher" />
+
+                <TextView
+                    android:id="@+id/tvLikesNum"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:text="@{String.valueOf(contentExtraField.popularity)}"
+                    android:textColor="#FF000000"
+                    android:textSize="12sp"
+                    tools:text="789" />
+
+            </FrameLayout>
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1" />
+
+            <ImageView
+                android:id="@+id/ivBtnShare"
+                android:layout_width="55dp"
+                android:layout_height="match_parent"
+                android:layout_margin="5dp"
+                android:src="@mipmap/ic_launcher" />
+
+        </LinearLayout>
+
+    </LinearLayout>
 </layout>

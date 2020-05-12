@@ -4,7 +4,7 @@ import android.view.ViewGroup
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
 import com.bumptech.glide.Glide
 import com.sion.zhihudailypurified.App
@@ -14,7 +14,8 @@ import com.sion.zhihudailypurified.databinding.FragmentContentBinding
 import com.sion.zhihudailypurified.utils.HtmlUtils
 import com.sion.zhihudailypurified.viewModel.fragment.ContentViewModel
 
-class ContentFragment : BaseFragment<FragmentContentBinding, ContentViewModel>() {
+class ContentFragment(private val displayType: Int) :
+    BaseFragment<FragmentContentBinding, ContentViewModel>() {
 
     private val storyId by lazy {
         arguments!!.getInt(STORY_ID)
@@ -56,6 +57,10 @@ class ContentFragment : BaseFragment<FragmentContentBinding, ContentViewModel>()
         vm.content.observe(this, Observer {
             ui.tvTitle.text = it.title
             ui.tvSubTitle.text = it.image_source
+            if (this.lifecycle.currentState == Lifecycle.State.RESUMED) {
+                vm.markRead(displayType, it, this@ContentFragment)
+                vm.updateExtraInfo(it, this@ContentFragment)
+            }
             Glide.with(this@ContentFragment)
                 .load(it.image)
                 .into(ui.ivImage)
@@ -65,6 +70,14 @@ class ContentFragment : BaseFragment<FragmentContentBinding, ContentViewModel>()
                 loadData(htmlData, "text/html;charset=UTF-8", null)
             }
         })
+    }
+
+    override fun onResume() {
+        super.onResume()
+        vm.content.value?.let {
+            vm.markRead(displayType, it, this@ContentFragment)
+            vm.updateExtraInfo(it, this)
+        }
     }
 
     override fun initData() {
