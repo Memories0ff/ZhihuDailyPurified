@@ -1,16 +1,14 @@
 package com.sion.zhihudailypurified.base
 
-import android.content.Context
+import android.content.IntentFilter
 import android.net.ConnectivityManager
-import android.net.NetworkCapabilities
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.getSystemService
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProviders
+import com.sion.zhihudailypurified.broadcastReceiver.NetworkReceiver
 import com.sion.zhihudailypurified.utils.toast
 
 abstract class BaseActivity<B : ViewDataBinding, VM : BaseViewModel> : AppCompatActivity() {
@@ -38,43 +36,45 @@ abstract class BaseActivity<B : ViewDataBinding, VM : BaseViewModel> : AppCompat
         vm.toastMessage.observe(this, Observer {
             toast(it)
         })
-        vm.isOnline.value = isOnline()
         initView()
         initData()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onResume() {
+        registerNetworkReceiver()
+        super.onResume()
     }
 
-    //WiFi是否连接
-    fun isWiFiOnline(): Boolean {
-        val connMgr = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val networkInfo = connMgr.getNetworkCapabilities(connMgr.activeNetwork)
-        return networkInfo?.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) ?: false
+    override fun onPause() {
+        unRegisterNetworkReceiver()
+        super.onPause()
     }
 
-    //移动数据是否连接
-    fun isCellularOnline(): Boolean {
-        val connMgr = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val networkInfo = connMgr.getNetworkCapabilities(connMgr.activeNetwork)
-        return networkInfo?.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) ?: false
-    }
+    //网络状态监听
 
-    //网络是否连接
-    fun isOnline(): Boolean {
-        val connMgr = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val networkInfo = connMgr.getNetworkCapabilities(connMgr.activeNetwork) ?: return false
-        for (i in listOf(
-            NetworkCapabilities.TRANSPORT_WIFI,
-            NetworkCapabilities.TRANSPORT_CELLULAR,
-            NetworkCapabilities.TRANSPORT_ETHERNET
-        )) {
-            if (networkInfo.hasTransport(i)) {
-                return true
+    private var networkReceiver: NetworkReceiver? = null
+
+    private fun registerNetworkReceiver() {
+        if (networkReceiver == null) {
+            networkReceiver = NetworkReceiver().apply {
+                networkConnectivityListener = object : NetworkReceiver.NetworkConnectivityListener {
+                    override fun onNetworkConnected() {
+                        vm.isOnline.value = true
+                    }
+
+                    override fun onNetworkDisConnected() {
+                        vm.isOnline.value = false
+                    }
+                }
             }
         }
-        return false
+        val intentFilter = IntentFilter().apply {
+            addAction(ConnectivityManager.CONNECTIVITY_ACTION)
+        }
+        registerReceiver(networkReceiver, intentFilter)
     }
 
+    private fun unRegisterNetworkReceiver() {
+        unregisterReceiver(networkReceiver)
+    }
 }

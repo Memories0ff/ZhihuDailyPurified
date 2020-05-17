@@ -24,7 +24,7 @@ class StoriesFragment : BaseFragment<FragmentStoriesListBinding, StoriesViewMode
         ui.rvStories.adapter = adapter
         ui.rvStories.layoutManager = LinearLayoutManager(activity)
 
-        vm.stories.observe(this, Observer(adapter::submitList))
+        vm.stories.observe(this, Observer { adapter.submitList(it) })
         vm.updateTopStories.observe(this, Observer {
             if (it) {
                 adapter.bannerAdapter!!.notifyDataSetChanged()

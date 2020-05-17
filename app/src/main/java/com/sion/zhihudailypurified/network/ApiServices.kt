@@ -1,9 +1,6 @@
 package com.sion.zhihudailypurified.network
 
-import com.sion.zhihudailypurified.entity.LatestStories
-import com.sion.zhihudailypurified.entity.PastStroies
-import com.sion.zhihudailypurified.entity.StoryContentBean
-import com.sion.zhihudailypurified.entity.StoryContentExtraBean
+import com.sion.zhihudailypurified.entity.*
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.http.GET
@@ -62,4 +59,28 @@ interface ApiServices {
     )
     @GET("story-extra/{id}")
     fun obtainContentExtra(@Path("id") storyId: String): Call<StoryContentExtraBean>
+
+    @Headers(
+        "Host:news-at.zhihu.com",
+        "User-Agent:DailyApi/4 (Linux; Android 5.1.1; OPPO R11 Build/OPPO /R11/R11/NMF26X/zh_CN) Google-HTTP-Java-Client/1.22.0 (gzip) Google-HTTP-Java-Client/1.22.0 (gzip)",
+        "Accept:text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+        "Accept-Language:zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2",
+        "Connection:keep-alive",
+        "Pragma:no-cache",
+        "Cache-Control:no-cache"
+    )
+    @GET("story/{newsId}/long-comments/")
+    fun obtainLongComments(@Path("newsId") newsId: String): Call<CommentList>
+
+    @Headers(
+        "Host:news-at.zhihu.com",
+        "User-Agent:DailyApi/4 (Linux; Android 5.1.1; OPPO R11 Build/OPPO /R11/R11/NMF26X/zh_CN) Google-HTTP-Java-Client/1.22.0 (gzip) Google-HTTP-Java-Client/1.22.0 (gzip)",
+        "Accept:text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+        "Accept-Language:zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2",
+        "Connection:keep-alive",
+        "Pragma:no-cache",
+        "Cache-Control:no-cache"
+    )
+    @GET("story/{newsId}/short-comments/")
+    fun obtainShortComments(@Path("newsId") newsId: String): Call<CommentList>
 }

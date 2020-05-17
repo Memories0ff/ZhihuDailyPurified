@@ -11,7 +11,13 @@ open class BaseViewModel : ViewModel() {
         toastMessage.value = s
     }
 
-    //网络状态改变时进行操作
-    val isOnline = MutableLiveData<Boolean>()
+    //只在网络状态改变时进行操作
+    val isOnline = object : MutableLiveData<Boolean>() {
+        override fun setValue(value: Boolean?) {
+            if (getValue() != value) {
+                super.setValue(value)
+            }
+        }
+    }
 
 }
