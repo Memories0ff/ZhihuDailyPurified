@@ -30,7 +30,12 @@ class ContentsDisplayFragment(private val displayType: Int, private val initialP
         ui.llBtnComments.setOnClickListener {
             (activity as IndexActivity).switchToComments(
                 this,
-                (activity!!.supportFragmentManager.findFragmentByTag(StoriesFragment.TAG) as StoriesFragment).vm.stories.value!![ui.vpContents.currentItem]!!.id
+                (activity!!.supportFragmentManager.findFragmentByTag(StoriesFragment.TAG) as StoriesFragment).vm.let {
+                    when (displayType) {
+                        STORIES -> it.stories.value!![ui.vpContents.currentItem]!!.id
+                        else -> it.topStories.value!![ui.vpContents.currentItem]!!.id
+                    }
+                }
             )
         }
     }

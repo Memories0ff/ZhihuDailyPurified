@@ -26,6 +26,7 @@ class CommentsFragment : BaseFragment<FragmentCommentsBinding, CommentsViewModel
         }
 
         vm.comments.observe(this, Observer {
+            ui.commentNum = it.size
             ui.rvComments.adapter?.notifyDataSetChanged()
         })
 
