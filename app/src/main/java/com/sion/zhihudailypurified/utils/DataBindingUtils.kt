@@ -1,8 +1,5 @@
 package com.sion.zhihudailypurified.utils
 
-import android.webkit.WebResourceRequest
-import android.webkit.WebView
-import android.webkit.WebViewClient
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
 import com.bumptech.glide.Glide
@@ -10,6 +7,9 @@ import com.sion.zhihudailypurified.App
 
 @BindingAdapter("imageUrl")
 fun loadImage(iv: ImageView, url: String) {
+    if (url.isEmpty()) {
+        return
+    }
     Glide.with(App.getAppContext())
         .load(url)
         .into(iv)

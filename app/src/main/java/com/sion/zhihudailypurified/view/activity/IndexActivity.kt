@@ -1,10 +1,12 @@
 package com.sion.zhihudailypurified.view.activity
 
+import android.os.Bundle
 import androidx.lifecycle.Observer
 import com.sion.zhihudailypurified.R
 import com.sion.zhihudailypurified.base.BaseActivity
 import com.sion.zhihudailypurified.databinding.ActivityIndexBinding
 import com.sion.zhihudailypurified.utils.toast
+import com.sion.zhihudailypurified.view.fragment.CommentsFragment
 import com.sion.zhihudailypurified.view.fragment.ContentsDisplayFragment
 import com.sion.zhihudailypurified.view.fragment.StoriesFragment
 import com.sion.zhihudailypurified.viewModel.activity.IndexViewModel
@@ -48,6 +50,20 @@ class IndexActivity : BaseActivity<ActivityIndexBinding, IndexViewModel>() {
                 R.id.flFragmentContainer,
                 ContentsDisplayFragment(displayType, initialPos),
                 ContentsDisplayFragment.TAG
+            )
+            .addToBackStack(null)
+            .commit()
+    }
+
+    fun switchToComments(fragment: ContentsDisplayFragment, id: Int) {
+        supportFragmentManager.beginTransaction()
+            .hide(fragment)
+            .add(
+                R.id.flFragmentContainer,
+                CommentsFragment().apply {
+                    arguments = Bundle().apply { putInt(CommentsFragment.STORY_ID, id) }
+                },
+                CommentsFragment.TAG
             )
             .addToBackStack(null)
             .commit()

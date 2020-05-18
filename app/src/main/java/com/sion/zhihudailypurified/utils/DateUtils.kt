@@ -25,3 +25,6 @@ fun obtainDay(date: Date, offset: Int): String {
     calendar.add(Calendar.DATE, offset)
     return formatter.format(calendar.time)
 }
+
+fun currentTime(time: Long): String =
+    SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINESE).format(Date(time * 1000))

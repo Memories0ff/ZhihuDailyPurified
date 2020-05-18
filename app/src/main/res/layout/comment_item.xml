@@ -8,6 +8,10 @@
             name="comment"
             type="com.sion.zhihudailypurified.entity.CommentBean" />
 
+        <import type="android.view.View" />
+
+        <import type="com.sion.zhihudailypurified.utils.DateUtilsKt" />
+
     </data>
 
     <LinearLayout
@@ -25,10 +29,10 @@
             android:orientation="vertical">
 
             <ImageView
-                imageUrl="@{comment.avatar}"
                 android:layout_width="35dp"
                 android:layout_height="35dp"
                 android:layout_gravity="end"
+                android:background="@drawable/circle_border"
                 tools:src="@mipmap/ic_launcher" />
 
         </LinearLayout>
@@ -88,8 +92,10 @@
                 android:ellipsize="end"
                 android:gravity="center_vertical"
                 android:lineSpacingExtra="4dp"
-                android:text="@{`//`+comment.reply_to.author+`：`+comment.reply_to.content}"
+                android:maxLines="@{comment.isExpanded?Integer.MAX_VALUE:2}"
+                android:text="@{comment.reply_to!=null?(`//`+comment.reply_to.author+`：`+comment.reply_to.content):``}"
                 android:textSize="16sp"
+                android:visibility="@{comment.reply_to!=null?View.VISIBLE:View.GONE}"
                 tools:text="先前内容" />
 
 
@@ -104,15 +110,17 @@
                     android:layout_height="match_parent"
                     android:layout_gravity="start"
                     android:gravity="center"
+                    android:text="@{DateUtilsKt.currentTime(comment.time)}"
                     android:textColor="#FF8F8F8F"
                     android:textSize="13sp"
                     tools:text="评论时间" />
 
+                <!--????????????还需要看是否超过两行再显示?????????????-->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:gravity="center"
-                    android:text="@{`·`+comment.isExpanded?`收起`:`展开全文`}"
+                    android:text="@{comment.reply_to!=null?(` · `+(comment.isExpanded?`收起`:`展开全文`)):``}"
                     android:textColor="#FF8F8F8F"
                     android:textSize="13sp"
                     tools:text="·展开全文" />
@@ -131,7 +139,7 @@
                         android:layout_height="match_parent"
                         android:layout_marginStart="5dp"
                         android:gravity="center"
-                        android:text="@{comment.likes}"
+                        android:text="@{String.valueOf(comment.likes)}"
                         android:textSize="13sp"
                         tools:text="点赞数" />
 

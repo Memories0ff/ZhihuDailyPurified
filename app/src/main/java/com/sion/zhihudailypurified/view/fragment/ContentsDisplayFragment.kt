@@ -6,6 +6,7 @@ import com.sion.zhihudailypurified.R
 import com.sion.zhihudailypurified.adapter.ContentsVPAdapter
 import com.sion.zhihudailypurified.base.BaseFragment
 import com.sion.zhihudailypurified.databinding.FragmentContentsDisplayBinding
+import com.sion.zhihudailypurified.view.activity.IndexActivity
 import com.sion.zhihudailypurified.viewModel.fragment.ContentsDisplayViewModel
 
 class ContentsDisplayFragment(private val displayType: Int, private val initialPos: Int) :
@@ -25,6 +26,12 @@ class ContentsDisplayFragment(private val displayType: Int, private val initialP
             adapter = ContentsVPAdapter(displayType, activity as FragmentActivity)
             offscreenPageLimit = 1
             currentItem = initialPos
+        }
+        ui.llBtnComments.setOnClickListener {
+            (activity as IndexActivity).switchToComments(
+                this,
+                (activity!!.supportFragmentManager.findFragmentByTag(StoriesFragment.TAG) as StoriesFragment).vm.stories.value!![ui.vpContents.currentItem]!!.id
+            )
         }
     }
 

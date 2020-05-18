@@ -69,7 +69,7 @@ interface ApiServices {
         "Pragma:no-cache",
         "Cache-Control:no-cache"
     )
-    @GET("story/{newsId}/long-comments/")
+    @GET("story/{newsId}/long-comments")
     fun obtainLongComments(@Path("newsId") newsId: String): Call<CommentList>
 
     @Headers(
@@ -81,6 +81,6 @@ interface ApiServices {
         "Pragma:no-cache",
         "Cache-Control:no-cache"
     )
-    @GET("story/{newsId}/short-comments/")
+    @GET("story/{newsId}/short-comments")
     fun obtainShortComments(@Path("newsId") newsId: String): Call<CommentList>
 }
