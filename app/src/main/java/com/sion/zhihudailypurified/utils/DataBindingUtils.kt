@@ -6,8 +6,8 @@ import com.bumptech.glide.Glide
 import com.sion.zhihudailypurified.App
 
 @BindingAdapter("imageUrl")
-fun loadImage(iv: ImageView, url: String) {
-    if (url.isEmpty()) {
+fun loadImage(iv: ImageView, url: String?) {
+    if (url.isNullOrEmpty()) {
         return
     }
     Glide.with(App.getAppContext())

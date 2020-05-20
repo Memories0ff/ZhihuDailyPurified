@@ -29,6 +29,7 @@
             android:orientation="vertical">
 
             <ImageView
+                imageUrl="@{comment.avatar}"
                 android:layout_width="35dp"
                 android:layout_height="35dp"
                 android:layout_gravity="end"
@@ -87,13 +88,14 @@
                 tools:text="评论内容" />
 
             <TextView
+                android:id="@+id/tvQuote"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:gravity="center_vertical"
                 android:lineSpacingExtra="4dp"
-                android:maxLines="@{comment.isExpanded?Integer.MAX_VALUE:2}"
-                android:text="@{comment.reply_to!=null?(`//`+comment.reply_to.author+`：`+comment.reply_to.content):``}"
+                android:maxLines="@{comment.isExpandable?(comment.isExpanded?Integer.MAX_VALUE:2):Integer.MAX_VALUE}"
+                android:text="@{comment.reply_to!=null?(`//`+comment.reply_to.author+`：`+comment.reply_to.content):null}"
                 android:textSize="16sp"
                 android:visibility="@{comment.reply_to!=null?View.VISIBLE:View.GONE}"
                 tools:text="先前内容" />
@@ -115,14 +117,15 @@
                     android:textSize="13sp"
                     tools:text="评论时间" />
 
-                <!--????????????还需要看是否超过两行再显示?????????????-->
                 <TextView
+                    android:id="@+id/tvBtnExpendOrCollapse"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:gravity="center"
-                    android:text="@{comment.reply_to!=null?(` · `+(comment.isExpanded?`收起`:`展开全文`)):``}"
+                    android:text="@{comment.isExpandable?(` · `+(comment.isExpanded?`收起`:`展开全文`)):null}"
                     android:textColor="#FF8F8F8F"
                     android:textSize="13sp"
+                    android:visibility="@{comment.isExpandable?View.VISIBLE:View.GONE}"
                     tools:text="·展开全文" />
 
                 <Space

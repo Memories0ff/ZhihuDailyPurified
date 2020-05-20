@@ -27,4 +27,4 @@ fun obtainDay(date: Date, offset: Int): String {
 }
 
 fun currentTime(time: Long): String =
-    SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINESE).format(Date(time * 1000))
+    SimpleDateFormat("MM-dd HH:mm", Locale.CHINESE).format(Date(time * 1000))

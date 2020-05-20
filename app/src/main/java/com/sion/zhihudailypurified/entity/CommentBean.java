@@ -15,7 +15,6 @@ public class CommentBean {
      * id : 33601305
      * likes : 0
      */
-
     private boolean own;
     private String author;
     private String content;
@@ -26,7 +25,11 @@ public class CommentBean {
     private int id;
     private int likes;
 
+    //UI设置用
+    private boolean isResignedForLineCount = false;
+    private int quoteRealLineCount; //仅赋值一次
     private ObservableField<Boolean> isExpanded = new ObservableField<>(false);
+    private ObservableField<Boolean> isExpandable = new ObservableField<>(false);
 
 
     public boolean isOwn() {
@@ -101,11 +104,31 @@ public class CommentBean {
         this.likes = likes;
     }
 
+    public int getQuoteRealLineCount() {
+        return quoteRealLineCount;
+    }
+
+    public void setQuoteRealLineCount(int quoteRealLineCount) {
+        //仅赋值一次
+        if (!isResignedForLineCount) {
+            this.quoteRealLineCount = quoteRealLineCount;
+            isResignedForLineCount = true;
+        }
+    }
+
     public ObservableField<Boolean> getIsExpanded() {
         return isExpanded;
     }
 
     public void setIsExpanded(ObservableField<Boolean> isExpanded) {
         this.isExpanded = isExpanded;
+    }
+
+    public ObservableField<Boolean> getIsExpandable() {
+        return isExpandable;
+    }
+
+    public void setIsExpandable(ObservableField<Boolean> isExpandable) {
+        this.isExpandable = isExpandable;
     }
 }
