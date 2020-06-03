@@ -55,13 +55,24 @@ class IndexActivity : BaseActivity<ActivityIndexBinding, IndexViewModel>() {
             .commit()
     }
 
-    fun switchToComments(fragment: ContentsDisplayFragment, id: Int) {
+    fun switchToComments(
+        fragment: ContentsDisplayFragment,
+        id: Int,
+        commentsNum: Int,
+        longCommentsNum: Int,
+        shortCommentsNum: Int
+    ) {
         supportFragmentManager.beginTransaction()
             .hide(fragment)
             .add(
                 R.id.flFragmentContainer,
                 CommentsFragment().apply {
-                    arguments = Bundle().apply { putInt(CommentsFragment.STORY_ID, id) }
+                    arguments = Bundle().apply {
+                        putInt(CommentsFragment.STORY_ID, id)
+                        putInt(CommentsFragment.COMMENTS_NUM, commentsNum)
+                        putInt(CommentsFragment.LONG_COMMENTS_NUM, longCommentsNum)
+                        putInt(CommentsFragment.SHORT_COMMENTS_NUM, shortCommentsNum)
+                    }
                 },
                 CommentsFragment.TAG
             )

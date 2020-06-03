@@ -84,6 +84,6 @@ class ContentViewModel : BaseViewModel() {
     fun updateExtraInfo(storyContentBean: StoryContentBean, fragment: Fragment) {
         (fragment.activity!!.supportFragmentManager
             .findFragmentByTag(ContentsDisplayFragment.TAG) as ContentsDisplayFragment)
-            .ui.contentExtraField!!.set(storyContentBean.extra)
+            .vm.contentExtraField.set(storyContentBean.extra)
     }
 }

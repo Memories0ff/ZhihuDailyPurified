@@ -1,6 +1,5 @@
 package com.sion.zhihudailypurified.view.fragment
 
-import androidx.databinding.ObservableField
 import androidx.fragment.app.FragmentActivity
 import com.sion.zhihudailypurified.R
 import com.sion.zhihudailypurified.adapter.ContentsVPAdapter
@@ -21,7 +20,7 @@ class ContentsDisplayFragment(private val displayType: Int, private val initialP
     }
 
     override fun initView() {
-        ui.contentExtraField = ObservableField()
+        ui.contentExtraField = vm.contentExtraField
         ui.vpContents.apply {
             adapter = ContentsVPAdapter(displayType, activity as FragmentActivity)
             offscreenPageLimit = 1
@@ -35,7 +34,10 @@ class ContentsDisplayFragment(private val displayType: Int, private val initialP
                         STORIES -> it.stories.value!![ui.vpContents.currentItem]!!.id
                         else -> it.topStories.value!![ui.vpContents.currentItem]!!.id
                     }
-                }
+                },
+                ui.contentExtraField!!.get()!!.comments,
+                ui.contentExtraField!!.get()!!.long_comments,
+                ui.contentExtraField!!.get()!!.short_comments
             )
         }
     }

@@ -5,7 +5,15 @@
     <data>
 
         <variable
-            name="commentNum"
+            name="commentsNum"
+            type="int" />
+
+        <variable
+            name="longCommentsNum"
+            type="int" />
+
+        <variable
+            name="shortCommentsNum"
             type="int" />
 
     </data>
@@ -29,7 +37,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="@{String.valueOf(commentNum)+`条评论`}"
+                android:text="@{String.valueOf(commentsNum)+`条评论`}"
                 android:textColor="#FF000000"
                 android:textSize="22sp"
                 tools:text="666条评论" />

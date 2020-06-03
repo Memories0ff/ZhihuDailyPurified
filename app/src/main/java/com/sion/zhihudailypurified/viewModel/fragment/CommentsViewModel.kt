@@ -11,8 +11,13 @@ import kotlinx.coroutines.withContext
 
 class CommentsViewModel : BaseViewModel() {
 
-    var longCommentNum = 0
-    var shortCommentNum = 0
+    var storyId = 0
+    var commentsNum = 0
+    var longCommentsNum = 0
+    var shortCommentsNum = 0
+
+    var currentLongCommentNum = 0
+    var currentShortCommentNum = 0
 
     val comments = MutableLiveData<MutableList<CommentBean>>().apply {
         value = arrayListOf()
@@ -24,14 +29,14 @@ class CommentsViewModel : BaseViewModel() {
             withContext(Dispatchers.IO) {
                 apiServices.obtainLongComments(id.toString()).execute().body()
                     ?.let { commentList ->
-                        longCommentNum = commentList.comments.size
+                        currentLongCommentNum = commentList.comments.size
                         result.addAll(commentList.comments)
                     }
             }
             withContext(Dispatchers.IO) {
                 apiServices.obtainShortComments(id.toString()).execute().body()
                     ?.let { commentList ->
-                        shortCommentNum = commentList.comments.size
+                        currentShortCommentNum = commentList.comments.size
                         result.addAll(commentList.comments)
                     }
             }
