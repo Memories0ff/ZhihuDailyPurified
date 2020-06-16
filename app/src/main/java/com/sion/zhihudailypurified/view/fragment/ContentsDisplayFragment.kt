@@ -1,8 +1,11 @@
 package com.sion.zhihudailypurified.view.fragment
 
+import android.util.Log
 import androidx.fragment.app.FragmentActivity
+import androidx.viewpager.widget.ViewPager
 import com.sion.zhihudailypurified.R
 import com.sion.zhihudailypurified.adapter.ContentsVPAdapter
+import com.sion.zhihudailypurified.adapter.StoriesAdapter
 import com.sion.zhihudailypurified.base.BaseFragment
 import com.sion.zhihudailypurified.databinding.FragmentContentsDisplayBinding
 import com.sion.zhihudailypurified.view.activity.IndexActivity
@@ -25,6 +28,33 @@ class ContentsDisplayFragment(private val displayType: Int, private val initialP
             adapter = ContentsVPAdapter(displayType, activity as FragmentActivity)
             offscreenPageLimit = 1
             currentItem = initialPos
+            addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+                override fun onPageScrollStateChanged(state: Int) {
+                    //滚动viewpager更新数据源与列表同步
+                    if (state == ViewPager.SCROLL_STATE_IDLE) {
+                        adapter!!.notifyDataSetChanged()
+                    }
+                }
+
+                override fun onPageScrolled(
+                    position: Int,
+                    positionOffset: Float,
+                    positionOffsetPixels: Int
+                ) {
+                }
+
+                override fun onPageSelected(position: Int) {
+                    if (displayType == STORIES) {
+                        //滚动viewpager同时更新数据源
+                        ((((activity as IndexActivity).supportFragmentManager.findFragmentByTag(
+                            StoriesFragment.TAG
+                        )) as StoriesFragment).ui.rvStories.adapter as StoriesAdapter).apply {
+                            continueLoad(position)
+                        }
+                    }
+                }
+
+            })
         }
         ui.llBtnComments.setOnClickListener {
             (activity as IndexActivity).switchToComments(

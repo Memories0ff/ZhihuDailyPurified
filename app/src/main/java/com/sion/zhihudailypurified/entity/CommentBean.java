@@ -1,5 +1,6 @@
 package com.sion.zhihudailypurified.entity;
 
+import androidx.annotation.Nullable;
 import androidx.databinding.ObservableField;
 
 public class CommentBean {
@@ -130,5 +131,11 @@ public class CommentBean {
 
     public void setIsExpandable(ObservableField<Boolean> isExpandable) {
         this.isExpandable = isExpandable;
+    }
+
+    //只有添加该项的操作，不需要严格判断相同
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        return super.equals(obj);
     }
 }

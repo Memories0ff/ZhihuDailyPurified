@@ -16,24 +16,21 @@ class CommentsFragment : BaseFragment<FragmentCommentsBinding, CommentsViewModel
 
     override fun initView() {
 
-        ui.rvComments.apply {
-            layoutManager = LinearLayoutManager(this@CommentsFragment.context)
-            adapter = CommentsAdapter(this@CommentsFragment)
-        }
-
-        vm.comments.observe(this, Observer {
-            ui.commentsNum = vm.commentsNum
-            ui.rvComments.adapter?.notifyDataSetChanged()
+        vm.storyId = arguments!!.getInt(STORY_ID)   //必须先赋值id
+        val adapter = CommentsAdapter(this@CommentsFragment)
+        ui.rvComments.layoutManager = LinearLayoutManager(this@CommentsFragment.context)
+        ui.rvComments.adapter = adapter
+        vm.comments.observe(this@CommentsFragment, Observer {
+            adapter.submitList(it)
         })
 
     }
 
     override fun initData() {
-        vm.storyId = arguments!!.getInt(STORY_ID)
         vm.commentsNum = arguments!!.getInt(COMMENTS_NUM)
         vm.longCommentsNum = arguments!!.getInt(LONG_COMMENTS_NUM)
         vm.shortCommentsNum = arguments!!.getInt(SHORT_COMMENTS_NUM)
-        vm.obtainAllComments(vm.storyId)
+        ui.commentsNum = vm.commentsNum
     }
 
 

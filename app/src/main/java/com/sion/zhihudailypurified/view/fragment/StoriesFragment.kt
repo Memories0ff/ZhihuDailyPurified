@@ -32,7 +32,7 @@ class StoriesFragment : BaseFragment<FragmentStoriesListBinding, StoriesViewMode
         })
 
         vm.lastPos.observe(this, Observer {
-            ui.rvStories.smoothScrollToPosition(it)
+            adapter.smoothMoveToPosition(ui.rvStories, it + 1)
         })
 
     }

@@ -136,6 +136,31 @@ public class StoryBean {
 
     @Override
     public boolean equals(@Nullable Object obj) {
-        return super.equals(obj);
+        //首页要下拉更新，需要严格判断相同
+        if (obj == null)
+            return false;
+        if (this == obj)
+            return true;
+        if (this.getClass() != obj.getClass())
+            return false;
+        if (this.hashCode() != obj.hashCode())
+            return false;
+
+        StoryBean sbObj = (StoryBean) obj;
+        if (this.images.size() != sbObj.images.size())
+            return false;
+        if (!this.images.equals(sbObj.images)) {
+            return false;
+        }
+        return id == sbObj.id
+                && type == sbObj.type
+                && image_hue.equals(sbObj.image_hue)
+                && title.equals(sbObj.title)
+                && url.equals(sbObj.url)
+                && hint.equals(sbObj.hint)
+                && ga_prefix.equals(sbObj.ga_prefix)
+                && date.equals(sbObj.date);
+
+//        return super.equals(obj);
     }
 }

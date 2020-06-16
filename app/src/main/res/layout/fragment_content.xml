@@ -14,10 +14,13 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+            <!-- 添加descendantFocusability="blocksDescendants"
+            防止点击webview回到顶部以及滚动浏览的后续显示问题 -->
             <LinearLayout
                 android:id="@+id/llContent"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:descendantFocusability="blocksDescendants"
                 android:orientation="vertical">
 
                 <FrameLayout
