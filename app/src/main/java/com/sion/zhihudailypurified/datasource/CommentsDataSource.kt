@@ -28,12 +28,16 @@ class CommentsDataSource(private val id: Int) : PageKeyedDataSource<Int, Comment
                         result.addAll(commentList.comments)
                     }
             }
+            val longCommentsNum = result.size
             withContext(Dispatchers.IO) {
                 apiServices.obtainShortComments(id.toString()).execute().body()
                     ?.let { commentList ->
                         result.addAll(commentList.comments)
                     }
             }
+            //设置第一条长评短评标记
+            result.first().isFirstLongComment = true
+            result[longCommentsNum].isFirstShortComment = true
             commentId = result.last().id
             callback.onResult(result, null, pageNum)
             pageNum++

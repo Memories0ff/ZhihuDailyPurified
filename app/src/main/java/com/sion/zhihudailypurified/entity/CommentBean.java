@@ -32,6 +32,9 @@ public class CommentBean {
     private ObservableField<Boolean> isExpanded = new ObservableField<>(false);
     private ObservableField<Boolean> isExpandable = new ObservableField<>(false);
 
+    private boolean isFirstLongComment = false; //第一条长评
+    private boolean isFirstShortComment = false;//第一条短评
+
 
     public boolean isOwn() {
         return own;
@@ -133,9 +136,27 @@ public class CommentBean {
         this.isExpandable = isExpandable;
     }
 
+    public boolean isFirstLongComment() {
+        return isFirstLongComment;
+    }
+
+    public void setFirstLongComment(boolean firstLongComment) {
+        isFirstLongComment = firstLongComment;
+    }
+
+    public boolean isFirstShortComment() {
+        return isFirstShortComment;
+    }
+
+    public void setFirstShortComment(boolean firstShortComment) {
+        isFirstShortComment = firstShortComment;
+    }
+
     //只有添加该项的操作，不需要严格判断相同
     @Override
     public boolean equals(@Nullable Object obj) {
         return super.equals(obj);
     }
+
+
 }

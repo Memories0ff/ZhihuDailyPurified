@@ -6,6 +6,7 @@ import com.sion.zhihudailypurified.R
 import com.sion.zhihudailypurified.adapter.CommentsAdapter
 import com.sion.zhihudailypurified.base.BaseFragment
 import com.sion.zhihudailypurified.databinding.FragmentCommentsBinding
+import com.sion.zhihudailypurified.view.itemDecoration.CommentsDecoration
 import com.sion.zhihudailypurified.viewModel.fragment.CommentsViewModel
 
 class CommentsFragment : BaseFragment<FragmentCommentsBinding, CommentsViewModel>() {
@@ -20,6 +21,7 @@ class CommentsFragment : BaseFragment<FragmentCommentsBinding, CommentsViewModel
         val adapter = CommentsAdapter(this@CommentsFragment)
         ui.rvComments.layoutManager = LinearLayoutManager(this@CommentsFragment.context)
         ui.rvComments.adapter = adapter
+        ui.rvComments.addItemDecoration(CommentsDecoration(this@CommentsFragment))
         vm.comments.observe(this@CommentsFragment, Observer {
             adapter.submitList(it)
         })

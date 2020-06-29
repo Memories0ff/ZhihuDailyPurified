@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="index_stories_item_decoration_height">20dp</dimen>
+    <dimen name="index_stories_item_decoration_margin_left">15dp</dimen>
+    <dimen name="index_stories_item_decoration_margin_right">15dp</dimen>
+    <!--    <dimen name="index_stories_item_decoration_margin_down">30dp</dimen>-->
+    <dimen name="index_stories_item_decoration_text_size">14sp</dimen>
+
+    <dimen name="comments_item_decoration_text_size">16sp</dimen>
+    <dimen name="comments_item_decoration_margin_left">15dp</dimen>
+    <dimen name="comments_item_decoration_height">50dp</dimen>
+    <dimen name="comments_item_underline_height">1px</dimen>
+</resources>

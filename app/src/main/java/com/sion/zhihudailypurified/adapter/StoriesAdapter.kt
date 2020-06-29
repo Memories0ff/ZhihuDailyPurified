@@ -131,7 +131,7 @@ class StoriesAdapter(private val fragment: StoriesFragment) :
         } else if (position <= lastItem) {
             // 第二种可能:跳转位置在第一个可见位置之后，最后一个可见项之前
             val movePosition = position - firstItem;
-            if (movePosition >= 0 && movePosition < mRecyclerView.getChildCount()) {
+            if (movePosition >= 0 && movePosition < mRecyclerView.childCount) {
                 val top = mRecyclerView.getChildAt(movePosition).top;
                 // smoothScrollToPosition 不会有效果，此时调用smoothScrollBy来滑动到指定位置
                 mRecyclerView.smoothScrollBy(0, top);
@@ -147,7 +147,10 @@ class StoriesAdapter(private val fragment: StoriesFragment) :
 
     //继续加载列表
     fun continueLoad(position: Int) {
-        getItem(position)
+        //防止进入第一个滑到第二个再滑回第一个闪退
+        if (position > 0) {
+            getItem(position - 1)
+        }
     }
 
     companion object {

@@ -10,8 +10,6 @@ import com.sion.zhihudailypurified.entity.TopStoryBean
 import com.sion.zhihudailypurified.network.apiServices
 import com.sion.zhihudailypurified.network.callIO
 import com.sion.zhihudailypurified.sharedPreference.spGetBoolean
-import com.sion.zhihudailypurified.sharedPreference.spPutBoolean
-import com.sion.zhihudailypurified.view.fragment.StoriesFragment
 
 class StoriesViewModel : BaseViewModel() {
     //新闻列表

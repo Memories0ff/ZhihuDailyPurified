@@ -32,15 +32,15 @@ class ContentsVPAdapter(private val displayType: Int, private val fa: FragmentAc
         }
     }
 
-    override fun getCount(): Int = when (displayType) {
-        //头条新闻
-        ContentsDisplayFragment.TOP_STORIES -> (fa.supportFragmentManager.findFragmentByTag(
-            StoriesFragment.TAG
-        ) as StoriesFragment).vm.topStories.value!!.size
-        //普通新闻
-        else -> (fa.supportFragmentManager.findFragmentByTag(
-            StoriesFragment.TAG
-        ) as StoriesFragment).vm.stories.value!!.size
+    override fun getCount(): Int {
+        return when (displayType) {
+            //头条新闻
+            ContentsDisplayFragment.TOP_STORIES -> (fa.supportFragmentManager.findFragmentByTag(
+                StoriesFragment.TAG
+            ) as StoriesFragment).vm.topStories.value!!.size
+            //普通新闻
+            else -> Int.MAX_VALUE
+        }
     }
 
 }

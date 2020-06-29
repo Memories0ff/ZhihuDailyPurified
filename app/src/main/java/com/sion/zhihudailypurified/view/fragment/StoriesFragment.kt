@@ -6,6 +6,7 @@ import com.sion.zhihudailypurified.R
 import com.sion.zhihudailypurified.adapter.StoriesAdapter
 import com.sion.zhihudailypurified.base.BaseFragment
 import com.sion.zhihudailypurified.databinding.FragmentStoriesListBinding
+import com.sion.zhihudailypurified.view.itemDecoration.DateDecoration
 import com.sion.zhihudailypurified.viewModel.fragment.StoriesViewModel
 
 class StoriesFragment : BaseFragment<FragmentStoriesListBinding, StoriesViewModel>() {
@@ -23,6 +24,7 @@ class StoriesFragment : BaseFragment<FragmentStoriesListBinding, StoriesViewMode
         val adapter = StoriesAdapter(this)
         ui.rvStories.adapter = adapter
         ui.rvStories.layoutManager = LinearLayoutManager(activity)
+        ui.rvStories.addItemDecoration(DateDecoration(this))
 
         vm.stories.observe(this, Observer { adapter.submitList(it) })
         vm.updateTopStories.observe(this, Observer {

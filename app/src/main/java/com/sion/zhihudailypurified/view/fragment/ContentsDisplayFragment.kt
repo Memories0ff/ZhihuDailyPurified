@@ -11,7 +11,7 @@ import com.sion.zhihudailypurified.databinding.FragmentContentsDisplayBinding
 import com.sion.zhihudailypurified.view.activity.IndexActivity
 import com.sion.zhihudailypurified.viewModel.fragment.ContentsDisplayViewModel
 
-class ContentsDisplayFragment(private val displayType: Int, private val initialPos: Int) :
+class ContentsDisplayFragment(val displayType: Int, private val initialPos: Int) :
     BaseFragment<FragmentContentsDisplayBinding, ContentsDisplayViewModel>() {
 
     override fun setLayoutId(): Int {
@@ -31,9 +31,10 @@ class ContentsDisplayFragment(private val displayType: Int, private val initialP
             addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
                 override fun onPageScrollStateChanged(state: Int) {
                     //滚动viewpager更新数据源与列表同步
-                    if (state == ViewPager.SCROLL_STATE_IDLE) {
-                        adapter!!.notifyDataSetChanged()
-                    }
+//                    if (state == ViewPager.SCROLL_STATE_IDLE) {
+//                        adapter!!.notifyDataSetChanged()
+//                        Log.d("addOnPageChangeListener", "刷新数据源2")
+//                    }
                 }
 
                 override fun onPageScrolled(
@@ -51,11 +52,36 @@ class ContentsDisplayFragment(private val displayType: Int, private val initialP
                         )) as StoriesFragment).ui.rvStories.adapter as StoriesAdapter).apply {
                             continueLoad(position)
                         }
+                        Log.d(
+                            "addOnPageChangeListener", "position:${position}, all:${
+                            ((activity as IndexActivity).supportFragmentManager.findFragmentByTag(
+                                StoriesFragment.TAG
+                            ) as StoriesFragment).vm.stories.value!!.size
+                            }"
+                        )
                     }
                 }
-
             })
         }
+//        ui.vpContents.apply {
+//            adapter = ContentsVPAdapter(displayType, activity as FragmentActivity)
+//            offscreenPageLimit = 1
+//            currentItem = initialPos
+//            addOnPageChangeListener(OnStoryPageChangeListener(this@ContentsDisplayFragment).apply {
+//                continueLoadListener = object : OnStoryPageChangeListener.ContinueLoadListener {
+//                    override fun continueLoad(position: Int) {
+//                        val storiesFragment =
+//                            ((fragment.activity as IndexActivity).supportFragmentManager.findFragmentByTag(
+//                                StoriesFragment.TAG
+//                            )) as StoriesFragment
+//                        (storiesFragment.ui.rvStories.adapter as StoriesAdapter).apply {
+//                            continueLoad(position)
+//                        }
+//                        loadingFinish()
+//                    }
+//                }
+//            })
+//        }
         ui.llBtnComments.setOnClickListener {
             (activity as IndexActivity).switchToComments(
                 this,

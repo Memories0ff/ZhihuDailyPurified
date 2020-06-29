@@ -85,7 +85,7 @@ class ContentFragment(private val displayType: Int) :
     }
 
     override fun onDestroy() {
-        webView.let { webView ->//?????????????????????????????????????????webview点击后瞬移到顶部，上方图片正好消失，左右滑动显示后直接瞬移
+        webView.let { webView ->
             // 如果先调用destroy()方法，则会命中if (isDestroyed()) return;这一行代码，需要先onDetachedFromWindow()，再
             // destroy()
             val parent = webView.getParent();
