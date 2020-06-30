@@ -19,6 +19,7 @@ fun <T> Call<T>.callIO(
     GlobalScope.launch(Dispatchers.Main) {
         withContext(Dispatchers.IO) {
             try {
+                //????????????????????可能的异常没有处理　
                 execute()
             } catch (e: IOException) {
                 Log.e("DownloadUtils", "IOException")

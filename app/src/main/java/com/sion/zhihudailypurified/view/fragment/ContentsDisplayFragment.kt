@@ -23,6 +23,9 @@ class ContentsDisplayFragment(val displayType: Int, private val initialPos: Int)
     }
 
     override fun initView() {
+        ui.btnBackToStories.setOnClickListener {
+            back()
+        }
         ui.contentExtraField = vm.contentExtraField
         ui.vpContents.apply {
             adapter = ContentsVPAdapter(displayType, activity as FragmentActivity)

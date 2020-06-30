@@ -74,6 +74,7 @@ class ContentFragment(private val displayType: Int) :
 
     override fun onResume() {
         super.onResume()
+        //通过左右滑动浏览的新闻标记为已读
         vm.content.value?.let {
             vm.markRead(displayType, it, this@ContentFragment)
             vm.updateExtraInfo(it, this)
@@ -88,7 +89,7 @@ class ContentFragment(private val displayType: Int) :
         webView.let { webView ->
             // 如果先调用destroy()方法，则会命中if (isDestroyed()) return;这一行代码，需要先onDetachedFromWindow()，再
             // destroy()
-            val parent = webView.getParent();
+            val parent = webView.parent;
             if (parent != null) {
                 (parent as ViewGroup).removeView(webView);
             }

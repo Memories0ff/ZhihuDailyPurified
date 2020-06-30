@@ -17,7 +17,7 @@ class StoriesViewModel : BaseViewModel() {
     val stories = LivePagedListBuilder(
         StoriesDataSourceFactory(),
         PagedList.Config.Builder()
-            .setPageSize(15)
+            .setPageSize(10)
             .setEnablePlaceholders(false)
             .build()
     ).build()

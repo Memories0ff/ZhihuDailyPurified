@@ -2,12 +2,15 @@ package com.sion.zhihudailypurified.view.fragment
 
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.SimpleItemAnimator
 import com.sion.zhihudailypurified.R
 import com.sion.zhihudailypurified.adapter.CommentsAdapter
 import com.sion.zhihudailypurified.base.BaseFragment
 import com.sion.zhihudailypurified.databinding.FragmentCommentsBinding
 import com.sion.zhihudailypurified.view.itemDecoration.CommentsDecoration
 import com.sion.zhihudailypurified.viewModel.fragment.CommentsViewModel
+
 
 class CommentsFragment : BaseFragment<FragmentCommentsBinding, CommentsViewModel>() {
 
@@ -16,8 +19,11 @@ class CommentsFragment : BaseFragment<FragmentCommentsBinding, CommentsViewModel
     override fun setViewModel(): Class<out CommentsViewModel> = CommentsViewModel::class.java
 
     override fun initView() {
-
+        ui.btnBackToContent.setOnClickListener {
+            back()
+        }
         vm.storyId = arguments!!.getInt(STORY_ID)   //必须先赋值id
+//        closeDefaultAnimator(ui.rvComments)         //关闭RecyclerView局部刷新动画
         val adapter = CommentsAdapter(this@CommentsFragment)
         ui.rvComments.layoutManager = LinearLayoutManager(this@CommentsFragment.context)
         ui.rvComments.adapter = adapter
@@ -34,6 +40,19 @@ class CommentsFragment : BaseFragment<FragmentCommentsBinding, CommentsViewModel
         vm.shortCommentsNum = arguments!!.getInt(SHORT_COMMENTS_NUM)
         ui.commentsNum = vm.commentsNum
     }
+
+    /**
+     * 关闭RecyclerView局部刷新动画
+     */
+//    private fun closeDefaultAnimator(recyclerView: RecyclerView) {
+//        recyclerView.itemAnimator?.apply {
+//            addDuration = 0
+//            changeDuration = 0
+//            moveDuration = 0
+//            removeDuration = 0
+//            (this as SimpleItemAnimator?)?.supportsChangeAnimations = false
+//        }
+//    }
 
 
     companion object {

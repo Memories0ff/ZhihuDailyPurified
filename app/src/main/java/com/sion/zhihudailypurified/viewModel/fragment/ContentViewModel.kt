@@ -97,7 +97,7 @@ class ContentViewModel : BaseViewModel() {
     //点赞数评论数更新
     fun updateExtraInfo(storyContentBean: StoryContentBean, fragment: Fragment) {
         (fragment.activity!!.supportFragmentManager
-            .findFragmentByTag(ContentsDisplayFragment.TAG) as ContentsDisplayFragment)
-            .vm.contentExtraField.set(storyContentBean.extra)
+            .findFragmentByTag(ContentsDisplayFragment.TAG) as ContentsDisplayFragment?)
+            ?.vm?.contentExtraField?.set(storyContentBean.extra)
     }
 }

@@ -42,5 +42,9 @@ abstract class BaseFragment<B : ViewDataBinding, VM : BaseViewModel> : Fragment(
         return ui.root
     }
 
+    open fun back() {
+        activity?.onBackPressed()
+    }
+
 
 }

@@ -29,7 +29,7 @@ class StoriesFragment : BaseFragment<FragmentStoriesListBinding, StoriesViewMode
         vm.stories.observe(this, Observer { adapter.submitList(it) })
         vm.updateTopStories.observe(this, Observer {
             if (it) {
-                adapter.bannerAdapter!!.notifyDataSetChanged()
+                adapter.bannerAdapter?.notifyDataSetChanged()
             }
         })
 

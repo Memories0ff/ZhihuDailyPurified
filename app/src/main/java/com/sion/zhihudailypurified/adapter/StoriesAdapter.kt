@@ -28,30 +28,28 @@ class StoriesAdapter(private val fragment: StoriesFragment) :
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         when (viewType) {
             BANNER -> {
-                val bannerBinding: IndexBannerItemBinding
-                fragment.let {
-                    bannerAdapter = TopStoryBannerAdapter(it.vm.topStories.value!!)
-                    bannerBinding = DataBindingUtil.inflate(
-                        LayoutInflater.from(it.activity),
-                        R.layout.index_banner_item,
-                        parent,
-                        false
-                    )
-                    bannerBinding.banner.apply {
-                        adapter = bannerAdapter!!
-                        indicator = CircleIndicator(parent.context)
-                        scrollTime = 100
-                        currentItem = 0
-                        banner = this
-                        setOnBannerListener { _, position ->
-                            Log.d(this.javaClass.name, "$position")
-                            (fragment.activity as IndexActivity).switchToContent(
-                                fragment,
-                                ContentsDisplayFragment.TOP_STORIES,
-                                position
-                            )
-                        }
+                bannerAdapter = TopStoryBannerAdapter(fragment.vm.topStories.value!!)
+                val bannerBinding: IndexBannerItemBinding = DataBindingUtil.inflate(
+                    LayoutInflater.from(fragment.activity),
+                    R.layout.index_banner_item,
+                    parent,
+                    false
+                )
+                bannerBinding.banner.apply {
+                    adapter = bannerAdapter!!
+                    indicator = CircleIndicator(parent.context)
+                    scrollTime = 100
+                    currentItem = 0
+                    banner = this
+                    setOnBannerListener { _, position ->
+                        Log.d(this.javaClass.name, "$position")
+                        (fragment.activity as IndexActivity).switchToContent(
+                            fragment,
+                            ContentsDisplayFragment.TOP_STORIES,
+                            position
+                        )
                     }
+
                     bannerBinding.executePendingBindings()
                 }
                 return TopStoryViewHolder(bannerBinding)
@@ -107,15 +105,17 @@ class StoriesAdapter(private val fragment: StoriesFragment) :
         }
     }
 
+
+    /**
+     * 滑动到指定位置
+     */
+
     //目标项是否在最后一个可见项之后
     private var mShouldScroll: Boolean = false
 
     //记录目标项位置
     private var mToPosition: Int = 1
 
-    /**
-     * 滑动到指定位置
-     */
     fun smoothMoveToPosition(mRecyclerView: RecyclerView, position: Int) {
         // 第一个可见位置
         val firstItem = mRecyclerView.getChildLayoutPosition(mRecyclerView.getChildAt(0));
@@ -143,6 +143,18 @@ class StoriesAdapter(private val fragment: StoriesFragment) :
             mToPosition = position;
             mShouldScroll = true;
         }
+    }
+
+    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
+        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                if (mShouldScroll && RecyclerView.SCROLL_STATE_IDLE == newState) {
+                    mShouldScroll = false
+                    smoothMoveToPosition(recyclerView, mToPosition)
+                }
+            }
+        })
     }
 
     //继续加载列表

@@ -29,9 +29,11 @@
             android:orientation="horizontal">
 
             <ImageView
-                android:layout_width="55dp"
-                android:layout_height="match_parent"
-                android:src="@mipmap/ic_launcher" />
+                android:id="@+id/btnBackToContent"
+                android:layout_width="45dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center_vertical"
+                android:src="@mipmap/round_arrow_back_black_48" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -39,10 +41,16 @@
                 android:layout_gravity="center"
                 android:text="@{String.valueOf(commentsNum)+`条评论`}"
                 android:textColor="#FF000000"
-                android:textSize="22sp"
+                android:textSize="18sp"
+                android:textStyle="bold"
                 tools:text="666条评论" />
 
         </FrameLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="#1F000000" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvComments"

@@ -13,9 +13,12 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <!-- 状态栏透明 -->
-        <item name="android:windowTranslucentStatus">true</item>
+        <!--        <item name="android:windowTranslucentStatus">true</item>-->
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:statusBarColor">#FF000000</item>
         <!-- 状态栏适配UI顶部 -->
-        <item name="android:fitsSystemWindows">true</item>
+        <!--        <item name="android:fitsSystemWindows">true</item>-->
+        <!--        <item name="android:clipToPadding">true</item>-->
     </style>
 
 </resources>
