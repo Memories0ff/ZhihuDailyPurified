@@ -39,7 +39,6 @@ class StoriesAdapter(private val fragment: StoriesFragment) :
                     adapter = bannerAdapter!!
                     indicator = CircleIndicator(parent.context)
                     scrollTime = 100
-                    currentItem = 0
                     banner = this
                     setOnBannerListener { _, position ->
                         Log.d(this.javaClass.name, "$position")
@@ -82,7 +81,7 @@ class StoriesAdapter(private val fragment: StoriesFragment) :
                 }
             }
             is TopStoryViewHolder -> {
-                holder.binding.banner.start()
+//                holder.binding.banner.start()
             }
         }
     }

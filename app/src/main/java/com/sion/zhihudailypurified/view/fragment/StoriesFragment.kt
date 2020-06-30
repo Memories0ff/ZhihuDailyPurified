@@ -30,6 +30,8 @@ class StoriesFragment : BaseFragment<FragmentStoriesListBinding, StoriesViewMode
         vm.updateTopStories.observe(this, Observer {
             if (it) {
                 adapter.bannerAdapter?.notifyDataSetChanged()
+                adapter.banner?.currentItem = 6
+                adapter.banner?.start()
             }
         })
 

@@ -4,6 +4,7 @@ import android.widget.ImageView
 import androidx.databinding.BindingAdapter
 import com.bumptech.glide.Glide
 import com.sion.zhihudailypurified.App
+import com.sion.zhihudailypurified.R
 
 @BindingAdapter("imageUrl")
 fun loadImage(iv: ImageView, url: String?) {
@@ -12,6 +13,8 @@ fun loadImage(iv: ImageView, url: String?) {
     }
     Glide.with(App.getAppContext())
         .load(url)
+        .placeholder(R.mipmap.round_pic_placeholder_black_48)
+        .error(R.mipmap.round_pic_placeholder_black_48)
         .into(iv)
 }
 
