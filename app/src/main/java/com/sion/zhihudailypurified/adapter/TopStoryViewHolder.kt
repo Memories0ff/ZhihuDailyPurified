@@ -1,7 +1,7 @@
 package com.sion.zhihudailypurified.adapter
 
+import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import com.sion.zhihudailypurified.databinding.IndexBannerItemBinding
 
-class TopStoryViewHolder(val binding: IndexBannerItemBinding) :
-    RecyclerView.ViewHolder(binding.root)
+class TopStoryViewHolder(itemView: View) :
+    RecyclerView.ViewHolder(itemView)

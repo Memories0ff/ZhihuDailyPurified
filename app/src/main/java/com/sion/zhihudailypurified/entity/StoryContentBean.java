@@ -9,6 +9,7 @@ import com.sion.zhihudailypurified.db.ListJsonConverter;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -184,6 +185,9 @@ public class StoryContentBean {
     }
 
     public List<String> getJs() {
+        if (js == null) {
+            return new ArrayList<>();
+        }
         return js;
     }
 
@@ -192,6 +196,9 @@ public class StoryContentBean {
     }
 
     public List<String> getImages() {
+        if (images == null) {
+            return new ArrayList<>();
+        }
         return images;
     }
 
@@ -200,6 +207,9 @@ public class StoryContentBean {
     }
 
     public List<String> getCss() {
+        if (css == null) {
+            return new ArrayList<>();
+        }
         return css;
     }
 

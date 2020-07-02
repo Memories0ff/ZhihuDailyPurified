@@ -2,11 +2,10 @@ package com.sion.zhihudailypurified.test
 
 import androidx.lifecycle.Observer
 import com.sion.zhihudailypurified.R
-import com.sion.zhihudailypurified.adapter.TopStoryBannerAdapter
 import com.sion.zhihudailypurified.base.BaseActivity
 import com.sion.zhihudailypurified.databinding.ActivityMainBinding
+import com.sion.zhihudailypurified.test.banner.BannerAdapter
 import com.sion.zhihudailypurified.utils.toast
-import com.youth.banner.indicator.CircleIndicator
 
 class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>() {
 
@@ -32,19 +31,35 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>() {
 //            vm.clearCache()
 //        }
 
-        ui.banner.indicator = CircleIndicator(this)
-        ui.banner.adapter = TopStoryBannerAdapter(vm.topStories.value!!)
-        ui.btnData.setOnClickListener {
-            vm.obtainTopStories()
-            toast("数据加载完成")
-        }
-        ui.btnUpdate.setOnClickListener {
-            ui.banner.adapter.notifyDataSetChanged()
-            toast("界面加载完成")
-        }
+//        ui.banner.indicator = CircleIndicator(this)
+//        ui.banner.adapter = TopStoryBannerAdapter(vm.topStories.value!!)
+//        ui.btnData.setOnClickListener {
+//            vm.obtainTopStories()
+//            toast("数据加载完成")
+//        }
+//        ui.btnUpdate.setOnClickListener {
+//            ui.banner.adapter.notifyDataSetChanged()
+//            toast("界面加载完成")
+//        }
+
+//        ui.banner.isLoadFinish(false)
+//        vm.loadFinished.observe(this, Observer {
+//            if (it) {
+//                vm.topStories.value?.let { it1 ->
+//                    ui.banner.adapter = BannerAdapter(it1, this)
+//                    ui.banner.addObserver(this)
+//                    vm.loadFinished.value = false
+//                    ui.btn.setOnClickListener { ui.banner.setCurrentPosition(2) }
+//                    ui.banner.isLoadFinish(true)
+//                }
+//            }
+//        })
+
     }
 
     override fun initData() {
+
+        vm.obtainTopStories()
 
 //        vm.content.observe(this, Observer {
 //            ui.content = it

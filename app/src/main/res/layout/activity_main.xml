@@ -5,9 +5,9 @@
 
     <data>
 
-        <variable
-            name="content"
-            type="String" />
+        <!--        <variable-->
+        <!--            name="content"-->
+        <!--            type="String" />-->
     </data>
 
     <LinearLayout
@@ -46,22 +46,33 @@
         <!--            android:layout_height="wrap_content"-->
         <!--            android:text="清理缓存" />-->
 
-        <com.youth.banner.Banner
-            android:id="@+id/banner"
-            android:layout_width="match_parent"
-            android:layout_height="400dp" />
+        <!--        <com.youth.banner.Banner-->
+        <!--            android:id="@+id/banner"-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="400dp" />-->
 
-        <Button
-            android:id="@+id/btn_data"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="获取数据" />
+        <!--        <Button-->
+        <!--            android:id="@+id/btn_data"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:text="获取数据" />-->
 
-        <Button
-            android:id="@+id/btn_update"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="更新界面" />
+        <!--        <Button-->
+        <!--            android:id="@+id/btn_update"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:text="更新界面" />-->
+
+<!--        <com.sion.zhihudailypurified.test.banner.Banner-->
+<!--            android:id="@+id/banner"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="600dp" />-->
+
+<!--        <Button-->
+<!--            android:id="@+id/btn"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="跳转到2" />-->
 
     </LinearLayout>
 </layout>

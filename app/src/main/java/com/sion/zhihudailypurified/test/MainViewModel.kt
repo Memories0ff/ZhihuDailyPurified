@@ -106,21 +106,41 @@ class MainViewModel : BaseViewModel() {
         value = arrayListOf()
     }
 
-    val bannerRunning = MutableLiveData<Boolean>()
+    val loadFinished: MutableLiveData<Boolean> = MutableLiveData(false)
 
+    //获取头条新闻
     fun obtainTopStories() {
         apiServices.obtainLatest().callIO(
             onFailure = {
                 it.printStackTrace()
             },
+            onResponseFailure = { response ->
+                topStories.value = arrayListOf()
+            },
             onResponseSuccess = { response ->
                 response.body()?.let {
                     topStories.value!!.clear()
                     topStories.value!!.addAll(it.top_stories)
+                    loadFinished.value = true
                 }
             }
         )
     }
+
+//    val bannerRunning = MutableLiveData<Boolean>()
+//
+//    fun obtainTopStories() {
+//        apiServices.obtainLatest().callIO(
+//            onFailure = {
+//                it.printStackTrace()
+//            },
+//            onResponseSuccess = { response ->
+//                response.body()?.let {
+//                    topStories.value!!.clear()
+//                    topStories.value!!.addAll(it.top_stories)
+//                }
+//            }
+//        )}
 
 
 }

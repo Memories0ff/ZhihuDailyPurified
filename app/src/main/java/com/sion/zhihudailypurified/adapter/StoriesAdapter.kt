@@ -8,50 +8,33 @@ import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.sion.zhihudailypurified.R
-import com.sion.zhihudailypurified.databinding.IndexBannerItemBinding
 import com.sion.zhihudailypurified.databinding.IndexStoriesItemBinding
 import com.sion.zhihudailypurified.entity.StoryBean
+import com.sion.zhihudailypurified.test.banner.Banner
+import com.sion.zhihudailypurified.test.banner.BannerAdapter
 import com.sion.zhihudailypurified.view.activity.IndexActivity
 import com.sion.zhihudailypurified.view.fragment.ContentsDisplayFragment
 import com.sion.zhihudailypurified.view.fragment.StoriesFragment
-import com.youth.banner.Banner
-import com.youth.banner.indicator.CircleIndicator
 
 class StoriesAdapter(private val fragment: StoriesFragment) :
     PagedListAdapter<StoryBean, RecyclerView.ViewHolder>(
         diffCallback
     ) {
 
-    var bannerAdapter: TopStoryBannerAdapter? = null
-    var banner: Banner<*, *>? = null
+    var banner: Banner? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         when (viewType) {
             BANNER -> {
-                bannerAdapter = TopStoryBannerAdapter(fragment.vm.topStories.value!!)
-                val bannerBinding: IndexBannerItemBinding = DataBindingUtil.inflate(
-                    LayoutInflater.from(fragment.activity),
-                    R.layout.index_banner_item,
-                    parent,
-                    false
-                )
-                bannerBinding.banner.apply {
-                    adapter = bannerAdapter!!
-                    indicator = CircleIndicator(parent.context)
-                    scrollTime = 100
-                    banner = this
-                    setOnBannerListener { _, position ->
-                        Log.d(this.javaClass.name, "$position")
-                        (fragment.activity as IndexActivity).switchToContent(
-                            fragment,
-                            ContentsDisplayFragment.TOP_STORIES,
-                            position
-                        )
-                    }
-
-                    bannerBinding.executePendingBindings()
+                val view = LayoutInflater.from(parent.context)
+                    .inflate(R.layout.index_top_banner_item, parent, false)
+                banner = view.findViewById<Banner>(R.id.banner).apply {
+                    adapter = BannerAdapter(fragment.vm.topStories.value!!, fragment.context!!)
+                    isLoadFinish(false)     //数据未读取完成，读取完成后要调用这个方法，传参true
                 }
-                return TopStoryViewHolder(bannerBinding)
+                fragment.vm.obtainTopStories()      //读取数据
+                return TopStoryViewHolder(view)
+
             }
             else -> {
                 val binding = DataBindingUtil.inflate<IndexStoriesItemBinding>(
@@ -84,13 +67,6 @@ class StoriesAdapter(private val fragment: StoriesFragment) :
 //                holder.binding.banner.start()
             }
         }
-    }
-
-    override fun onViewRecycled(holder: RecyclerView.ViewHolder) {
-        if (holder is TopStoryViewHolder) {
-            holder.binding.banner.stop()
-        }
-        super.onViewRecycled(holder)
     }
 
     override fun getItemCount(): Int {

@@ -10,6 +10,7 @@ import androidx.room.TypeConverters;
 
 import com.sion.zhihudailypurified.db.ListJsonConverter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity(indices = {@Index(value = {"date"})})
@@ -99,6 +100,9 @@ public class StoryBean {
     }
 
     public List<String> getImages() {
+        if (images == null) {
+            return new ArrayList<>();
+        }
         return images;
     }
 

@@ -1,2 +1,2 @@
 rootProject.name='ZhihuDailyPurified'
-include ':app'
+include ':app', ':pageindicatorview'

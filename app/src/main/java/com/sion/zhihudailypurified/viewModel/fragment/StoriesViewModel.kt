@@ -25,7 +25,8 @@ class StoriesViewModel : BaseViewModel() {
     val topStories = MutableLiveData<MutableList<TopStoryBean>>().apply {
         value = arrayListOf()
     }
-    val updateTopStories = MutableLiveData<Boolean>()
+
+    val loadTopFinished: MutableLiveData<Boolean> = MutableLiveData(false)
 
     //退出前文章的位置，给其赋值则列表滚动到对应位置
     val lastPos = MutableLiveData<Int>()
@@ -43,7 +44,7 @@ class StoriesViewModel : BaseViewModel() {
                 response.body()?.let {
                     topStories.value!!.clear()
                     topStories.value!!.addAll(it.top_stories)
-                    updateTopStories.value = true
+                    loadTopFinished.value = true    //通知数据加载完毕
                 }
             }
         )
