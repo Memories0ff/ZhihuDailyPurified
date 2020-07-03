@@ -5,7 +5,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.sion.zhihudailypurified.R
-import com.sion.zhihudailypurified.adapter.CommentsAdapter
+import com.sion.zhihudailypurified.view.adapter.CommentsAdapter
 import com.sion.zhihudailypurified.base.BaseFragment
 import com.sion.zhihudailypurified.databinding.FragmentCommentsBinding
 import com.sion.zhihudailypurified.view.itemDecoration.CommentsDecoration
@@ -24,7 +24,8 @@ class CommentsFragment : BaseFragment<FragmentCommentsBinding, CommentsViewModel
         }
         vm.storyId = arguments!!.getInt(STORY_ID)   //必须先赋值id
 //        closeDefaultAnimator(ui.rvComments)         //关闭RecyclerView局部刷新动画
-        val adapter = CommentsAdapter(this@CommentsFragment)
+        val adapter =
+            CommentsAdapter(this@CommentsFragment)
         ui.rvComments.layoutManager = LinearLayoutManager(this@CommentsFragment.context)
         ui.rvComments.adapter = adapter
         ui.rvComments.addItemDecoration(CommentsDecoration(this@CommentsFragment))

@@ -1,4 +1,4 @@
-package com.sion.zhihudailypurified.adapter
+package com.sion.zhihudailypurified.view.adapter
 
 import androidx.recyclerview.widget.RecyclerView
 import com.sion.zhihudailypurified.databinding.IndexStoriesItemBinding

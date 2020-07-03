@@ -1,4 +1,4 @@
-package com.sion.zhihudailypurified.adapter
+package com.sion.zhihudailypurified.view.adapter
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment

@@ -1,6 +1,5 @@
-package com.sion.zhihudailypurified.adapter
+package com.sion.zhihudailypurified.view.adapter
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
@@ -10,8 +9,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.sion.zhihudailypurified.R
 import com.sion.zhihudailypurified.databinding.IndexStoriesItemBinding
 import com.sion.zhihudailypurified.entity.StoryBean
-import com.sion.zhihudailypurified.test.banner.Banner
-import com.sion.zhihudailypurified.test.banner.BannerAdapter
+import com.sion.zhihudailypurified.view.banner.Banner
+import com.sion.zhihudailypurified.view.banner.BannerAdapter
 import com.sion.zhihudailypurified.view.activity.IndexActivity
 import com.sion.zhihudailypurified.view.fragment.ContentsDisplayFragment
 import com.sion.zhihudailypurified.view.fragment.StoriesFragment
@@ -29,11 +28,17 @@ class StoriesAdapter(private val fragment: StoriesFragment) :
                 val view = LayoutInflater.from(parent.context)
                     .inflate(R.layout.index_top_banner_item, parent, false)
                 banner = view.findViewById<Banner>(R.id.banner).apply {
-                    adapter = BannerAdapter(fragment.vm.topStories.value!!, fragment.context!!)
+                    adapter =
+                        BannerAdapter(
+                            fragment.vm.topStories.value!!,
+                            fragment.activity!!
+                        )
                     isLoadFinish(false)     //数据未读取完成，读取完成后要调用这个方法，传参true
                 }
                 fragment.vm.obtainTopStories()      //读取数据
-                return TopStoryViewHolder(view)
+                return TopStoryViewHolder(
+                    view
+                )
 
             }
             else -> {
@@ -43,7 +48,9 @@ class StoriesAdapter(private val fragment: StoriesFragment) :
                     parent,
                     false
                 )
-                return StoryViewHolder(binding)
+                return StoryViewHolder(
+                    binding
+                )
             }
         }
     }
@@ -64,7 +71,13 @@ class StoriesAdapter(private val fragment: StoriesFragment) :
                 }
             }
             is TopStoryViewHolder -> {
-//                holder.binding.banner.start()
+                banner?.setOnItemClickListener {
+                    (fragment.activity as IndexActivity).switchToContent(
+                        fragment,
+                        ContentsDisplayFragment.TOP_STORIES,
+                        it
+                    )
+                }
             }
         }
     }

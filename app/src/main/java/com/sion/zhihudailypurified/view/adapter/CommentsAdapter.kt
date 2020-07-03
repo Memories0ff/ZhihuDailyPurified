@@ -1,4 +1,4 @@
-package com.sion.zhihudailypurified.adapter
+package com.sion.zhihudailypurified.view.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -12,16 +12,19 @@ import com.sion.zhihudailypurified.entity.CommentBean
 import com.sion.zhihudailypurified.view.fragment.CommentsFragment
 
 class CommentsAdapter(val fragment: CommentsFragment) :
-    PagedListAdapter<CommentBean, CommentsAdapter.CommentVH>(diffCallback) {
+    PagedListAdapter<CommentBean, CommentsAdapter.CommentVH>(
+        diffCallback
+    ) {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommentVH = CommentVH(
-        DataBindingUtil.inflate(
-            LayoutInflater.from(fragment.context),
-            R.layout.comment_item,
-            parent,
-            false
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommentVH =
+        CommentVH(
+            DataBindingUtil.inflate(
+                LayoutInflater.from(fragment.context),
+                R.layout.comment_item,
+                parent,
+                false
+            )
         )
-    )
 
     override fun onBindViewHolder(holder: CommentVH, position: Int) {
         holder.binding.apply {

@@ -3,10 +3,9 @@ package com.sion.zhihudailypurified.view.fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.sion.zhihudailypurified.R
-import com.sion.zhihudailypurified.adapter.StoriesAdapter
+import com.sion.zhihudailypurified.view.adapter.StoriesAdapter
 import com.sion.zhihudailypurified.base.BaseFragment
 import com.sion.zhihudailypurified.databinding.FragmentStoriesListBinding
-import com.sion.zhihudailypurified.test.banner.BannerAdapter
 import com.sion.zhihudailypurified.view.itemDecoration.DateDecoration
 import com.sion.zhihudailypurified.viewModel.fragment.StoriesViewModel
 
@@ -22,7 +21,8 @@ class StoriesFragment : BaseFragment<FragmentStoriesListBinding, StoriesViewMode
     }
 
     override fun initView() {
-        val adapter = StoriesAdapter(this)
+        val adapter =
+            StoriesAdapter(this)
         ui.rvStories.adapter = adapter
         ui.rvStories.layoutManager = LinearLayoutManager(activity)
         ui.rvStories.addItemDecoration(DateDecoration(this))

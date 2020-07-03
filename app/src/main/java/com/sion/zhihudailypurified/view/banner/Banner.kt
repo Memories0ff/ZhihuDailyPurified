@@ -1,4 +1,4 @@
-package com.sion.zhihudailypurified.test.banner
+package com.sion.zhihudailypurified.view.banner
 
 import android.app.Activity
 import android.content.Context
@@ -70,11 +70,16 @@ class Banner(context: Context, attrs: AttributeSet?) : FrameLayout(context, attr
         }
     }
 
+    fun setOnItemClickListener(callback: (position: Int) -> Unit) {
+        adapter?.setCallback(callback)
+    }
+
+    fun getCurrentPosition(): Int = viewPager2.currentItem
+
     private var timer: Timer? = null
     private var timerTask: TimerTask? = null
 
     private fun startJump() {
-        Log.d("Banner", "开始计时任务")
         if (timer == null) {
             timer = Timer()
         }

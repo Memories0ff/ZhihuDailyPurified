@@ -1,10 +1,12 @@
 package com.sion.zhihudailypurified.test
 
+import android.util.Log
+import android.widget.FrameLayout
 import androidx.lifecycle.Observer
 import com.sion.zhihudailypurified.R
 import com.sion.zhihudailypurified.base.BaseActivity
 import com.sion.zhihudailypurified.databinding.ActivityMainBinding
-import com.sion.zhihudailypurified.test.banner.BannerAdapter
+import com.sion.zhihudailypurified.view.banner.BannerAdapter
 import com.sion.zhihudailypurified.utils.toast
 
 class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>() {
@@ -42,24 +44,35 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>() {
 //            toast("界面加载完成")
 //        }
 
-//        ui.banner.isLoadFinish(false)
-//        vm.loadFinished.observe(this, Observer {
-//            if (it) {
-//                vm.topStories.value?.let { it1 ->
-//                    ui.banner.adapter = BannerAdapter(it1, this)
-//                    ui.banner.addObserver(this)
-//                    vm.loadFinished.value = false
-//                    ui.btn.setOnClickListener { ui.banner.setCurrentPosition(2) }
-//                    ui.banner.isLoadFinish(true)
-//                }
-//            }
-//        })
+        val fl = findViewById<FrameLayout>(R.id.flFragmentContainer)
+        val mainFragment = MainFragment()
+        supportFragmentManager.beginTransaction().add(R.id.flFragmentContainer, mainFragment)
+            .commit()
+
+        fl.setOnClickListener {
+            Log.d("MainFragment", "单击事件fl")
+        }
+
+        vm.loadFinished.observe(this, Observer {
+            if (it) {
+                val banner = mainFragment.mBanner
+                vm.topStories.value?.let { it1 ->
+                    banner.adapter =
+                        BannerAdapter(
+                            it1,
+                            this
+                        )
+                    banner.addObserver(mainFragment)
+                    vm.loadFinished.value = false
+                    banner.isLoadFinish(true)
+                }
+            }
+        })
 
     }
 
     override fun initData() {
 
-        vm.obtainTopStories()
 
 //        vm.content.observe(this, Observer {
 //            ui.content = it

@@ -4,8 +4,8 @@ import android.util.Log
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager.widget.ViewPager
 import com.sion.zhihudailypurified.R
-import com.sion.zhihudailypurified.adapter.ContentsVPAdapter
-import com.sion.zhihudailypurified.adapter.StoriesAdapter
+import com.sion.zhihudailypurified.view.adapter.ContentsVPAdapter
+import com.sion.zhihudailypurified.view.adapter.StoriesAdapter
 import com.sion.zhihudailypurified.base.BaseFragment
 import com.sion.zhihudailypurified.databinding.FragmentContentsDisplayBinding
 import com.sion.zhihudailypurified.view.activity.IndexActivity
@@ -28,7 +28,10 @@ class ContentsDisplayFragment(val displayType: Int, private val initialPos: Int)
         }
         ui.contentExtraField = vm.contentExtraField
         ui.vpContents.apply {
-            adapter = ContentsVPAdapter(displayType, activity as FragmentActivity)
+            adapter = ContentsVPAdapter(
+                displayType,
+                activity as FragmentActivity
+            )
             offscreenPageLimit = 1
             currentItem = initialPos
             addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
