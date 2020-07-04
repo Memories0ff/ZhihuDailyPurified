@@ -26,6 +26,7 @@ class StoriesViewModel : BaseViewModel() {
         value = arrayListOf()
     }
 
+    //赋值true则通知头条新闻加载完成
     val loadTopFinished: MutableLiveData<Boolean> = MutableLiveData(false)
 
     //退出前文章的位置，给其赋值则列表滚动到对应位置

@@ -1,19 +1,20 @@
 package com.sion.zhihudailypurified.view.fragment
 
+import android.view.View
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.sion.zhihudailypurified.R
-import com.sion.zhihudailypurified.view.adapter.StoriesAdapter
 import com.sion.zhihudailypurified.base.BaseFragment
-import com.sion.zhihudailypurified.databinding.FragmentStoriesListBinding
+import com.sion.zhihudailypurified.databinding.FragmentStoriesBinding
+import com.sion.zhihudailypurified.view.adapter.StoriesAdapter
 import com.sion.zhihudailypurified.view.itemDecoration.DateDecoration
 import com.sion.zhihudailypurified.viewModel.fragment.StoriesViewModel
 
-class StoriesFragment : BaseFragment<FragmentStoriesListBinding, StoriesViewModel>() {
+class StoriesFragment : BaseFragment<FragmentStoriesBinding, StoriesViewModel>() {
 
 
     override fun setLayoutId(): Int {
-        return R.layout.fragment_stories_list
+        return R.layout.fragment_stories
     }
 
     override fun setViewModel(): Class<StoriesViewModel> {
@@ -32,11 +33,8 @@ class StoriesFragment : BaseFragment<FragmentStoriesListBinding, StoriesViewMode
         vm.loadTopFinished.observe(this, Observer {
             if (it) {
                 vm.topStories.value?.let {
-                    //????????????????????屏幕关闭时加载完成出错
-                    adapter.banner!!.addObserver(this)
-                    vm.loadTopFinished.value = false    //这步什么都不会执行
-                    adapter.notifyDataSetChanged()
-                    adapter.banner!!.isLoadFinish(true)     //读取top stories完成，显示内容
+                    vm.loadTopFinished.value = false    //这步只改一个值，其他什么都不会执行
+                    loadingFinish()
                 }
             }
         })
@@ -47,8 +45,13 @@ class StoriesFragment : BaseFragment<FragmentStoriesListBinding, StoriesViewMode
 
     }
 
+    private fun loadingFinish() {
+        ui.llStoriesRoot.visibility = View.VISIBLE
+    }
+
+
     override fun initData() {
-        vm.obtainTopStories()
+        vm.obtainTopStories()      //读取数据
     }
 
     companion object {

@@ -1,4 +1,4 @@
-package com.sion.zhihudailypurified.view.banner
+package com.sion.zhihudailypurified.components.banner
 
 import android.app.Activity
 import android.util.Log

@@ -9,8 +9,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.sion.zhihudailypurified.R
 import com.sion.zhihudailypurified.databinding.IndexStoriesItemBinding
 import com.sion.zhihudailypurified.entity.StoryBean
-import com.sion.zhihudailypurified.view.banner.Banner
-import com.sion.zhihudailypurified.view.banner.BannerAdapter
+import com.sion.zhihudailypurified.components.banner.Banner
+import com.sion.zhihudailypurified.components.banner.BannerAdapter
 import com.sion.zhihudailypurified.view.activity.IndexActivity
 import com.sion.zhihudailypurified.view.fragment.ContentsDisplayFragment
 import com.sion.zhihudailypurified.view.fragment.StoriesFragment
@@ -28,18 +28,9 @@ class StoriesAdapter(private val fragment: StoriesFragment) :
                 val view = LayoutInflater.from(parent.context)
                     .inflate(R.layout.index_top_banner_item, parent, false)
                 banner = view.findViewById<Banner>(R.id.banner).apply {
-                    adapter =
-                        BannerAdapter(
-                            fragment.vm.topStories.value!!,
-                            fragment.activity!!
-                        )
-                    isLoadFinish(false)     //数据未读取完成，读取完成后要调用这个方法，传参true
+                    setAdapter(BannerAdapter(fragment.vm.topStories.value!!, fragment.activity!!))
                 }
-                fragment.vm.obtainTopStories()      //读取数据
-                return TopStoryViewHolder(
-                    view
-                )
-
+                return TopStoryViewHolder(view)
             }
             else -> {
                 val binding = DataBindingUtil.inflate<IndexStoriesItemBinding>(
@@ -48,9 +39,7 @@ class StoriesAdapter(private val fragment: StoriesFragment) :
                     parent,
                     false
                 )
-                return StoryViewHolder(
-                    binding
-                )
+                return StoryViewHolder(binding)
             }
         }
     }
@@ -78,6 +67,7 @@ class StoriesAdapter(private val fragment: StoriesFragment) :
                         it
                     )
                 }
+                banner?.observeFragment(fragment)
             }
         }
     }

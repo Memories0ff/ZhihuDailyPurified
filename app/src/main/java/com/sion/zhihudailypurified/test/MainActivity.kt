@@ -6,8 +6,7 @@ import androidx.lifecycle.Observer
 import com.sion.zhihudailypurified.R
 import com.sion.zhihudailypurified.base.BaseActivity
 import com.sion.zhihudailypurified.databinding.ActivityMainBinding
-import com.sion.zhihudailypurified.view.banner.BannerAdapter
-import com.sion.zhihudailypurified.utils.toast
+import com.sion.zhihudailypurified.components.banner.BannerAdapter
 
 class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>() {
 
@@ -54,19 +53,19 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>() {
         }
 
         vm.loadFinished.observe(this, Observer {
-            if (it) {
-                val banner = mainFragment.mBanner
-                vm.topStories.value?.let { it1 ->
-                    banner.adapter =
-                        BannerAdapter(
-                            it1,
-                            this
-                        )
-                    banner.addObserver(mainFragment)
-                    vm.loadFinished.value = false
-                    banner.isLoadFinish(true)
-                }
-            }
+//            if (it) {
+//                val banner = mainFragment.mBanner
+//                vm.topStories.value?.let { it1 ->
+//                    banner.adapter =
+//                        BannerAdapter(
+//                            it1,
+//                            this
+//                        )
+//                    banner.observeFragment(mainFragment)
+//                    vm.loadFinished.value = false
+//                    banner.isLoadFinish(true)
+//                }
+//            }
         })
 
     }

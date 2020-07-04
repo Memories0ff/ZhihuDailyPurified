@@ -1,4 +1,4 @@
-package com.sion.zhihudailypurified.view.banner
+package com.sion.zhihudailypurified.components.banner
 
 import android.app.Activity
 import android.content.Context
@@ -32,15 +32,17 @@ class Banner(context: Context, attrs: AttributeSet?) : FrameLayout(context, attr
     }
 
     //true:显示内容，消除占位符;false:只显示占位符
-    fun isLoadFinish(value: Boolean) {
-        viewPager2.visibility = if (value) View.VISIBLE else View.GONE
-        indicator.visibility = if (value) View.VISIBLE else View.GONE
-        placeholder.visibility = if (value) View.GONE else View.VISIBLE
-    }
+//    fun isLoadFinish(value: Boolean) {
+//        viewPager2.visibility = if (value) View.VISIBLE else View.GONE
+//        indicator.visibility = if (value) View.VISIBLE else View.GONE
+//        placeholder.visibility = if (value) View.GONE else View.VISIBLE
+//    }
 
-    fun addObserver(fragment: Fragment) {
-        this.activity = fragment.activity
-        fragment.lifecycle.addObserver(this)
+    fun observeFragment(fragment: Fragment) {
+        if (this.activity == null) {
+            this.activity = fragment.activity
+            fragment.lifecycle.addObserver(this)
+        }
     }
 
     private val viewPager2 by lazy {
@@ -55,18 +57,25 @@ class Banner(context: Context, attrs: AttributeSet?) : FrameLayout(context, attr
         findViewById<ProgressBar>(R.id.placeholder)
     }
 
-    var adapter: BannerAdapter? = null
-        set(value) {
-            field = value
-            viewPager2.adapter = value
-            indicator.count = value?.dataSource?.size ?: 0
-            field?.notifyDataSetChanged()
-        }
+    private var adapter: BannerAdapter? = null
+
+    fun setAdapter(adapter: BannerAdapter) {
+        this.adapter = adapter
+        viewPager2.adapter = adapter
+        indicator.count = adapter.dataSource.size
+        adapter.notifyDataSetChanged()
+    }
+
+    fun getAdapter(): BannerAdapter? {
+        return adapter
+    }
 
     fun setCurrentPosition(position: Int) {
         adapter?.let {
-            viewPager2.currentItem = position
-            indicator.selection = position % it.dataSource.size
+            if (it.dataSource.size != 0) {
+                viewPager2.currentItem = position
+                indicator.selection = position % it.dataSource.size
+            }
         }
     }
 
@@ -96,7 +105,6 @@ class Banner(context: Context, attrs: AttributeSet?) : FrameLayout(context, attr
         }
         timer!!.schedule(timerTask, period, period)
     }
-
 
     private fun stopJump() {
         timer?.let {

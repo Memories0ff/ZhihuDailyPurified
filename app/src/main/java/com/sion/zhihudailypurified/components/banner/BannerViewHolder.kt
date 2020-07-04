@@ -1,4 +1,4 @@
-package com.sion.zhihudailypurified.view.banner
+package com.sion.zhihudailypurified.components.banner
 
 import androidx.recyclerview.widget.RecyclerView
 import com.sion.zhihudailypurified.databinding.BannerItemBinding
