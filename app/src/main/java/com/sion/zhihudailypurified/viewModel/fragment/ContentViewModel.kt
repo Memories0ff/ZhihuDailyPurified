@@ -34,7 +34,10 @@ class ContentViewModel : BaseViewModel() {
                     try {
                         apiServices.obtainContent(id.toString()).execute().body()
                     } catch (e: SocketTimeoutException) {
-                        Log.e("obtainStoryContent", "获取新闻内容失败")
+                        Log.e("obtainStoryContent", "获取新闻内容失败：连接超时")
+                        null
+                    } catch (e: Exception) {
+                        Log.e("obtainStoryContent", "获取新闻内容失败：未知错误")
                         null
                     }
                 } else {
@@ -48,7 +51,10 @@ class ContentViewModel : BaseViewModel() {
                     apiServices.obtainContentExtra(id.toString()).execute().body()
                 } catch (e: SocketTimeoutException) {
                     e.printStackTrace()
-                    Log.e("ObtainStoryExtra", "timeout")
+                    Log.e("ObtainStoryExtra", "获取新闻其他信息失败：连接超时")
+                    null
+                } catch (e: Exception) {
+                    Log.e("obtainStoryContent", "获取新闻其他信息失败：未知错误")
                     null
                 }
             }

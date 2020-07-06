@@ -3,6 +3,10 @@
     android:layout_width="match_parent"
     android:layout_height="500dp">
 
+    <!--    <com.sion.zhihudailypurified.components.banner.Banner-->
+    <!--        android:id="@+id/banner"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="match_parent" />-->
     <com.sion.zhihudailypurified.components.banner.Banner
         android:id="@+id/banner"
         android:layout_width="match_parent"

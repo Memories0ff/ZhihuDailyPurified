@@ -7,10 +7,9 @@ import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.sion.zhihudailypurified.R
+import com.sion.zhihudailypurified.components.banner.Banner
 import com.sion.zhihudailypurified.databinding.IndexStoriesItemBinding
 import com.sion.zhihudailypurified.entity.StoryBean
-import com.sion.zhihudailypurified.components.banner.Banner
-import com.sion.zhihudailypurified.components.banner.BannerAdapter
 import com.sion.zhihudailypurified.view.activity.IndexActivity
 import com.sion.zhihudailypurified.view.fragment.ContentsDisplayFragment
 import com.sion.zhihudailypurified.view.fragment.StoriesFragment
@@ -28,7 +27,12 @@ class StoriesAdapter(private val fragment: StoriesFragment) :
                 val view = LayoutInflater.from(parent.context)
                     .inflate(R.layout.index_top_banner_item, parent, false)
                 banner = view.findViewById<Banner>(R.id.banner).apply {
-                    setAdapter(BannerAdapter(fragment.vm.topStories.value!!, fragment.activity!!))
+                    setAdapter(
+                        TopBannerAdapter(
+                            fragment.vm.topStories.value!!,
+                            fragment.activity!!
+                        )
+                    )
                 }
                 return TopStoryViewHolder(view)
             }
@@ -60,13 +64,6 @@ class StoriesAdapter(private val fragment: StoriesFragment) :
                 }
             }
             is TopStoryViewHolder -> {
-                banner?.setOnItemClickListener {
-                    (fragment.activity as IndexActivity).switchToContent(
-                        fragment,
-                        ContentsDisplayFragment.TOP_STORIES,
-                        it
-                    )
-                }
                 banner?.observeFragment(fragment)
             }
         }
@@ -144,7 +141,6 @@ class StoriesAdapter(private val fragment: StoriesFragment) :
     }
 
     companion object {
-
         const val BANNER = 0
         const val ITEM = 1
 

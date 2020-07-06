@@ -1,6 +1,7 @@
 package com.sion.zhihudailypurified.view.fragment
 
 import android.view.ViewGroup
+import android.webkit.WebResourceError
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
@@ -12,6 +13,7 @@ import com.sion.zhihudailypurified.R
 import com.sion.zhihudailypurified.base.BaseFragment
 import com.sion.zhihudailypurified.databinding.FragmentContentBinding
 import com.sion.zhihudailypurified.utils.HtmlUtils
+import com.sion.zhihudailypurified.utils.toast
 import com.sion.zhihudailypurified.viewModel.fragment.ContentViewModel
 
 class ContentFragment(private val displayType: Int) :
@@ -30,15 +32,26 @@ class ContentFragment(private val displayType: Int) :
                 allowFileAccess = false
                 defaultTextEncodingName = "utf-8"
             }
-            webViewClient = object : WebViewClient() {
-                override fun shouldOverrideUrlLoading(
-                    view: WebView?,
-                    request: WebResourceRequest?
-                ): Boolean {
-                    view?.loadUrl(url)
-                    return true
-                }
-            }
+//            webViewClient = object : WebViewClient() {
+//                override fun onReceivedError(
+//                    view: WebView?,
+//                    request: WebResourceRequest?,
+//                    error: WebResourceError?
+//                ) {
+//                    when (error?.errorCode) {
+//                        ERROR_TIMEOUT -> {
+//                            toast("加载超时")
+//                        }
+//                        ERROR_CONNECT -> {
+//                            toast("连接不到服务器")
+//                        }
+//                        ERROR_UNKNOWN -> {
+//                            toast("未知错误")
+//                        }
+//                    }
+//                    super.onReceivedError(view, request, error)
+//                }
+//            }
         }
     }
 

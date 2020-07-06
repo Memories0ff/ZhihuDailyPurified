@@ -1,12 +1,14 @@
 package com.sion.zhihudailypurified.test
 
 import android.util.Log
+import android.view.View
 import android.widget.FrameLayout
 import androidx.lifecycle.Observer
 import com.sion.zhihudailypurified.R
 import com.sion.zhihudailypurified.base.BaseActivity
 import com.sion.zhihudailypurified.databinding.ActivityMainBinding
 import com.sion.zhihudailypurified.components.banner.BannerAdapter
+import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>() {
 
@@ -43,16 +45,19 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>() {
 //            toast("界面加载完成")
 //        }
 
-        val fl = findViewById<FrameLayout>(R.id.flFragmentContainer)
-        val mainFragment = MainFragment()
-        supportFragmentManager.beginTransaction().add(R.id.flFragmentContainer, mainFragment)
-            .commit()
 
-        fl.setOnClickListener {
-            Log.d("MainFragment", "单击事件fl")
-        }
+//        fl.setOnClickListener {
+//            Log.d("MainFragment", "单击事件fl")
+//        }
 
         vm.loadFinished.observe(this, Observer {
+            if (it) {
+                val mainFragment = MainFragment()
+                supportFragmentManager.beginTransaction()
+                    .add(R.id.flFragmentContainer, mainFragment)
+                    .commit()
+            }
+
 //            if (it) {
 //                val banner = mainFragment.mBanner
 //                vm.topStories.value?.let { it1 ->
@@ -71,7 +76,7 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>() {
     }
 
     override fun initData() {
-
+        vm.obtainTopStories()
 
 //        vm.content.observe(this, Observer {
 //            ui.content = it
