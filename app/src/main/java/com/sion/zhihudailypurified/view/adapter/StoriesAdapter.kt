@@ -7,7 +7,7 @@ import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.sion.zhihudailypurified.R
-import com.sion.zhihudailypurified.components.banner.Banner
+import com.sion.banner.Banner
 import com.sion.zhihudailypurified.databinding.IndexStoriesItemBinding
 import com.sion.zhihudailypurified.entity.StoryBean
 import com.sion.zhihudailypurified.view.activity.IndexActivity

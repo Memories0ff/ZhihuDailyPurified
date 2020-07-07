@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import com.sion.zhihudailypurified.R
-import com.sion.zhihudailypurified.components.banner.BannerAdapter
 import com.sion.zhihudailypurified.databinding.BannerItemBinding
 import com.sion.zhihudailypurified.entity.TopStoryBean
 import com.sion.zhihudailypurified.view.activity.IndexActivity
@@ -16,7 +15,7 @@ import com.sion.zhihudailypurified.view.fragment.StoriesFragment
 class TopBannerAdapter(
     private val dataSource: MutableList<TopStoryBean>,
     private val context: Context
-) : BannerAdapter() {
+) : com.sion.banner.BannerAdapter() {
 
     override fun getRealCount(): Int = dataSource.size
 

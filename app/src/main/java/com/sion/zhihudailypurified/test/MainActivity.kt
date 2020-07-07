@@ -1,14 +1,10 @@
 package com.sion.zhihudailypurified.test
 
-import android.util.Log
-import android.view.View
-import android.widget.FrameLayout
 import androidx.lifecycle.Observer
 import com.sion.zhihudailypurified.R
 import com.sion.zhihudailypurified.base.BaseActivity
 import com.sion.zhihudailypurified.databinding.ActivityMainBinding
-import com.sion.zhihudailypurified.components.banner.BannerAdapter
-import kotlinx.android.synthetic.main.activity_main.*
+import com.sion.banner.BannerAdapter
 
 class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>() {
 
