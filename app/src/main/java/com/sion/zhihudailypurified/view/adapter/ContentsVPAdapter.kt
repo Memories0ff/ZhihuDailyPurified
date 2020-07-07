@@ -1,7 +1,6 @@
 package com.sion.zhihudailypurified.view.adapter
 
 import android.os.Bundle
-import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentStatePagerAdapter
@@ -31,10 +30,6 @@ class ContentsVPAdapter(private val displayType: Int, private val fa: FragmentAc
                 }
             )
         }
-    }
-
-    override fun instantiateItem(container: ViewGroup, position: Int): Any {
-        return super.instantiateItem(container, position)
     }
 
     override fun getCount(): Int {
