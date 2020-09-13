@@ -12,8 +12,10 @@ import com.sion.zhihudailypurified.network.callIO
 import com.sion.zhihudailypurified.sharedPreference.spGetBoolean
 
 class StoriesViewModel : BaseViewModel() {
-    //新闻列表
 
+    val loadingError = MutableLiveData(false)
+
+    //新闻列表
     val stories = LivePagedListBuilder(
         StoriesDataSourceFactory(),
         PagedList.Config.Builder()
@@ -34,12 +36,18 @@ class StoriesViewModel : BaseViewModel() {
 
     //获取头条新闻
     fun obtainTopStories() {
+        if (isOnline.value == false) {
+            loadingError.value = true
+            return
+        }
         apiServices.obtainLatest().callIO(
             onFailure = {
                 it.printStackTrace()
+                loadingError.postValue(true)
             },
             onResponseFailure = { response ->
-                topStories.value = arrayListOf()
+                topStories.postValue(arrayListOf())
+                loadingError.value = true
             },
             onResponseSuccess = { response ->
                 response.body()?.let {
@@ -56,5 +64,10 @@ class StoriesViewModel : BaseViewModel() {
         stories.value!![position]!!.apply {
             return spGetBoolean(id.toString(), activity)
         }
+    }
+
+    //数据更新
+    fun updateData() {
+        obtainTopStories()
     }
 }

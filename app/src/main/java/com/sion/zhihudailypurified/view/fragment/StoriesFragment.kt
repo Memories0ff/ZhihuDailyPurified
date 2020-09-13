@@ -1,6 +1,7 @@
 package com.sion.zhihudailypurified.view.fragment
 
 import android.view.View
+import android.widget.LinearLayout
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.sion.zhihudailypurified.R
@@ -12,6 +13,16 @@ import com.sion.zhihudailypurified.viewModel.fragment.StoriesViewModel
 
 class StoriesFragment : BaseFragment<FragmentStoriesBinding, StoriesViewModel>() {
 
+    //出错界面
+    private val errorUI: LinearLayout by lazy {
+        ui.vsError.viewStub!!.inflate().findViewById<LinearLayout>(R.id.llClickRetry).apply {
+            setOnClickListener {
+                update()
+                hideError()
+            }
+        }
+    }
+
 
     override fun setLayoutId(): Int {
         return R.layout.fragment_stories
@@ -22,8 +33,14 @@ class StoriesFragment : BaseFragment<FragmentStoriesBinding, StoriesViewModel>()
     }
 
     override fun initView() {
-        val adapter =
-            StoriesAdapter(this)
+
+        vm.loadingError.observe(this, Observer {
+            if (it) {
+                showError()
+            }
+        })
+
+        val adapter = StoriesAdapter(this)
         ui.rvStories.adapter = adapter
         ui.rvStories.layoutManager = LinearLayoutManager(activity)
         ui.rvStories.addItemDecoration(DateDecoration(this))
@@ -52,6 +69,20 @@ class StoriesFragment : BaseFragment<FragmentStoriesBinding, StoriesViewModel>()
 
     override fun initData() {
         vm.obtainTopStories()      //读取数据
+    }
+
+    //更新
+    private fun update() {
+        vm.updateData()
+    }
+
+    //显示和隐藏错误信息
+    private fun showError() {
+        errorUI.visibility = View.VISIBLE
+    }
+
+    private fun hideError() {
+        errorUI.visibility = View.GONE
     }
 
     companion object {

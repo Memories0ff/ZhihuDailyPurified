@@ -10,6 +10,7 @@ import retrofit2.Response
 import java.io.IOException
 import java.lang.Exception
 import java.lang.RuntimeException
+import java.net.SocketTimeoutException
 
 fun <T> Call<T>.callIO(
     onFailure: ((t: Throwable) -> Unit)? = null,
@@ -21,16 +22,20 @@ fun <T> Call<T>.callIO(
             try {
                 //????????????????????可能的异常没有处理　
                 execute()
+            } catch (e: SocketTimeoutException) {
+                Log.e("DownloadUtils", "连接超时")
+                onFailure?.invoke(e)
+                null
             } catch (e: IOException) {
-                Log.e("DownloadUtils", "IOException")
+                Log.e("DownloadUtils", "IO错误")
                 onFailure?.invoke(e)
                 null
             } catch (e: RuntimeException) {
-                Log.e("DownloadUtils", "RuntimeException")
+                Log.e("DownloadUtils", "运行时错误")
                 onFailure?.invoke(e)
                 null
             } catch (e: Exception) {
-                Log.e("DownloadUtils", "Exception")
+                Log.e("DownloadUtils", "未知错误")
                 onFailure?.invoke(e)
                 null
             }
@@ -38,6 +43,7 @@ fun <T> Call<T>.callIO(
             if (response.isSuccessful) {
                 onResponseSuccess?.invoke(response)
             } else {
+                Log.e("DownloadUtils", "信息错误")
                 onResponseFailure?.invoke(response)
             }
         }
