@@ -17,7 +17,7 @@ class BannerPager(context: Context, attrs: AttributeSet?) : ViewPager(context, a
             if (value != null) {
                 field = value
                 super.setAdapter(value)
-                super.setCurrentItem(value.getInitialPosition())
+                super.setCurrentItem(value.getInitialPosition())//TODO 内部存在除0错误(是否解决未知)
             } else {
                 throw Exception("不可传入null值")
             }

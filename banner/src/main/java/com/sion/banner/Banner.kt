@@ -114,7 +114,7 @@ class Banner(context: Context, attrs: AttributeSet?) : FrameLayout(context, attr
 
     fun setAdapter(adapter: BannerAdapter) {
         this.adapter = adapter
-        bannerPager.adapter = adapter
+        bannerPager.adapter = adapter//TODO 内部存在除0错误(是否解决未知)
         indicator.count = adapter.getRealCount()
 
     }

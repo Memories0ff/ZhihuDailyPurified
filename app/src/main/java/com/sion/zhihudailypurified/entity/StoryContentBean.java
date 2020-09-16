@@ -12,8 +12,11 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
+import kotlinx.android.parcel.Parcelize;
+
 @Entity
 @TypeConverters(ListJsonConverter.class)
+@Parcelize
 public class StoryContentBean {
 
     /**

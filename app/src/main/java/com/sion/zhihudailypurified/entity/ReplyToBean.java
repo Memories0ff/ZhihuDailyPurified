@@ -1,5 +1,8 @@
 package com.sion.zhihudailypurified.entity;
 
+import kotlinx.android.parcel.Parcelize;
+
+@Parcelize
 public class ReplyToBean {
     /**
      * content : 看到后羿说我教训我男朋友的时候

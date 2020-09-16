@@ -1,6 +1,8 @@
 package com.sion.zhihudailypurified.entity;
 
+import kotlinx.android.parcel.Parcelize;
 
+@Parcelize
 public class StoryContentExtraBean {
 
     /**

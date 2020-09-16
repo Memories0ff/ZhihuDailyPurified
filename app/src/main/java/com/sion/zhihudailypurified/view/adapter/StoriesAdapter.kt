@@ -32,7 +32,7 @@ class StoriesAdapter(private val fragment: StoriesFragment) :
                             fragment.vm.topStories.value!!,
                             fragment.activity!!
                         )
-                    )
+                    )//TODO 内部存在除0错误(是否解决未知)
                 }
                 return TopStoryViewHolder(view)
             }

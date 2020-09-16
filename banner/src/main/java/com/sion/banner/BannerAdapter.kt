@@ -13,7 +13,7 @@ abstract class BannerAdapter : PagerAdapter() {
 
     fun getRealPosition(position: Int): Int = position % getRealCount()
 
-    fun getInitialPosition(): Int = PAGE_NUM / 2 - (PAGE_NUM / 2) % getRealCount()
+    fun getInitialPosition(): Int = PAGE_NUM / 2 - (PAGE_NUM / 2) % getRealCount()//TODO 此处存在除0错误(是否解决未知)
 
     final override fun instantiateItem(container: ViewGroup, position: Int): Any =
         instantiateRealItem(container, getRealPosition(position))

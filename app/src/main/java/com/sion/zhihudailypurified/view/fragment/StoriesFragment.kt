@@ -1,5 +1,6 @@
 package com.sion.zhihudailypurified.view.fragment
 
+import android.util.Log
 import android.view.View
 import android.widget.LinearLayout
 import androidx.lifecycle.Observer
@@ -7,9 +8,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.sion.zhihudailypurified.R
 import com.sion.zhihudailypurified.base.BaseFragment
 import com.sion.zhihudailypurified.databinding.FragmentStoriesBinding
+import com.sion.zhihudailypurified.datasource.PagedListLoadingStatus
 import com.sion.zhihudailypurified.view.adapter.StoriesAdapter
 import com.sion.zhihudailypurified.view.itemDecoration.DateDecoration
 import com.sion.zhihudailypurified.viewModel.fragment.StoriesViewModel
+import com.sion.zhihudailypurified.viewModel.fragment.TopStoriesLoadingStatus
 
 class StoriesFragment : BaseFragment<FragmentStoriesBinding, StoriesViewModel>() {
 
@@ -34,35 +37,63 @@ class StoriesFragment : BaseFragment<FragmentStoriesBinding, StoriesViewModel>()
 
     override fun initView() {
 
-        vm.loadingError.observe(this, Observer {
-            if (it) {
-                showError()
-            }
-        })
-
-        val adapter = StoriesAdapter(this)
-        ui.rvStories.adapter = adapter
-        ui.rvStories.layoutManager = LinearLayoutManager(activity)
-        ui.rvStories.addItemDecoration(DateDecoration(this))
-
-        vm.stories.observe(this, Observer { adapter.submitList(it) })
-
-        vm.loadTopFinished.observe(this, Observer {
-            if (it) {
-                vm.topStories.value?.let {
-                    vm.loadTopFinished.value = false    //这步只改一个值，其他什么都不会执行
-                    loadingFinish()
+        vm.pagedListLoadingStatus.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                PagedListLoadingStatus.INITIAL_LOADING -> {
+                    Log.d("StoriesFragment", "initView: Initial loading")
+                }
+                PagedListLoadingStatus.INITIAL_LOADED -> {
+                    Log.d("StoriesFragment", "initView: Initial loaded")
+                    //今日stories加载完再显示界面
+                    initialLoadingFinish()
+                }
+                PagedListLoadingStatus.INITIAL_FAILED -> {
+                    Log.d("StoriesFragment", "initView: Initial failed")
+                    showError()
+                }
+                PagedListLoadingStatus.AFTER_LOADING -> {
+                    Log.d("StoriesFragment", "initView: After loading")
+                }
+                PagedListLoadingStatus.AFTER_LOADED -> {
+                    Log.d("StoriesFragment", "initView: After loaded")
+                }
+                PagedListLoadingStatus.AFTER_FAILED -> {
+                    Log.d("StoriesFragment", "initView: After failed")
+                }
+                else -> {
+                    Log.d("StoriesFragment", "initView: Completed")
                 }
             }
         })
+        vm.topStoriesLoadingStatus.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                TopStoriesLoadingStatus.LOADED -> {
+                    //保证加载完top再加载今日stories
+                    val adapter = StoriesAdapter(this)
+                    ui.rvStories.adapter = adapter
+                    ui.rvStories.layoutManager = LinearLayoutManager(activity)
+                    ui.rvStories.addItemDecoration(DateDecoration(this))
 
-        vm.lastPos.observe(this, Observer {
-            adapter.smoothMoveToPosition(ui.rvStories, it + 1)
+                    //与变量adapter关联的操作
+                    //保证先初始化stories列表再执行这些操作
+                    vm.stories.observe(this, Observer { adapter.submitList(it) })
+                    vm.lastPos.observe(this, Observer {
+                        adapter.smoothMoveToPosition(ui.rvStories, it + 1)
+                    })
+                }
+                TopStoriesLoadingStatus.FAILED -> {
+                    showError()
+                }
+                else -> {
+
+                }
+            }
         })
-
     }
 
-    private fun loadingFinish() {
+    //初始加载完毕
+    private fun initialLoadingFinish() {
+        //显示界面
         ui.llStoriesRoot.visibility = View.VISIBLE
     }
 

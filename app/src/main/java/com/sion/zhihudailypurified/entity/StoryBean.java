@@ -13,8 +13,11 @@ import com.sion.zhihudailypurified.db.ListJsonConverter;
 import java.util.ArrayList;
 import java.util.List;
 
+import kotlinx.android.parcel.Parcelize;
+
 @Entity(indices = {@Index(value = {"date"})})
 @TypeConverters(ListJsonConverter.class)
+@Parcelize
 public class StoryBean {
     /**
      * image_hue : 0x2e2027
