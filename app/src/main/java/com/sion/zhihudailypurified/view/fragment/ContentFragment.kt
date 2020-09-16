@@ -1,10 +1,7 @@
 package com.sion.zhihudailypurified.view.fragment
 
 import android.view.ViewGroup
-import android.webkit.WebResourceError
-import android.webkit.WebResourceRequest
 import android.webkit.WebView
-import android.webkit.WebViewClient
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
 import com.bumptech.glide.Glide
@@ -13,7 +10,6 @@ import com.sion.zhihudailypurified.R
 import com.sion.zhihudailypurified.base.BaseFragment
 import com.sion.zhihudailypurified.databinding.FragmentContentBinding
 import com.sion.zhihudailypurified.utils.HtmlUtils
-import com.sion.zhihudailypurified.utils.toast
 import com.sion.zhihudailypurified.viewModel.fragment.ContentViewModel
 
 class ContentFragment(private val displayType: Int) :
@@ -72,7 +68,6 @@ class ContentFragment(private val displayType: Int) :
             ui.tvSubTitle.text = it.image_source
             if (this.lifecycle.currentState == Lifecycle.State.RESUMED) {
                 vm.markRead(displayType, it, this@ContentFragment)
-                vm.updateExtraInfo(it, this@ContentFragment)
             }
             Glide.with(this@ContentFragment)
                 .load(it.image)
@@ -83,6 +78,11 @@ class ContentFragment(private val displayType: Int) :
                 loadData(htmlData, "text/html;charset=UTF-8", null)
             }
         })
+        vm.extra.observe(this, Observer {
+            if (this.lifecycle.currentState == Lifecycle.State.RESUMED) {
+                vm.updateExtraInfo(it, this@ContentFragment)
+            }
+        })
     }
 
     override fun onResume() {
@@ -90,12 +90,14 @@ class ContentFragment(private val displayType: Int) :
         //通过左右滑动浏览的新闻标记为已读
         vm.content.value?.let {
             vm.markRead(displayType, it, this@ContentFragment)
+        }
+        vm.extra.value?.let {
             vm.updateExtraInfo(it, this)
         }
     }
 
     override fun initData() {
-        vm.obtainStoryContent(storyId)
+        vm.obtainStoryContentAndExtra(storyId)
     }
 
     override fun onDestroy() {

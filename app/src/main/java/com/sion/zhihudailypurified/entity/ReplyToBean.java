@@ -6,10 +6,10 @@ import kotlinx.android.parcel.Parcelize;
 public class ReplyToBean {
     /**
      * content : 看到后羿说我教训我男朋友的时候
-     我就敏锐地回头仔细看了下法师的话
-     嗯？感觉怎么好像有点问题
-     果然
-     我真是厉害
+     * 我就敏锐地回头仔细看了下法师的话
+     * 嗯？感觉怎么好像有点问题
+     * 果然
+     * 我真是厉害
      * status : 0
      * id : 33594859
      * author : 夭夭夭夭夭阿灼

@@ -104,8 +104,9 @@ public class StoryContentBean {
     private List<String> js;
     private List<String> images;
     private List<String> css;
-    @Embedded
-    private StoryContentExtraBean extra;
+
+//    @Embedded
+//    private StoryContentExtraBean extra;
 
     public String getBody() {
         return body;
@@ -220,12 +221,12 @@ public class StoryContentBean {
         this.css = css;
     }
 
-    @NotNull
-    public StoryContentExtraBean getExtra() {
-        return extra;
-    }
-
-    public void setExtra(@NotNull StoryContentExtraBean extra) {
-        this.extra = extra;
-    }
+//    @NotNull
+//    public StoryContentExtraBean getExtra() {
+//        return extra;
+//    }
+//
+//    public void setExtra(@NotNull StoryContentExtraBean extra) {
+//        this.extra = extra;
+//    }
 }

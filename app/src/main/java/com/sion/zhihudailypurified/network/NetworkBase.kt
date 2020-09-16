@@ -8,6 +8,7 @@ private const val appApiBaseUrl = "https://www.zhihu.com/api/4/"
 
 val apiServices by lazy {
     val r = Retrofit.Builder()
+        .addConverterFactory(ResponseBodyConverterFactory.create())
         .addConverterFactory(GsonConverterFactory.create())
         .baseUrl(appApiBaseUrl)
         .build()

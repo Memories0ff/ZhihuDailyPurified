@@ -26,7 +26,7 @@ class CommentsDataSource(private val id: Int) : PageKeyedDataSource<Int, Comment
                 //TODO 未处理异常
                 apiServices.obtainLongComments(id.toString()).execute().body()
                     ?.let { commentList ->
-                        result.addAll(commentList.comments)
+                        result.addAll(commentList)
                     }
             }
             val longCommentsNum = result.size
@@ -34,7 +34,7 @@ class CommentsDataSource(private val id: Int) : PageKeyedDataSource<Int, Comment
                 //TODO 未处理异常
                 apiServices.obtainShortComments(id.toString()).execute().body()
                     ?.let { commentList ->
-                        result.addAll(commentList.comments)
+                        result.addAll(commentList)
                     }
             }
             //设置第一条长评短评标记
@@ -60,9 +60,9 @@ class CommentsDataSource(private val id: Int) : PageKeyedDataSource<Int, Comment
             },
             onResponseSuccess = { response ->
                 response.body()?.let {
-                    if (!it.comments.isNullOrEmpty()) {
-                        commentId = it.comments.last().id
-                        callback.onResult(it.comments, pageNum)
+                    if (!it.isNullOrEmpty()) {
+                        commentId = it.last().id
+                        callback.onResult(it, pageNum)
                         pageNum++
                     }
                 }

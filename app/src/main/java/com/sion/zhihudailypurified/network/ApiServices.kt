@@ -70,7 +70,7 @@ interface ApiServices {
         "Cache-Control:no-cache"
     )
     @GET("story/{newsId}/long-comments")
-    fun obtainLongComments(@Path("newsId") newsId: String): Call<CommentList>
+    fun obtainLongComments(@Path("newsId") newsId: String): Call<List<CommentBean>>
 
     @Headers(
         "Host:news-at.zhihu.com",
@@ -82,7 +82,7 @@ interface ApiServices {
         "Cache-Control:no-cache"
     )
     @GET("story/{newsId}/short-comments")
-    fun obtainShortComments(@Path("newsId") newsId: String): Call<CommentList>
+    fun obtainShortComments(@Path("newsId") newsId: String): Call<List<CommentBean>>
 
     @Headers(
         "Host:news-at.zhihu.com",
@@ -97,5 +97,5 @@ interface ApiServices {
     fun obtainShortComments(
         @Path("newsId") newsId: String,
         @Path("commentId") commentId: String
-    ): Call<CommentList>
+    ): Call<List<CommentBean>>
 }

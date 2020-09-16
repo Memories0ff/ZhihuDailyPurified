@@ -11,6 +11,14 @@ import com.sion.zhihudailypurified.databinding.FragmentContentsDisplayBinding
 import com.sion.zhihudailypurified.view.activity.IndexActivity
 import com.sion.zhihudailypurified.viewModel.fragment.ContentsDisplayViewModel
 
+/**
+ * 此页面显示来自top和stories的新闻，
+ * 对于某些相同的操作
+ * (如标记为已阅读、
+ * 退出后已阅读的条目立即滚动到最上方)
+ * 实现不相同，需要区分
+ */
+
 class ContentsDisplayFragment(val displayType: Int, private val initialPos: Int) :
     BaseFragment<FragmentContentsDisplayBinding, ContentsDisplayViewModel>() {
 
@@ -26,6 +34,7 @@ class ContentsDisplayFragment(val displayType: Int, private val initialPos: Int)
         ui.btnBackToStories.setOnClickListener {
             back()
         }
+        //用于更新额外信息
         ui.contentExtraField = vm.contentExtraField
         ui.vpContents.apply {
             adapter = ContentsVPAdapter(
@@ -46,6 +55,7 @@ class ContentsDisplayFragment(val displayType: Int, private val initialPos: Int)
                 }
 
                 override fun onPageSelected(position: Int) {
+                    //限于stories
                     if (displayType == STORIES) {
                         //滚动viewpager同时更新数据源
                         ((((activity as IndexActivity).supportFragmentManager.findFragmentByTag(
@@ -55,9 +65,9 @@ class ContentsDisplayFragment(val displayType: Int, private val initialPos: Int)
                         }
                         Log.d(
                             "addOnPageChangeListener", "position:${position}, all:${
-                            ((activity as IndexActivity).supportFragmentManager.findFragmentByTag(
-                                StoriesFragment.TAG
-                            ) as StoriesFragment).vm.stories.value!!.size
+                                ((activity as IndexActivity).supportFragmentManager.findFragmentByTag(
+                                    StoriesFragment.TAG
+                                ) as StoriesFragment).vm.stories.value!!.size
                             }"
                         )
                     }
@@ -86,7 +96,8 @@ class ContentsDisplayFragment(val displayType: Int, private val initialPos: Int)
 
     override fun onDestroy() {
         super.onDestroy()
-        //????????????????????????????????????????普通新闻退出内容界面后列表滚动到此新闻的位置
+        //TODO 普通新闻退出内容界面后列表滚动到此新闻的位置，实现不完美
+        //限于stories
         if (displayType == STORIES) {
             ((activity as FragmentActivity).supportFragmentManager.findFragmentByTag(StoriesFragment.TAG) as StoriesFragment).vm.lastPos.value =
                 ui.vpContents.currentItem

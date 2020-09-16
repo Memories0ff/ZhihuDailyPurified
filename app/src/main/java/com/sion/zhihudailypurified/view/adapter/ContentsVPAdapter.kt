@@ -8,6 +8,11 @@ import com.sion.zhihudailypurified.view.fragment.ContentFragment
 import com.sion.zhihudailypurified.view.fragment.ContentsDisplayFragment
 import com.sion.zhihudailypurified.view.fragment.StoriesFragment
 
+/**
+ * 此页面显示来自top和stories的新闻，
+ * 需要区分加载的内容
+ */
+
 class ContentsVPAdapter(private val displayType: Int, private val fa: FragmentActivity) :
     FragmentStatePagerAdapter(
         fa.supportFragmentManager,

@@ -5,5 +5,6 @@ import com.sion.zhihudailypurified.base.BaseViewModel
 import com.sion.zhihudailypurified.entity.StoryContentExtraBean
 
 class ContentsDisplayViewModel : BaseViewModel() {
-    val contentExtraField= ObservableField<StoryContentExtraBean>()
+    //用于额外信息显示和更新
+    val contentExtraField = ObservableField<StoryContentExtraBean>()
 }
