@@ -4,7 +4,6 @@ import java.util.List;
 
 import kotlinx.android.parcel.Parcelize;
 
-@Parcelize
 public class LatestStories {
 
     /**

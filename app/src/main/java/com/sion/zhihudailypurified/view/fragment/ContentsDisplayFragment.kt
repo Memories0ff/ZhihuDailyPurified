@@ -34,8 +34,9 @@ class ContentsDisplayFragment(val displayType: Int, private val initialPos: Int)
         ui.btnBackToStories.setOnClickListener {
             back()
         }
-        //用于更新额外信息
+        //用于更新额外信息，立即在ui响应
         ui.contentExtraField = vm.contentExtraField
+        //设置viewpager
         ui.vpContents.apply {
             adapter = ContentsVPAdapter(
                 displayType,
@@ -63,26 +64,30 @@ class ContentsDisplayFragment(val displayType: Int, private val initialPos: Int)
                         )) as StoriesFragment).ui.rvStories.adapter as StoriesAdapter).apply {
                             continueLoad(position)
                         }
-                        Log.d(
-                            "addOnPageChangeListener", "position:${position}, all:${
-                                ((activity as IndexActivity).supportFragmentManager.findFragmentByTag(
-                                    StoriesFragment.TAG
-                                ) as StoriesFragment).vm.stories.value!!.size
-                            }"
-                        )
+//                        Log.d(
+//                            "addOnPageChangeListener", "position:${position}, all:${
+//                                ((activity as IndexActivity).supportFragmentManager.findFragmentByTag(
+//                                    StoriesFragment.TAG
+//                                ) as StoriesFragment).vm.stories.value!!.size
+//                            }"
+//                        )
                     }
                 }
             })
         }
+        //进入评论按钮
         ui.llBtnComments.setOnClickListener {
             (activity as IndexActivity).switchToComments(
                 this,
-                (activity!!.supportFragmentManager.findFragmentByTag(StoriesFragment.TAG) as StoriesFragment).vm.let {
-                    when (displayType) {
-                        STORIES -> it.stories.value!![ui.vpContents.currentItem]!!.id
-                        else -> it.topStories.value!![ui.vpContents.currentItem]!!.id
-                    }
-                },
+                (requireActivity()
+                    .supportFragmentManager
+                    .findFragmentByTag(StoriesFragment.TAG) as StoriesFragment)
+                    .vm.let {
+                        when (displayType) {
+                            STORIES -> it.stories.value!![ui.vpContents.currentItem]!!.id
+                            else -> it.topStories.value!![ui.vpContents.currentItem]!!.id
+                        }
+                    },
                 ui.contentExtraField!!.get()!!.comments,
                 ui.contentExtraField!!.get()!!.long_comments,
                 ui.contentExtraField!!.get()!!.short_comments

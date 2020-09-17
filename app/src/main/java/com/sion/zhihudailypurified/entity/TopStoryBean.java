@@ -2,7 +2,6 @@ package com.sion.zhihudailypurified.entity;
 
 import kotlinx.android.parcel.Parcelize;
 
-@Parcelize
 public class TopStoryBean {
     /**
      * image_hue : 0x7da1b3

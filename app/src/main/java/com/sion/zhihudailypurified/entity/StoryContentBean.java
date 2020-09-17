@@ -16,7 +16,6 @@ import kotlinx.android.parcel.Parcelize;
 
 @Entity
 @TypeConverters(ListJsonConverter.class)
-@Parcelize
 public class StoryContentBean {
 
     /**

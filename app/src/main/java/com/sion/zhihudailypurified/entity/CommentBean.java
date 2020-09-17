@@ -5,7 +5,6 @@ import androidx.databinding.ObservableField;
 
 import kotlinx.android.parcel.Parcelize;
 
-@Parcelize
 public class CommentBean {
 
     /**

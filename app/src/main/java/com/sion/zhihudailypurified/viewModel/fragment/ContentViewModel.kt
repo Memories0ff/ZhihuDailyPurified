@@ -76,25 +76,32 @@ class ContentViewModel : BaseViewModel() {
 
     //标记为已读
     fun markRead(displayType: Int, storyContentBean: StoryContentBean, fragment: Fragment) {
+        val supportFragmentManager = fragment.requireActivity().supportFragmentManager
         if (displayType == ContentsDisplayFragment.STORIES) {
-            val position = (fragment.activity!!.supportFragmentManager
+            val position = (supportFragmentManager
                 .findFragmentByTag(ContentsDisplayFragment.TAG) as ContentsDisplayFragment?)
                 ?.ui?.vpContents?.currentItem
             position?.let {
-                (fragment.activity!!.supportFragmentManager
+                (supportFragmentManager
                     .findFragmentByTag(StoriesFragment.TAG) as StoriesFragment)
-                    .vm.stories.value!![it]!!.let {
-                    if (!it.isRead.get()!!) {
-                        it.isRead.set(true)
-                        spPutBoolean(it.id.toString(), true, fragment.requireActivity())
+                    .vm.stories.value?.get(it)?.let { storyBean ->
+                        storyBean.isRead.get()?.let { it ->
+                            if (!it) {
+                                storyBean.isRead.set(true)
+                                spPutBoolean(
+                                    storyBean.id.toString(),
+                                    true,
+                                    fragment.requireActivity()
+                                )
+                            }
+                        }
                     }
-                }
             }
         }
         if (displayType == ContentsDisplayFragment.TOP_STORIES) {
-            (fragment.activity!!.supportFragmentManager
+            (supportFragmentManager
                 .findFragmentByTag(StoriesFragment.TAG) as StoriesFragment)
-                .vm.stories.value!!.find {
+                .vm.stories.value?.find {
                     it.id == storyContentBean.id
                 }?.isRead?.set(true)
             spPutBoolean(storyContentBean.id.toString(), true, fragment.requireActivity())
@@ -103,7 +110,7 @@ class ContentViewModel : BaseViewModel() {
 
     //点赞数评论数更新
     fun updateExtraInfo(storyContentExtraBean: StoryContentExtraBean, fragment: Fragment) {
-        (fragment.activity!!.supportFragmentManager
+        (fragment.requireActivity().supportFragmentManager
             .findFragmentByTag(ContentsDisplayFragment.TAG) as ContentsDisplayFragment?)
             ?.vm?.contentExtraField?.set(storyContentExtraBean)
     }
