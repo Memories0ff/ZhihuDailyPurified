@@ -26,6 +26,7 @@ class StoriesFragment : BaseFragment<FragmentStoriesBinding, StoriesViewModel>()
         }
     }
 
+    private lateinit var adapter: StoriesAdapter
 
     override fun setLayoutId(): Int {
         return R.layout.fragment_stories
@@ -38,6 +39,7 @@ class StoriesFragment : BaseFragment<FragmentStoriesBinding, StoriesViewModel>()
     override fun initView() {
 
         vm.pagedListLoadingStatus.observe(viewLifecycleOwner, Observer {
+            adapter.updateLoadingStatus(it)
             when (it) {
                 PagedListLoadingStatus.INITIAL_LOADING -> {
                     Log.d("StoriesFragment", "initView: Initial loading")
@@ -69,7 +71,8 @@ class StoriesFragment : BaseFragment<FragmentStoriesBinding, StoriesViewModel>()
             when (it) {
                 TopStoriesLoadingStatus.LOADED -> {
                     //保证加载完top再加载今日stories
-                    val adapter = StoriesAdapter(this)
+                    val adapter = StoriesAdapter(this, PagedListLoadingStatus.INITIAL_LOADING)
+                    this@StoriesFragment.adapter = adapter
                     ui.rvStories.adapter = adapter
                     ui.rvStories.layoutManager = LinearLayoutManager(activity)
                     ui.rvStories.addItemDecoration(DateDecoration(this))

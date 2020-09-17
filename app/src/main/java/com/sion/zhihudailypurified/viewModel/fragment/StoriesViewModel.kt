@@ -71,6 +71,11 @@ class StoriesViewModel : BaseViewModel() {
         )
     }
 
+    //列表加载失败的重试
+    fun retry() {
+
+    }
+
     //获取是否已读
     fun isRead(position: Int, activity: FragmentActivity): Boolean {
         stories.value!![position]!!.apply {

@@ -2,19 +2,25 @@ package com.sion.zhihudailypurified.view.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.sion.zhihudailypurified.R
 import com.sion.banner.Banner
+import com.sion.zhihudailypurified.databinding.IndexFooterItemBinding
 import com.sion.zhihudailypurified.databinding.IndexStoriesItemBinding
+import com.sion.zhihudailypurified.datasource.PagedListLoadingStatus
 import com.sion.zhihudailypurified.entity.StoryBean
 import com.sion.zhihudailypurified.view.activity.IndexActivity
 import com.sion.zhihudailypurified.view.fragment.ContentsDisplayFragment
 import com.sion.zhihudailypurified.view.fragment.StoriesFragment
 
-class StoriesAdapter(private val fragment: StoriesFragment) :
+class StoriesAdapter(
+    private val fragment: StoriesFragment,
+    private var loadingStatus: PagedListLoadingStatus
+) :
     PagedListAdapter<StoryBean, RecyclerView.ViewHolder>(
         diffCallback
     ) {
@@ -23,7 +29,28 @@ class StoriesAdapter(private val fragment: StoriesFragment) :
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         when (viewType) {
-            BANNER -> {
+            ITEM -> {
+                val binding = DataBindingUtil.inflate<IndexStoriesItemBinding>(
+                    LayoutInflater.from(parent.context),
+                    R.layout.index_stories_item,
+                    parent,
+                    false
+                )
+                return StoryViewHolder(binding)
+            }
+            FOOTER -> {
+                val binding = DataBindingUtil.inflate<IndexFooterItemBinding>(
+                    LayoutInflater.from(parent.context),
+                    R.layout.index_footer_item,
+                    parent,
+                    false
+                )
+                binding.llBtnRetry.setOnClickListener {
+                    Toast.makeText(parent.context, "重新加载", Toast.LENGTH_SHORT).show()
+                }
+                return StoryFooterHolder(binding)
+            }
+            else -> {
                 val view = LayoutInflater.from(parent.context)
                     .inflate(R.layout.index_top_banner_item, parent, false)
                 banner = view.findViewById<Banner>(R.id.banner).apply {
@@ -35,15 +62,6 @@ class StoriesAdapter(private val fragment: StoriesFragment) :
                     )
                 }
                 return TopStoryViewHolder(view)
-            }
-            else -> {
-                val binding = DataBindingUtil.inflate<IndexStoriesItemBinding>(
-                    LayoutInflater.from(parent.context),
-                    R.layout.index_stories_item,
-                    parent,
-                    false
-                )
-                return StoryViewHolder(binding)
             }
         }
     }
@@ -63,22 +81,54 @@ class StoriesAdapter(private val fragment: StoriesFragment) :
                     )
                 }
             }
-            is TopStoryViewHolder -> {
+            is StoryFooterHolder -> {
+                val binding = holder.binding
+                //这只能控制内部是否显示，不能控制本身是否显示
+                binding.status = loadingStatus
+            }
+            //TopStoryViewHolder
+            else -> {
                 banner?.observeFragment(fragment)
             }
         }
     }
 
-    override fun getItemCount(): Int {
-        return super.getItemCount() + 1
-    }
-
-    override fun getItemViewType(position: Int): Int {
-        return when (position) {
-            0 -> BANNER
-            else -> ITEM
+    override fun getItemCount(): Int =
+        when (shouldShowFooter(loadingStatus)) {
+            //需要显示footer
+            true -> super.getItemCount() + 2    //内容+banner+footer
+            //不需要显示footer
+            false -> super.getItemCount() + 1    //内容+banner
         }
-    }
+
+
+    //item的类别
+    override fun getItemViewType(position: Int): Int =
+        when (position) {
+            0 -> BANNER
+            else -> {
+                when (shouldShowFooter(loadingStatus)) {
+                    true -> when (position) {
+                        itemCount - 1 -> FOOTER
+                        else -> ITEM
+                    }
+                    false -> ITEM
+                }
+            }
+        }
+
+
+    //是否需要显示footer
+    private fun shouldShowFooter(loadingStatus: PagedListLoadingStatus): Boolean =
+        when (loadingStatus) {
+            PagedListLoadingStatus.INITIAL_LOADED,
+            PagedListLoadingStatus.AFTER_LOADED -> {
+                false
+            }
+            else -> {
+                true
+            }
+        }
 
 
     /**
@@ -140,9 +190,33 @@ class StoriesAdapter(private val fragment: StoriesFragment) :
         }
     }
 
+    fun updateLoadingStatus(status: PagedListLoadingStatus) {
+        //暂存之前的状态
+        val pre = loadingStatus
+        //修改loadingStatus
+        loadingStatus = status
+        //修改界面
+        if (shouldShowFooter(pre)) {
+            //显示->显示
+            if (shouldShowFooter(loadingStatus)) {
+                notifyItemChanged(itemCount - 1)
+            }
+            //显示->不显示
+            else {
+                notifyItemRemoved(itemCount - 1)
+            }
+        } else {
+            //不显示->显示
+            if (shouldShowFooter(loadingStatus)) {
+                notifyItemInserted(itemCount)
+            }
+        }
+    }
+
     companion object {
         const val BANNER = 0
         const val ITEM = 1
+        const val FOOTER = 2
 
         private val diffCallback = object : DiffUtil.ItemCallback<StoryBean>() {
             override fun areItemsTheSame(oldItem: StoryBean, newItem: StoryBean): Boolean =

@@ -3,4 +3,7 @@
     <string name="zhihu_daily">知乎日报</string>
     <string name="error">你似乎来到了没有知识存在的荒原</string>
     <string name="click_retry"><u>点击重试</u></string>
+    <string name="loading">正在加载</string>
+    <string name="loading_failed">加载失败，点击重试</string>
+    <string name="loading_complete">加载完毕</string>
 </resources>
