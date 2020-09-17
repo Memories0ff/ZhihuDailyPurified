@@ -73,7 +73,7 @@ class StoriesViewModel : BaseViewModel() {
 
     //列表加载失败的重试
     fun retry() {
-
+        factory.dataSource.value?.retry?.invoke()
     }
 
     //获取是否已读

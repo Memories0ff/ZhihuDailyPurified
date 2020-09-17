@@ -71,7 +71,7 @@ class StoriesFragment : BaseFragment<FragmentStoriesBinding, StoriesViewModel>()
             when (it) {
                 TopStoriesLoadingStatus.LOADED -> {
                     //保证加载完top再加载今日stories
-                    val adapter = StoriesAdapter(this, PagedListLoadingStatus.INITIAL_LOADING)
+                    val adapter = StoriesAdapter(this, PagedListLoadingStatus.INITIAL_LOADING, vm)
                     this@StoriesFragment.adapter = adapter
                     ui.rvStories.adapter = adapter
                     ui.rvStories.layoutManager = LinearLayoutManager(activity)

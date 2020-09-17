@@ -16,10 +16,12 @@ import com.sion.zhihudailypurified.entity.StoryBean
 import com.sion.zhihudailypurified.view.activity.IndexActivity
 import com.sion.zhihudailypurified.view.fragment.ContentsDisplayFragment
 import com.sion.zhihudailypurified.view.fragment.StoriesFragment
+import com.sion.zhihudailypurified.viewModel.fragment.StoriesViewModel
 
 class StoriesAdapter(
     private val fragment: StoriesFragment,
-    private var loadingStatus: PagedListLoadingStatus
+    private var loadingStatus: PagedListLoadingStatus,
+    private val vm: StoriesViewModel
 ) :
     PagedListAdapter<StoryBean, RecyclerView.ViewHolder>(
         diffCallback
@@ -46,7 +48,7 @@ class StoriesAdapter(
                     false
                 )
                 binding.llBtnRetry.setOnClickListener {
-                    Toast.makeText(parent.context, "重新加载", Toast.LENGTH_SHORT).show()
+                    vm.retry()
                 }
                 return StoryFooterHolder(binding)
             }
