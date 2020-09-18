@@ -13,8 +13,8 @@ fun loadImage(iv: ImageView, url: String?) {
     }
     Glide.with(App.getAppContext())
         .load(url)
-        .placeholder(R.mipmap.round_pic_placeholder_black_48)
-        .error(R.mipmap.round_pic_placeholder_black_48)
+        .placeholder(R.drawable.ic_baseline_pic_placeholder_96)
+        .error(R.drawable.ic_baseline_pic_broken_96)
         .into(iv)
 }
 

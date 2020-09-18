@@ -45,7 +45,7 @@ class Banner(context: Context, attrs: AttributeSet?) : FrameLayout(context, attr
     }
 
     /**
-     * 设置观察fragment，通过监听activity生命周期开关定时滚动功能
+     * 设置观察fragment，通过监听fragment生命周期开关定时滚动功能
      */
     fun observeFragment(fragment: Fragment) {
         if (this.activity == null) {

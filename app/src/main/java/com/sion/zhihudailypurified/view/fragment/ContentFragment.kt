@@ -91,6 +91,7 @@ class ContentFragment(private val displayType: Int) :
         vm.content.value?.let {
             vm.markRead(displayType, it, this@ContentFragment)
         }
+        //更新底部点赞评论数信息
         vm.extra.value?.let {
             vm.updateExtraInfo(it, this)
         }

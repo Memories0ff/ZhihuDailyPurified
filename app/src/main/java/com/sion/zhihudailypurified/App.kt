@@ -20,6 +20,10 @@ class App : Application() {
             return appContext!!
         }
 
+        fun getApplication(): App {
+            return appContext!! as App
+        }
+
         fun getAppResources(): Resources {
             return appResources!!
         }
