@@ -94,6 +94,16 @@ class StoriesFragment : BaseFragment<FragmentStoriesBinding, StoriesViewModel>()
         })
     }
 
+    override fun onHide() {
+        //隐藏时banner停止滚动
+        adapter.banner?.stopRolling()
+    }
+
+    override fun onShow() {
+        //显示时banner继续滚动
+        adapter.banner?.startRolling()
+    }
+
     //初始加载完毕
     private fun initialLoadingFinish() {
         //显示界面

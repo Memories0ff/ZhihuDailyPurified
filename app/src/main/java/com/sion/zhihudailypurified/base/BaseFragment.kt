@@ -23,6 +23,10 @@ abstract class BaseFragment<B : ViewDataBinding, VM : BaseViewModel> : Fragment(
 
     protected abstract fun initData()
 
+    open fun onHide() {}
+
+    open fun onShow() {}
+
     protected open fun recoverData(savedInstanceState: Bundle?) {}
 
     final override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,6 +44,15 @@ abstract class BaseFragment<B : ViewDataBinding, VM : BaseViewModel> : Fragment(
         initView()
         initData()
         return ui.root
+    }
+
+    //第一次加载显示并不触发该方法
+    override fun onHiddenChanged(hidden: Boolean) {
+        if (hidden) {
+            onHide()
+        } else {
+            onShow()
+        }
     }
 
     open fun back() {

@@ -127,6 +127,7 @@ class Banner(context: Context, attrs: AttributeSet?) : FrameLayout(context, attr
      * 跳转到某个轮播图
      * @param realPosition 数据源中的位置
      */
+    @Synchronized
     fun setCurrentPosition(realPosition: Int) {
         adapter?.let {
             if (it.getRealCount() > 0) {
@@ -152,7 +153,8 @@ class Banner(context: Context, attrs: AttributeSet?) : FrameLayout(context, attr
     /**
      * 开启定时滚动
      */
-    private fun startRolling() {
+    @Synchronized
+    fun startRolling() {
         if (timer == null) {
             timer = Timer()
         }
@@ -173,7 +175,8 @@ class Banner(context: Context, attrs: AttributeSet?) : FrameLayout(context, attr
     /**
      * 关闭定时滚动
      */
-    private fun stopRolling() {
+    @Synchronized
+    fun stopRolling() {
         timer?.let {
             it.cancel()
             timer = null
