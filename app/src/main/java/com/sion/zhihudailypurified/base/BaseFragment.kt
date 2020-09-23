@@ -46,7 +46,7 @@ abstract class BaseFragment<B : ViewDataBinding, VM : BaseViewModel> : Fragment(
         return ui.root
     }
 
-    //第一次加载显示并不触发该方法
+    //第一次加载显示并不触发该方法，只在fragmentManager执行hide和show操作时执行
     override fun onHiddenChanged(hidden: Boolean) {
         if (hidden) {
             onHide()
