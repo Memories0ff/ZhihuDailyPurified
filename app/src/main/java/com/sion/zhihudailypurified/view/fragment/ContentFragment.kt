@@ -3,6 +3,7 @@ package com.sion.zhihudailypurified.view.fragment
 import android.content.Intent
 import android.graphics.Bitmap
 import android.util.Log
+import android.view.View
 import android.view.ViewGroup
 import android.webkit.*
 import androidx.lifecycle.Lifecycle
@@ -14,6 +15,7 @@ import com.sion.zhihudailypurified.base.BaseFragment
 import com.sion.zhihudailypurified.databinding.FragmentContentBinding
 import com.sion.zhihudailypurified.utils.HtmlUtils
 import com.sion.zhihudailypurified.utils.toast
+import com.sion.zhihudailypurified.view.activity.IndexActivity
 import com.sion.zhihudailypurified.viewModel.fragment.ContentViewModel
 
 class ContentFragment(private val displayType: Int) :
@@ -24,76 +26,72 @@ class ContentFragment(private val displayType: Int) :
     }
 
     private val webView: WebView by lazy {
-        WebView(App.getAppContext()).apply {
-            settings.apply {
-                setSupportZoom(false)
-                builtInZoomControls = false
-                displayZoomControls = true
-                allowFileAccess = false
-                defaultTextEncodingName = "utf-8"
-                javaScriptCanOpenWindowsAutomatically = false
-                cacheMode = WebSettings.LOAD_CACHE_ELSE_NETWORK
+        (requireActivity() as IndexActivity)
+            .getWebViewPool()
+            .getWebView()
+            .apply {
+                settings.apply {
 //                TODO addJavascriptInterface()显示和保存图片
-            }
-            webViewClient = object : WebViewClient() {
-                override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
-
                 }
+                webViewClient = object : WebViewClient() {
+                    override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
 
-                override fun onPageFinished(view: WebView?, url: String?) {
-
-                }
-
-                override fun shouldOverrideUrlLoading(
-                    view: WebView?,
-                    request: WebResourceRequest?
-                ): Boolean {
-                    //TODO 跳转到知乎app
-                    //TODO 先检查是否有知乎app再打开
-                    if (request != null) {
-                        var url = request.url.toString()
-                        url = when {
-                            url.startsWith("https://www.", true) -> {
-                                url.replace("https://www.zhihu.com/", "", true)
-                            }
-                            url.startsWith("http://www.", true) -> {
-                                url.replace("http://www.zhihu.com/", "", true)
-                            }
-                            else -> {
-                                return true
-                            }
-                        }
-                        url = String.format(
-                            "%s$url%s",
-                            "intent://",
-                            "/#Intent;scheme=zhihu;package=com.zhihu.android;end"
-                        )
-                        val intent = Intent(url)
-                        if (intent.resolveActivity(context.packageManager) != null) {
-                            startActivity(intent)
-                        } else {
-                            //TODO 弹窗请求下载知乎
-                            Log.d("shouldOverrideUrl", "下载知乎")
-                        }
                     }
-                    return true
-                }
 
-                override fun onReceivedError(
-                    view: WebView?,
-                    request: WebResourceRequest?,
-                    error: WebResourceError?
-                ) {
-                    //TODO 显示错误信息
-                    super.onReceivedError(view, request, error)
+                    override fun onPageFinished(view: WebView?, url: String?) {
+
+                    }
+
+                    override fun shouldOverrideUrlLoading(
+                        view: WebView?,
+                        request: WebResourceRequest?
+                    ): Boolean {
+                        //TODO 跳转到知乎app
+                        //TODO 先检查是否有知乎app再打开
+                        if (request != null) {
+                            var url = request.url.toString()
+                            url = when {
+                                url.startsWith("https://www.", true) -> {
+                                    url.replace("https://www.zhihu.com/", "", true)
+                                }
+                                url.startsWith("http://www.", true) -> {
+                                    url.replace("http://www.zhihu.com/", "", true)
+                                }
+                                else -> {
+                                    return true
+                                }
+                            }
+                            url = String.format(
+                                "%s$url%s",
+                                "intent://",
+                                "/#Intent;scheme=zhihu;package=com.zhihu.android;end"
+                            )
+                            val intent = Intent(url)
+                            if (intent.resolveActivity(context.packageManager) != null) {
+                                startActivity(intent)
+                            } else {
+                                //TODO 弹窗请求下载知乎
+                                Log.d("shouldOverrideUrl", "下载知乎")
+                            }
+                        }
+                        return true
+                    }
+
+                    override fun onReceivedError(
+                        view: WebView?,
+                        request: WebResourceRequest?,
+                        error: WebResourceError?
+                    ) {
+                        //TODO 显示错误信息
+                        super.onReceivedError(view, request, error)
+                    }
+                }
+                webChromeClient = object : WebChromeClient() {
+                    override fun onProgressChanged(view: WebView?, newProgress: Int) {
+
+                    }
                 }
             }
-            webChromeClient = object : WebChromeClient() {
-                override fun onProgressChanged(view: WebView?, newProgress: Int) {
-
-                }
-            }
-        }
     }
 
     override fun setLayoutId(): Int {
@@ -147,22 +145,23 @@ class ContentFragment(private val displayType: Int) :
     }
 
     override fun onDestroy() {
-        webView.let { webView ->
-            // 如果先调用destroy()方法，则会命中if (isDestroyed()) return;这一行代码，需要先onDetachedFromWindow()，再
-            // destroy()
-            val parent = webView.parent;
-            if (parent != null) {
-                (parent as ViewGroup).removeView(webView);
-            }
-
-            webView.stopLoading();
-            // 退出时调用此方法，移除绑定的服务，否则某些特定系统会报错
-            webView.settings.javaScriptEnabled = false;
-            webView.clearHistory();
-            webView.clearView();
-            webView.removeAllViews();
-            webView.destroy();
-        }
+//        webView.let { webView ->
+//            // 如果先调用destroy()方法，则会命中if (isDestroyed()) return;这一行代码，需要先onDetachedFromWindow()，再
+//            // destroy()
+//            val parent = webView.parent;
+//            if (parent != null) {
+//                (parent as ViewGroup).removeView(webView);
+//            }
+//
+//            webView.stopLoading();
+//            // 退出时调用此方法，移除绑定的服务，否则某些特定系统会报错
+//            webView.settings.javaScriptEnabled = false;
+//            webView.clearHistory();
+//            webView.clearView();
+//            webView.removeAllViews();
+//            webView.destroy();
+//        }
+        (requireActivity() as IndexActivity).getWebViewPool().removeWebView(webView)
         super.onDestroy()
     }
 

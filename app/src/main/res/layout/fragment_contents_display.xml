@@ -52,7 +52,7 @@
 
             <LinearLayout
                 android:id="@+id/llBtnComments"
-                android:layout_width="50dp"
+                android:layout_width="55dp"
                 android:layout_height="25dp"
                 android:layout_gravity="center_vertical"
                 android:layout_margin="5dp"
@@ -74,7 +74,7 @@
                     android:textColor="#FF000000"
                     android:textSize="10sp"
                     android:textStyle="bold"
-                    tools:text="123" />
+                    tools:text="1236" />
 
             </LinearLayout>
 
@@ -85,7 +85,7 @@
 
             <LinearLayout
                 android:id="@+id/llBtnLikes"
-                android:layout_width="50dp"
+                android:layout_width="55dp"
                 android:layout_height="25dp"
                 android:layout_gravity="center_vertical"
                 android:layout_marginStart="5dp"
@@ -107,7 +107,7 @@
                     android:textColor="#FF000000"
                     android:textSize="10sp"
                     android:textStyle="bold"
-                    tools:text="789" />
+                    tools:text="6789" />
 
             </LinearLayout>
 
@@ -121,7 +121,7 @@
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_gravity="center_vertical"
-                android:layout_marginEnd="15dp"
+                android:layout_marginEnd="30dp"
                 android:src="@drawable/ic_round_star_border_96" />
 
         </LinearLayout>

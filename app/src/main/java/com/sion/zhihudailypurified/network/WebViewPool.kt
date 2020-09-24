@@ -1,6 +1,7 @@
 package com.sion.zhihudailypurified.network
 
 import android.content.Context
+import android.util.Log
 import android.view.ViewGroup
 import android.webkit.WebSettings
 import android.webkit.WebView
@@ -19,22 +20,23 @@ class WebViewPool : LifecycleObserver {
         ArrayList<WebView>()
     }
     private var context: Context? = null
-    private val maxSize = 5
+    private val maxSize = 9
     private var currentSize = 0
 
     companion object {
-        var instance: WebViewPool? = null
-    }
+        private var instance: WebViewPool? = null
 
-    fun getInstance(): WebViewPool {
-        if (instance == null) {
-            synchronized(this) {
-                if (instance == null) {
-                    instance = WebViewPool()
+        fun getInstance(): WebViewPool {
+            if (instance == null) {
+                synchronized(this) {
+                    if (instance == null) {
+                        instance = WebViewPool()
+                    }
                 }
             }
+            return instance!!
         }
-        return instance!!
+
     }
 
     @Synchronized
@@ -44,12 +46,28 @@ class WebViewPool : LifecycleObserver {
             available.removeAt(0)
             inUse.add(webViewTemp)
             currentSize++
+            logd(
+                "执行getWebView, " +
+                        "available.size = ${available.size}, " +
+                        "inUse.size = ${inUse.size}, " +
+                        "currentSize = $currentSize"
+            )
             webViewTemp
         } else {
+            if (context == null) {
+                throw Exception("WebViewPool需要被注册为生命周期观察者")
+            }
             val webViewTemp = WebView(context)
             initWebView(webViewTemp)
             inUse.add(webViewTemp)
             currentSize++
+            logd(
+                "执行getWebView, " +
+                        "available已满, " +
+                        "available.size = ${available.size}, " +
+                        "inUse.size = ${inUse.size}, " +
+                        "currentSize = $currentSize"
+            )
             webViewTemp
         }
 
@@ -73,20 +91,34 @@ class WebViewPool : LifecycleObserver {
                 settings.apply {
                     setSupportZoom(false)
                     builtInZoomControls = false
-                    displayZoomControls = true
+                    displayZoomControls = false
                     allowFileAccess = false
                     defaultTextEncodingName = "utf-8"
+                    javaScriptEnabled = false
                     javaScriptCanOpenWindowsAutomatically = false
-                    cacheMode = WebSettings.LOAD_CACHE_ELSE_NETWORK
+                    cacheMode = WebSettings.LOAD_NO_CACHE
                 }
             }
             available.add(webView)
+            currentSize--
+            logd(
+                "执行removeWebView, " +
+                        "available.size = ${available.size}, " +
+                        "inUse.size = ${inUse.size}, " +
+                        "currentSize = $currentSize"
+            )
         } else {
             webView = null
+            currentSize--
+            logd(
+                "执行removeWebView, " +
+                        "available已满, " +
+                        "available.size = ${available.size}, " +
+                        "inUse.size = ${inUse.size}, " +
+                        "currentSize = $currentSize"
+            )
         }
-        currentSize--
     }
-
 
     @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
     @MainThread
@@ -95,7 +127,7 @@ class WebViewPool : LifecycleObserver {
             throw Exception("LifeCycleOwner必须是Context的子类")
         }
         context = owner
-        for (i in 0..maxSize) {
+        for (i in 0 until maxSize) {
             val webView = WebView(owner)
             initWebView(webView)
             available.add(webView)
@@ -107,6 +139,7 @@ class WebViewPool : LifecycleObserver {
     fun onLifecycleOwnerDestroy(owner: LifecycleOwner) {
         inUse.forEach {
             it.stopLoading()
+            it.settings.javaScriptEnabled = false
             it.clearCache(true)
             it.clearHistory()
         }
@@ -126,13 +159,18 @@ class WebViewPool : LifecycleObserver {
             settings.apply {
                 setSupportZoom(false)
                 builtInZoomControls = false
-                displayZoomControls = true
+                displayZoomControls = false
                 allowFileAccess = false
                 defaultTextEncodingName = "utf-8"
+                javaScriptEnabled = false
                 javaScriptCanOpenWindowsAutomatically = false
-                cacheMode = WebSettings.LOAD_CACHE_ELSE_NETWORK
+                cacheMode = WebSettings.LOAD_NO_CACHE
             }
         }
         webView.loadUrl("about:blank")
+    }
+
+    private fun logd(s: String) {
+        Log.d("WebViewPool", s)
     }
 }

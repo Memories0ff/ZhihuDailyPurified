@@ -1,17 +1,19 @@
 package com.sion.zhihudailypurified.view.activity
 
 import android.os.Bundle
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import com.sion.zhihudailypurified.R
 import com.sion.zhihudailypurified.base.BaseActivity
 import com.sion.zhihudailypurified.databinding.ActivityIndexBinding
+import com.sion.zhihudailypurified.network.WebViewPool
 import com.sion.zhihudailypurified.utils.toast
 import com.sion.zhihudailypurified.view.fragment.CommentsFragment
 import com.sion.zhihudailypurified.view.fragment.ContentsDisplayFragment
 import com.sion.zhihudailypurified.view.fragment.StoriesFragment
 import com.sion.zhihudailypurified.viewModel.activity.IndexViewModel
 
-class IndexActivity : BaseActivity<ActivityIndexBinding, IndexViewModel>() {
+class IndexActivity : BaseActivity<ActivityIndexBinding, IndexViewModel>(), LifecycleOwner {
 
     override fun setLayoutId(): Int {
         return R.layout.activity_index
@@ -22,6 +24,7 @@ class IndexActivity : BaseActivity<ActivityIndexBinding, IndexViewModel>() {
     }
 
     override fun initView() {
+        lifecycle.addObserver(getWebViewPool())
         vm.isOnline.observe(this, Observer {
             if (it) {
                 toast("网络已连接")
@@ -79,5 +82,8 @@ class IndexActivity : BaseActivity<ActivityIndexBinding, IndexViewModel>() {
             .addToBackStack(null)
             .commit()
     }
+
+    fun getWebViewPool(): WebViewPool =
+        vm.webViewPool
 
 }
