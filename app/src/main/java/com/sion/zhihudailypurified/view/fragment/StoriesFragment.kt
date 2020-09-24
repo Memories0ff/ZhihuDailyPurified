@@ -96,11 +96,13 @@ class StoriesFragment : BaseFragment<FragmentStoriesBinding, StoriesViewModel>()
 
     override fun onHide() {
         //隐藏时banner停止滚动
+        Log.d("Banner", "onHide")
         adapter.banner?.stopRolling()
     }
 
     override fun onShow() {
         //显示时banner继续滚动
+        Log.d("Banner", "onShow")
         adapter.banner?.startRolling()
     }
 

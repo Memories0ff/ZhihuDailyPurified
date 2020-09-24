@@ -17,16 +17,18 @@ class App : Application() {
         private var appResources: Resources? = null
 
         fun getAppContext(): Context {
-            return appContext!!
+            return this.appContext
+                ?: throw Exception("Application还未被系统创建")
         }
 
         fun getApplication(): App {
-            return appContext!! as App
+            val appContext = appContext ?: throw Exception("Application还未被系统创建")
+            return appContext as App
         }
 
         fun getAppResources(): Resources {
-            return appResources!!
+            return this.appResources
+                ?: throw Exception("Application还未被系统创建")
         }
-
     }
 }
