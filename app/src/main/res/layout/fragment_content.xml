@@ -3,6 +3,12 @@
 
     <data>
 
+        <import type="android.view.View" />
+
+        <variable
+            name="isWebViewLoading"
+            type="Boolean" />
+
     </data>
 
     <FrameLayout
@@ -19,7 +25,7 @@
             <LinearLayout
                 android:id="@+id/llContent"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:descendantFocusability="blocksDescendants"
                 android:orientation="vertical">
 
@@ -53,11 +59,27 @@
                         android:layout_marginBottom="5dp"
                         android:textColor="#FFFFFFFF"
                         android:textSize="12sp" />
+
                 </FrameLayout>
+
+                <ProgressBar
+                    android:id="@+id/pbWebViewLoading"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="30dp"
+                    android:visibility="@{isWebViewLoading?View.VISIBLE:View.GONE}" />
 
             </LinearLayout>
 
         </ScrollView>
 
+        <ViewStub
+            android:id="@+id/vsContentError"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout="@layout/view_stub_error" />
+
     </FrameLayout>
+
 </layout>

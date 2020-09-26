@@ -19,10 +19,10 @@ import java.net.SocketTimeoutException
 
 class ContentViewModel : BaseViewModel() {
     //新闻内容
-    val content = MutableLiveData<StoryContentBean>()
+    val content = MutableLiveData<StoryContentBean?>()
 
     //额外信息
-    val extra = MutableLiveData<StoryContentExtraBean>()
+    val extra = MutableLiveData<StoryContentExtraBean?>()
 
     fun obtainStoryContentAndExtra(id: Int) {
         //1、从数据库中获取内容和额外信息，没有则从网络中加载并展示
@@ -48,7 +48,7 @@ class ContentViewModel : BaseViewModel() {
                     isContentFromWeb = false
                     contentList[0]
                 }
-            } ?: return@launch
+            }
 
             val storyExtra = withContext(Dispatchers.IO) {
                 try {
@@ -61,14 +61,17 @@ class ContentViewModel : BaseViewModel() {
                     Log.e("obtainStoryContent", "获取新闻其他信息失败：未知错误")
                     null
                 }
-            } ?: return@launch
+            }
             withContext(Dispatchers.IO) {
-                if (isContentFromWeb) {
-                    dbContentServices.insertStoryContentBean(storyContent)
-                } else {
-                    dbContentServices.updateStoryContentBean(storyContent)
+                storyContent?.let {
+                    if (isContentFromWeb) {
+                        dbContentServices.insertStoryContentBean(storyContent)
+                    } else {
+                        dbContentServices.updateStoryContentBean(storyContent)
+                    }
                 }
             }
+            //加载失败传入null
             content.value = storyContent
             extra.value = storyExtra
         }

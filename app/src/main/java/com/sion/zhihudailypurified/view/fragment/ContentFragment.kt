@@ -4,12 +4,11 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.util.Log
 import android.view.View
-import android.view.ViewGroup
 import android.webkit.*
+import android.widget.LinearLayout
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
 import com.bumptech.glide.Glide
-import com.sion.zhihudailypurified.App
 import com.sion.zhihudailypurified.R
 import com.sion.zhihudailypurified.base.BaseFragment
 import com.sion.zhihudailypurified.databinding.FragmentContentBinding
@@ -25,21 +24,36 @@ class ContentFragment(private val displayType: Int) :
         arguments!!.getInt(STORY_ID)
     }
 
+    private val errorUI by lazy {
+        val viewStub = ui.vsContentError.viewStub!!
+        viewStub.inflate().findViewById<LinearLayout>(R.id.llClickRetry).apply {
+            setOnClickListener {
+                retry()
+                hideErrorUI()
+            }
+        }
+    }
+
     private val webView: WebView by lazy {
         (requireActivity() as IndexActivity)
             .getWebViewPool()
             .getWebView()
             .apply {
+                //加载时用ProgressBar代替，加载完成再显示
+                visibility = View.GONE
                 settings.apply {
-//                TODO addJavascriptInterface()显示和保存图片
+//                TODO addJavascriptInterface()显示和保存图片界面
                 }
                 webViewClient = object : WebViewClient() {
                     override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
-
+                        //开始加载网页时显示ProgressBar
+                        this@ContentFragment.ui.isWebViewLoading = true
                     }
 
                     override fun onPageFinished(view: WebView?, url: String?) {
-
+                        //加载完显示WebView
+                        this@ContentFragment.ui.isWebViewLoading = false
+                        view?.visibility = View.VISIBLE
                     }
 
                     override fun shouldOverrideUrlLoading(
@@ -82,6 +96,8 @@ class ContentFragment(private val displayType: Int) :
                         request: WebResourceRequest?,
                         error: WebResourceError?
                     ) {
+                        this@ContentFragment.ui.isWebViewLoading = false
+                        view?.visibility = View.VISIBLE
                         //TODO 显示错误信息
                         super.onReceivedError(view, request, error)
                     }
@@ -105,15 +121,23 @@ class ContentFragment(private val displayType: Int) :
     override fun initView() {
         ui.llContent.addView(webView)
 
-
         vm.content.observe(this, Observer {
+            //加载失败传入null
+            if (it == null) {
+                //内容加载失败的处理
+                showErrorUI()
+                return@Observer
+            }
             ui.tvTitle.text = it.title
             ui.tvSubTitle.text = it.image_source
             if (this.lifecycle.currentState == Lifecycle.State.RESUMED) {
+                //TODO 已读标记在网页加载完进行
                 vm.markRead(displayType, it, this@ContentFragment)
             }
             Glide.with(this@ContentFragment)
                 .load(it.image)
+                .placeholder(R.drawable.ic_baseline_pic_placeholder_96)
+                .error(R.drawable.ic_baseline_pic_broken_96)
                 .into(ui.ivImage)
 
             webView.apply {
@@ -122,6 +146,11 @@ class ContentFragment(private val displayType: Int) :
             }
         })
         vm.extra.observe(this, Observer {
+            //加载失败传入null
+            if (it == null) {
+                toast("点赞评论数加载失败")
+                return@Observer
+            }
             if (this.lifecycle.currentState == Lifecycle.State.RESUMED) {
                 vm.updateExtraInfo(it, this@ContentFragment)
             }
@@ -144,6 +173,16 @@ class ContentFragment(private val displayType: Int) :
         vm.obtainStoryContentAndExtra(storyId)
     }
 
+    private fun retry() {
+        webView.visibility = View.GONE
+        vm.obtainStoryContentAndExtra(storyId)
+    }
+
+    override fun onShow() {
+        //TODO 此处添加加载失败后自动重新加载功能
+
+    }
+
     override fun onDestroy() {
 //        webView.let { webView ->
 //            // 如果先调用destroy()方法，则会命中if (isDestroyed()) return;这一行代码，需要先onDetachedFromWindow()，再
@@ -164,6 +203,18 @@ class ContentFragment(private val displayType: Int) :
         (requireActivity() as IndexActivity).getWebViewPool().removeWebView(webView)
         super.onDestroy()
     }
+
+    private fun showErrorUI() {
+        errorUI.visibility = View.VISIBLE
+    }
+
+    private fun hideErrorUI() {
+        errorUI.visibility = View.GONE
+    }
+
+//    private fun showWebViewLoadingUI() {}
+//
+//    private fun hideWebViewLoadingUI() {}
 
     companion object {
         const val TAG = "CONTENT_FRAGMENT"
