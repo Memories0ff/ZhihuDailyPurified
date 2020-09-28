@@ -3,7 +3,7 @@ package com.sion.zhihudailypurified.view.adapter
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import androidx.fragment.app.FragmentStatePagerAdapter
+import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.sion.zhihudailypurified.view.fragment.ContentFragment
 import com.sion.zhihudailypurified.view.fragment.ContentsDisplayFragment
 import com.sion.zhihudailypurified.view.fragment.StoriesFragment
@@ -14,12 +14,9 @@ import com.sion.zhihudailypurified.view.fragment.StoriesFragment
  */
 
 class ContentsVPAdapter(private val displayType: Int, private val fa: FragmentActivity) :
-    FragmentStatePagerAdapter(
-        fa.supportFragmentManager,
-        BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT
-    ) {
+    FragmentStateAdapter(fa) {
 
-    override fun getItem(position: Int): Fragment = ContentFragment(displayType).apply {
+    override fun createFragment(position: Int): Fragment = ContentFragment(displayType).apply {
         arguments = Bundle().apply {
             putInt(
                 ContentFragment.STORY_ID,
@@ -37,14 +34,34 @@ class ContentsVPAdapter(private val displayType: Int, private val fa: FragmentAc
         }
     }
 
-    override fun getCount(): Int {
+    override fun getItemId(position: Int): Long {
+        return position.toLong()
+    }
+
+    override fun containsItem(itemId: Long): Boolean {
+        return when (displayType) {
+            ContentsDisplayFragment.TOP_STORIES -> {
+                itemId in 0 until 5
+            }
+            else -> {
+                itemId in 0 until ((fa.supportFragmentManager.findFragmentByTag(
+                    StoriesFragment.TAG
+                ) as StoriesFragment).vm.stories.value!!.size)
+            }
+        }
+    }
+
+
+    override fun getItemCount(): Int {
         return when (displayType) {
             //头条新闻
             ContentsDisplayFragment.TOP_STORIES -> (fa.supportFragmentManager.findFragmentByTag(
                 StoriesFragment.TAG
             ) as StoriesFragment).vm.topStories.value!!.size
             //普通新闻
-            else -> Int.MAX_VALUE
+            else -> (fa.supportFragmentManager.findFragmentByTag(
+                StoriesFragment.TAG
+            ) as StoriesFragment).vm.stories.value!!.size
         }
     }
 

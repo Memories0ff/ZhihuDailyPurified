@@ -3,12 +3,6 @@
 
     <data>
 
-        <import type="android.view.View" />
-
-        <variable
-            name="isWebViewLoading"
-            type="Boolean" />
-
     </data>
 
     <FrameLayout
@@ -68,7 +62,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="30dp"
-                    android:visibility="@{isWebViewLoading?View.VISIBLE:View.GONE}" />
+                    android:visibility="visible" />
 
             </LinearLayout>
 

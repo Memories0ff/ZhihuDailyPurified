@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import com.sion.banner.BannerAdapter
 import com.sion.zhihudailypurified.R
@@ -30,13 +31,22 @@ class TopBannerAdapter(
         )
         binding.topStory = bean
         container.addView(binding.root.apply {
+            //网络不通时进行提醒，不进入接下来的页面
             setOnClickListener {
-                (context as IndexActivity).let {
-                    it.switchToContent(
-                        it.supportFragmentManager.findFragmentByTag(StoriesFragment.TAG) as StoriesFragment,
-                        ContentsDisplayFragment.TOP_STORIES,
-                        realPosition
-                    )
+                if ((context as IndexActivity).vm.isOnline.value == true) {
+                    (context as IndexActivity).let {
+                        it.switchToContent(
+                            it.supportFragmentManager.findFragmentByTag(StoriesFragment.TAG) as StoriesFragment,
+                            ContentsDisplayFragment.TOP_STORIES,
+                            realPosition
+                        )
+                    }
+                } else {
+                    Toast.makeText(
+                        context,
+                        resources.getText(R.string.retry_after_resume_connection),
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
         })

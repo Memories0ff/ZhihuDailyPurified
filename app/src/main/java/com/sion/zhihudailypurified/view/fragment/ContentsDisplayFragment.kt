@@ -1,14 +1,15 @@
 package com.sion.zhihudailypurified.view.fragment
 
-import android.util.Log
 import androidx.fragment.app.FragmentActivity
-import androidx.viewpager.widget.ViewPager
+import androidx.lifecycle.Observer
+import androidx.viewpager2.widget.ViewPager2
 import com.sion.zhihudailypurified.R
-import com.sion.zhihudailypurified.view.adapter.ContentsVPAdapter
-import com.sion.zhihudailypurified.view.adapter.StoriesAdapter
 import com.sion.zhihudailypurified.base.BaseFragment
 import com.sion.zhihudailypurified.databinding.FragmentContentsDisplayBinding
+import com.sion.zhihudailypurified.utils.toast
 import com.sion.zhihudailypurified.view.activity.IndexActivity
+import com.sion.zhihudailypurified.view.adapter.ContentsVPAdapter
+import com.sion.zhihudailypurified.view.adapter.StoriesAdapter
 import com.sion.zhihudailypurified.viewModel.fragment.ContentsDisplayViewModel
 
 /**
@@ -34,6 +35,10 @@ class ContentsDisplayFragment(val displayType: Int, private val initialPos: Int)
         ui.btnBackToStories.setOnClickListener {
             back()
         }
+        (requireActivity() as IndexActivity).vm.isOnline.observe(this, Observer {
+            //可以联网时才可左右滑动
+            ui.vpContents.isUserInputEnabled = it
+        })
         //用于更新额外信息，立即在ui响应
         ui.contentExtraField = vm.contentExtraField
         //设置viewpager
@@ -43,18 +48,8 @@ class ContentsDisplayFragment(val displayType: Int, private val initialPos: Int)
                 activity as FragmentActivity
             )
             offscreenPageLimit = 1
-            currentItem = initialPos
-            addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-                override fun onPageScrollStateChanged(state: Int) {
-                }
-
-                override fun onPageScrolled(
-                    position: Int,
-                    positionOffset: Float,
-                    positionOffsetPixels: Int
-                ) {
-                }
-
+            setCurrentItem(initialPos, false)
+            registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
                 override fun onPageSelected(position: Int) {
                     //限于stories
                     if (displayType == STORIES) {
@@ -64,34 +59,31 @@ class ContentsDisplayFragment(val displayType: Int, private val initialPos: Int)
                         )) as StoriesFragment).ui.rvStories.adapter as StoriesAdapter).apply {
                             continueLoad(position)
                         }
-//                        Log.d(
-//                            "addOnPageChangeListener", "position:${position}, all:${
-//                                ((activity as IndexActivity).supportFragmentManager.findFragmentByTag(
-//                                    StoriesFragment.TAG
-//                                ) as StoriesFragment).vm.stories.value!!.size
-//                            }"
-//                        )
                     }
                 }
             })
         }
         //进入评论按钮
         ui.llBtnComments.setOnClickListener {
-            (activity as IndexActivity).switchToComments(
-                this,
-                (requireActivity()
-                    .supportFragmentManager
-                    .findFragmentByTag(StoriesFragment.TAG) as StoriesFragment)
-                    .vm.let {
-                        when (displayType) {
-                            STORIES -> it.stories.value!![ui.vpContents.currentItem]!!.id
-                            else -> it.topStories.value!![ui.vpContents.currentItem]!!.id
-                        }
-                    },
-                ui.contentExtraField!!.get()!!.comments,
-                ui.contentExtraField!!.get()!!.long_comments,
-                ui.contentExtraField!!.get()!!.short_comments
-            )
+            if (isOnline() == true) {
+                (activity as IndexActivity).switchToComments(
+                    this,
+                    (requireActivity()
+                        .supportFragmentManager
+                        .findFragmentByTag(StoriesFragment.TAG) as StoriesFragment)
+                        .vm.let {
+                            when (displayType) {
+                                STORIES -> it.stories.value!![ui.vpContents.currentItem]!!.id
+                                else -> it.topStories.value!![ui.vpContents.currentItem]!!.id
+                            }
+                        },
+                    ui.contentExtraField!!.get()!!.comments,
+                    ui.contentExtraField!!.get()!!.long_comments,
+                    ui.contentExtraField!!.get()!!.short_comments
+                )
+            } else {
+                toast(resources.getText(R.string.retry_after_resume_connection).toString())
+            }
         }
     }
 
@@ -108,6 +100,8 @@ class ContentsDisplayFragment(val displayType: Int, private val initialPos: Int)
                 ui.vpContents.currentItem
         }
     }
+
+    private fun isOnline() = (requireActivity() as IndexActivity).vm.isOnline.value
 
     companion object {
         const val TAG = "CONTENTS_DISPLAY_FRAGMENT"

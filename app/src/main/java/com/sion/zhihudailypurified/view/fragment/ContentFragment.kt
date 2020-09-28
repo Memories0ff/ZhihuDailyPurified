@@ -12,8 +12,8 @@ import com.bumptech.glide.Glide
 import com.sion.zhihudailypurified.R
 import com.sion.zhihudailypurified.base.BaseFragment
 import com.sion.zhihudailypurified.databinding.FragmentContentBinding
+import com.sion.zhihudailypurified.entity.StoryContentExtraBean
 import com.sion.zhihudailypurified.utils.HtmlUtils
-import com.sion.zhihudailypurified.utils.toast
 import com.sion.zhihudailypurified.view.activity.IndexActivity
 import com.sion.zhihudailypurified.viewModel.fragment.ContentViewModel
 
@@ -29,31 +29,47 @@ class ContentFragment(private val displayType: Int) :
         viewStub.inflate().findViewById<LinearLayout>(R.id.llClickRetry).apply {
             setOnClickListener {
                 retry()
-                hideErrorUI()
             }
         }
     }
 
     private val webView: WebView by lazy {
-        (requireActivity() as IndexActivity)
-            .getWebViewPool()
+        getWebViewPool()
             .getWebView()
             .apply {
-                //加载时用ProgressBar代替，加载完成再显示
-                visibility = View.GONE
                 settings.apply {
+                    //先加载文字再加载图片
+                    blockNetworkImage = true
 //                TODO addJavascriptInterface()显示和保存图片界面
                 }
                 webViewClient = object : WebViewClient() {
                     override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
                         //开始加载网页时显示ProgressBar
-                        this@ContentFragment.ui.isWebViewLoading = true
+                        uiChangeForLoading()
                     }
 
                     override fun onPageFinished(view: WebView?, url: String?) {
+                        //先加载文字再加载图片
+                        settings.apply {
+                            blockNetworkImage = false
+                            if (!loadsImagesAutomatically) {
+                                loadsImagesAutomatically = true
+                            }
+                        }
                         //加载完显示WebView
-                        this@ContentFragment.ui.isWebViewLoading = false
-                        view?.visibility = View.VISIBLE
+                        uiChangeForFinish()
+                    }
+
+                    override fun onReceivedError(
+                        view: WebView?,
+                        request: WebResourceRequest?,
+                        error: WebResourceError?
+                    ) {
+                        settings.blockNetworkImage = true
+//                        uiChangeForError()
+//                        toast("网页加载失败")
+                        //TODO 显示错误信息
+                        super.onReceivedError(view, request, error)
                     }
 
                     override fun shouldOverrideUrlLoading(
@@ -90,17 +106,6 @@ class ContentFragment(private val displayType: Int) :
                         }
                         return true
                     }
-
-                    override fun onReceivedError(
-                        view: WebView?,
-                        request: WebResourceRequest?,
-                        error: WebResourceError?
-                    ) {
-                        this@ContentFragment.ui.isWebViewLoading = false
-                        view?.visibility = View.VISIBLE
-                        //TODO 显示错误信息
-                        super.onReceivedError(view, request, error)
-                    }
                 }
                 webChromeClient = object : WebChromeClient() {
                     override fun onProgressChanged(view: WebView?, newProgress: Int) {
@@ -119,13 +124,19 @@ class ContentFragment(private val displayType: Int) :
     }
 
     override fun initView() {
+        //额外信息显示重置为0
+//        vm.updateExtraInfo(StoryContentExtraBean(0, 0, 0, 0), this@ContentFragment)
+
+        //加载时用ProgressBar代替，加载完成再显示
+        uiChangeForLoading()
+
         ui.llContent.addView(webView)
 
         vm.content.observe(this, Observer {
             //加载失败传入null
             if (it == null) {
                 //内容加载失败的处理
-                showErrorUI()
+                uiChangeForError()
                 return@Observer
             }
             ui.tvTitle.text = it.title
@@ -147,12 +158,12 @@ class ContentFragment(private val displayType: Int) :
         })
         vm.extra.observe(this, Observer {
             //加载失败传入null
-            if (it == null) {
-                toast("点赞评论数加载失败")
-                return@Observer
-            }
+//            if (it == null) {
+//                toast("点赞评论数加载失败")
+//                return@Observer
+//            }
             if (this.lifecycle.currentState == Lifecycle.State.RESUMED) {
-                vm.updateExtraInfo(it, this@ContentFragment)
+                vm.updateExtraInfo(it ?: StoryContentExtraBean(0, 0, 0, 0), this@ContentFragment)
             }
         })
     }
@@ -164,8 +175,8 @@ class ContentFragment(private val displayType: Int) :
             vm.markRead(displayType, it, this@ContentFragment)
         }
         //更新底部点赞评论数信息
-        vm.extra.value?.let {
-            vm.updateExtraInfo(it, this)
+        vm.extra.value.let {
+            vm.updateExtraInfo(it ?: StoryContentExtraBean(0, 0, 0, 0), this)
         }
     }
 
@@ -174,7 +185,7 @@ class ContentFragment(private val displayType: Int) :
     }
 
     private fun retry() {
-        webView.visibility = View.GONE
+        uiChangeForLoading()
         vm.obtainStoryContentAndExtra(storyId)
     }
 
@@ -184,37 +195,30 @@ class ContentFragment(private val displayType: Int) :
     }
 
     override fun onDestroy() {
-//        webView.let { webView ->
-//            // 如果先调用destroy()方法，则会命中if (isDestroyed()) return;这一行代码，需要先onDetachedFromWindow()，再
-//            // destroy()
-//            val parent = webView.parent;
-//            if (parent != null) {
-//                (parent as ViewGroup).removeView(webView);
-//            }
-//
-//            webView.stopLoading();
-//            // 退出时调用此方法，移除绑定的服务，否则某些特定系统会报错
-//            webView.settings.javaScriptEnabled = false;
-//            webView.clearHistory();
-//            webView.clearView();
-//            webView.removeAllViews();
-//            webView.destroy();
-//        }
         (requireActivity() as IndexActivity).getWebViewPool().removeWebView(webView)
         super.onDestroy()
     }
 
-    private fun showErrorUI() {
+    private fun uiChangeForLoading() {
+        errorUI.visibility = View.GONE
+        webView.visibility = View.GONE
+        ui.pbWebViewLoading.visibility = View.VISIBLE
+    }
+
+    private fun uiChangeForFinish() {
+        errorUI.visibility = View.GONE
+        ui.pbWebViewLoading.visibility = View.GONE
+        webView.visibility = View.VISIBLE
+    }
+
+    private fun uiChangeForError() {
+        webView.visibility = View.GONE
+        ui.pbWebViewLoading.visibility = View.GONE
         errorUI.visibility = View.VISIBLE
     }
 
-    private fun hideErrorUI() {
-        errorUI.visibility = View.GONE
-    }
-
-//    private fun showWebViewLoadingUI() {}
-//
-//    private fun hideWebViewLoadingUI() {}
+    private fun getWebViewPool() =
+        (requireActivity() as IndexActivity).getWebViewPool()
 
     companion object {
         const val TAG = "CONTENT_FRAGMENT"

@@ -11,6 +11,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.OnLifecycleEvent
+import kotlinx.coroutines.withTimeout
 
 class WebViewPool : LifecycleObserver {
     private val available by lazy {
@@ -88,16 +89,7 @@ class WebViewPool : LifecycleObserver {
                 webChromeClient = null
                 clearCache(true)
                 clearHistory()
-                settings.apply {
-                    setSupportZoom(false)
-                    builtInZoomControls = false
-                    displayZoomControls = false
-                    allowFileAccess = false
-                    defaultTextEncodingName = "utf-8"
-                    javaScriptEnabled = false
-                    javaScriptCanOpenWindowsAutomatically = false
-                    cacheMode = WebSettings.LOAD_NO_CACHE
-                }
+                initWebViewSettings(this)
             }
             available.add(webView)
             currentSize--
@@ -155,6 +147,11 @@ class WebViewPool : LifecycleObserver {
             ViewGroup.LayoutParams.MATCH_PARENT,
             ViewGroup.LayoutParams.MATCH_PARENT
         )
+        initWebViewSettings(webView)
+        webView.loadUrl("about:blank")
+    }
+
+    private fun initWebViewSettings(webView: WebView) {
         webView.apply {
             settings.apply {
                 setSupportZoom(false)
@@ -165,9 +162,9 @@ class WebViewPool : LifecycleObserver {
                 javaScriptEnabled = false
                 javaScriptCanOpenWindowsAutomatically = false
                 cacheMode = WebSettings.LOAD_NO_CACHE
+                blockNetworkImage = false
             }
         }
-        webView.loadUrl("about:blank")
     }
 
     private fun logd(s: String) {

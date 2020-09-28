@@ -1,7 +1,5 @@
 package com.sion.zhihudailypurified.entity;
 
-import kotlinx.android.parcel.Parcelize;
-
 public class StoryContentExtraBean {
 
     /**
@@ -48,4 +46,10 @@ public class StoryContentExtraBean {
         this.comments = comments;
     }
 
+    public StoryContentExtraBean(int long_comments, int popularity, int short_comments, int comments) {
+        this.long_comments = long_comments;
+        this.popularity = popularity;
+        this.short_comments = short_comments;
+        this.comments = comments;
+    }
 }

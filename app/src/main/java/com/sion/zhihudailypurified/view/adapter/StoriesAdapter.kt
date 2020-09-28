@@ -7,9 +7,9 @@ import androidx.databinding.DataBindingUtil
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.sion.zhihudailypurified.R
 import com.sion.banner.Banner
-import com.sion.zhihudailypurified.databinding.IndexFooterItemBinding
+import com.sion.zhihudailypurified.R
+import com.sion.zhihudailypurified.databinding.IndexStoriesFooterItemBinding
 import com.sion.zhihudailypurified.databinding.IndexStoriesItemBinding
 import com.sion.zhihudailypurified.datasource.PagedListLoadingStatus
 import com.sion.zhihudailypurified.entity.StoryBean
@@ -41,9 +41,9 @@ class StoriesAdapter(
                 return StoryViewHolder(binding)
             }
             FOOTER -> {
-                val binding = DataBindingUtil.inflate<IndexFooterItemBinding>(
+                val binding = DataBindingUtil.inflate<IndexStoriesFooterItemBinding>(
                     LayoutInflater.from(parent.context),
-                    R.layout.index_footer_item,
+                    R.layout.index_stories_footer_item,
                     parent,
                     false
                 )
@@ -54,12 +54,12 @@ class StoriesAdapter(
             }
             else -> {
                 val view = LayoutInflater.from(parent.context)
-                    .inflate(R.layout.index_top_banner_item, parent, false)
+                    .inflate(R.layout.index_stories_top_banner_item, parent, false)
                 banner = view.findViewById<Banner>(R.id.banner).apply {
                     setAdapter(
                         TopBannerAdapter(
                             fragment.vm.topStories.value!!,
-                            fragment.activity!!
+                            fragment.requireContext()
                         )
                     )
                 }
@@ -75,12 +75,22 @@ class StoriesAdapter(
                 binding.story = getItem(position - 1)
                 //获取是否已读
                 binding.story!!.isRead.set(fragment.vm.isRead(position - 1, fragment.activity!!))
-                binding.root.setOnClickListener {
-                    (fragment.activity as IndexActivity).switchToContent(
-                        fragment,
-                        ContentsDisplayFragment.STORIES,
-                        position - 1
-                    )
+                binding.root.apply {
+                    setOnClickListener {
+                        if (isOnline() == true) {
+                            (fragment.activity as IndexActivity).switchToContent(
+                                fragment,
+                                ContentsDisplayFragment.STORIES,
+                                position - 1
+                            )
+                        } else {
+                            Toast.makeText(
+                                context,
+                                resources.getText(R.string.retry_after_resume_connection),
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
                 }
             }
             is StoryFooterHolder -> {
@@ -214,6 +224,8 @@ class StoriesAdapter(
             }
         }
     }
+
+    private fun isOnline() = (fragment.requireActivity() as IndexActivity).vm.isOnline.value
 
     companion object {
         const val BANNER = 0

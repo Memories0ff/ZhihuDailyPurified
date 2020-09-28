@@ -155,6 +155,7 @@ class Banner(context: Context, attrs: AttributeSet?) : FrameLayout(context, attr
      */
     @Synchronized
     fun startRolling() {
+        stopRolling()
         if (timer == null) {
             timer = Timer()
         }
@@ -180,6 +181,7 @@ class Banner(context: Context, attrs: AttributeSet?) : FrameLayout(context, attr
     fun stopRolling() {
         timer?.let {
             it.cancel()
+            it.purge()
             timer = null
         }
         timerTask?.let {
