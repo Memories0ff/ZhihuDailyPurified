@@ -34,6 +34,7 @@ class ContentFragment(private val displayType: Int) :
     }
 
     private val webView: WebView by lazy {
+        //TODO 不再使用WebViewPool
         getWebViewPool()
             .getWebView()
             .apply {
@@ -157,11 +158,6 @@ class ContentFragment(private val displayType: Int) :
             }
         })
         vm.extra.observe(this, Observer {
-            //加载失败传入null
-//            if (it == null) {
-//                toast("点赞评论数加载失败")
-//                return@Observer
-//            }
             if (this.lifecycle.currentState == Lifecycle.State.RESUMED) {
                 vm.updateExtraInfo(it ?: StoryContentExtraBean(0, 0, 0, 0), this@ContentFragment)
             }

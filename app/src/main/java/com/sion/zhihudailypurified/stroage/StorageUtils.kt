@@ -5,7 +5,6 @@ import android.graphics.BitmapFactory
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
-import java.lang.Exception
 
 suspend fun savePicCache(cache: Bitmap): Boolean {
     var result = false

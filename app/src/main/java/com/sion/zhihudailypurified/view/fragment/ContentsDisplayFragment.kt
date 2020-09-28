@@ -33,6 +33,7 @@ class ContentsDisplayFragment(val displayType: Int, private val initialPos: Int)
 
     override fun initView() {
         ui.btnBackToStories.setOnClickListener {
+            getWebViewPool().cleanCache()
             back()
         }
         (requireActivity() as IndexActivity).vm.isOnline.observe(this, Observer {
@@ -77,9 +78,10 @@ class ContentsDisplayFragment(val displayType: Int, private val initialPos: Int)
                                 else -> it.topStories.value!![ui.vpContents.currentItem]!!.id
                             }
                         },
-                    ui.contentExtraField!!.get()!!.comments,
-                    ui.contentExtraField!!.get()!!.long_comments,
-                    ui.contentExtraField!!.get()!!.short_comments
+                    //TODO monkey测试未通过，NullPointerException（待测试）
+                    vm.contentExtraField.get()?.comments ?: 0,
+                    vm.contentExtraField.get()?.long_comments ?: 0,
+                    vm.contentExtraField.get()?.short_comments ?: 0
                 )
             } else {
                 toast(resources.getText(R.string.retry_after_resume_connection).toString())
@@ -96,12 +98,15 @@ class ContentsDisplayFragment(val displayType: Int, private val initialPos: Int)
         //TODO 普通新闻退出内容界面后列表滚动到此新闻的位置，实现不完美
         //限于stories
         if (displayType == STORIES) {
-            ((activity as FragmentActivity).supportFragmentManager.findFragmentByTag(StoriesFragment.TAG) as StoriesFragment).vm.lastPos.value =
+            ((activity as FragmentActivity).supportFragmentManager.findFragmentByTag(StoriesFragment.TAG) as StoriesFragment?)?.vm?.lastPos?.value =
                 ui.vpContents.currentItem
         }
     }
 
     private fun isOnline() = (requireActivity() as IndexActivity).vm.isOnline.value
+
+    private fun getWebViewPool() =
+        (requireActivity() as IndexActivity).getWebViewPool()
 
     companion object {
         const val TAG = "CONTENTS_DISPLAY_FRAGMENT"

@@ -11,7 +11,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.OnLifecycleEvent
-import kotlinx.coroutines.withTimeout
 
 class WebViewPool : LifecycleObserver {
     private val available by lazy {
@@ -21,8 +20,7 @@ class WebViewPool : LifecycleObserver {
         ArrayList<WebView>()
     }
     private var context: Context? = null
-    private val maxSize = 9
-    private var currentSize = 0
+    private val maxSize = 16
 
     companion object {
         private var instance: WebViewPool? = null
@@ -44,46 +42,51 @@ class WebViewPool : LifecycleObserver {
     fun getWebView(): WebView =
         if (available.size > 0) {
             val webViewTemp = available[0]
+            //防止有未从ViewGroup移出的WebView添加到其他ViewGroup中
+            (webViewTemp.parent as ViewGroup?)?.removeView(webViewTemp)
             available.removeAt(0)
             inUse.add(webViewTemp)
-            currentSize++
             logd(
                 "执行getWebView, " +
                         "available.size = ${available.size}, " +
-                        "inUse.size = ${inUse.size}, " +
-                        "currentSize = $currentSize"
+                        "inUse.size = ${inUse.size}, "
             )
             webViewTemp
         } else {
             if (context == null) {
-                throw Exception("WebViewPool需要被注册为生命周期观察者")
+                throw Exception("WebViewPool需要被注册为生命周期观察者")         //TODO monkey测试未通过（线程安全问题导致）
             }
             val webViewTemp = WebView(context)
             initWebView(webViewTemp)
             inUse.add(webViewTemp)
-            currentSize++
             logd(
                 "执行getWebView, " +
-                        "available已满, " +
+                        "available已空, " +
                         "available.size = ${available.size}, " +
-                        "inUse.size = ${inUse.size}, " +
-                        "currentSize = $currentSize"
+                        "inUse.size = ${inUse.size}, "
             )
             webViewTemp
         }
 
     @Synchronized
     fun removeWebView(_webView: WebView?) {
+        removeWebViewWithoutSync(_webView)
+    }
+
+    private fun removeWebViewWithoutSync(_webView: WebView?) {
         //TODO 是否存在问题未知
         var webView: WebView? = _webView
         if (webView == null) {
             return
         }
+        if (!inUse.remove(webView)) {
+            return
+        }
         (webView.parent as ViewGroup?)?.removeView(webView)
-        inUse.remove(webView)
         if (available.size < maxSize) {
             webView.apply {
                 stopLoading()
+                removeAllViews()
                 loadUrl("about:blank")
                 webViewClient = null
                 webChromeClient = null
@@ -92,28 +95,27 @@ class WebViewPool : LifecycleObserver {
                 initWebViewSettings(this)
             }
             available.add(webView)
-            currentSize--
             logd(
                 "执行removeWebView, " +
                         "available.size = ${available.size}, " +
-                        "inUse.size = ${inUse.size}, " +
-                        "currentSize = $currentSize"
+                        "inUse.size = ${inUse.size}, "
             )
         } else {
+            webView.removeAllViews()
+            webView.destroy()
             webView = null
-            currentSize--
             logd(
                 "执行removeWebView, " +
                         "available已满, " +
                         "available.size = ${available.size}, " +
-                        "inUse.size = ${inUse.size}, " +
-                        "currentSize = $currentSize"
+                        "inUse.size = ${inUse.size}, "
             )
         }
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
     @MainThread
+    @Synchronized
     fun onLifecycleOwnerCreate(owner: LifecycleOwner) {
         if (owner !is Context) {
             throw Exception("LifeCycleOwner必须是Context的子类")
@@ -128,6 +130,7 @@ class WebViewPool : LifecycleObserver {
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     @MainThread
+    @Synchronized
     fun onLifecycleOwnerDestroy(owner: LifecycleOwner) {
         inUse.forEach {
             it.stopLoading()
@@ -138,8 +141,15 @@ class WebViewPool : LifecycleObserver {
         available.forEach {
             it.stopLoading()
         }
-        currentSize = 0
         context = null
+    }
+
+    @Synchronized
+    fun cleanCache() {
+        Log.d("WebViewPool", "CleanCache")
+        while (inUse.isNotEmpty()) {
+            removeWebViewWithoutSync(inUse.last())
+        }
     }
 
     private fun initWebView(webView: WebView) {
