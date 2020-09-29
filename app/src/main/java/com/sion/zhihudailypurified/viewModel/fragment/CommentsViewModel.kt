@@ -6,11 +6,15 @@ import androidx.paging.PagedList
 import com.sion.zhihudailypurified.base.BaseViewModel
 import com.sion.zhihudailypurified.datasource.CommentsDataSourceFactory
 import com.sion.zhihudailypurified.entity.CommentBean
+import com.sion.zhihudailypurified.entity.StoryContentExtraBean
 import com.sion.zhihudailypurified.network.apiServices
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class CommentsViewModel : BaseViewModel() {
 
@@ -18,6 +22,11 @@ class CommentsViewModel : BaseViewModel() {
     var commentsNum = 0
     var longCommentsNum = 0
     var shortCommentsNum = 0
+
+    val extraBean by lazy {
+        //加载失败传入null
+        MutableLiveData<StoryContentExtraBean?>()
+    }
 
 //    var currentLongCommentNum = 0
 //    var currentShortCommentNum = 0
@@ -30,6 +39,26 @@ class CommentsViewModel : BaseViewModel() {
                 .setEnablePlaceholders(false)
                 .build()
         ).build()
+    }
+
+    fun obtainExtraBean(id: Int) {
+        apiServices.obtainContentExtra(id.toString()).enqueue(object :
+            Callback<StoryContentExtraBean?> {
+            override fun onResponse(
+                call: Call<StoryContentExtraBean?>,
+                response: Response<StoryContentExtraBean?>
+            ) {
+                if (response.isSuccessful) {
+                    extraBean.value = response.body()
+                } else {
+                    extraBean.value = null
+                }
+            }
+
+            override fun onFailure(call: Call<StoryContentExtraBean?>, t: Throwable) {
+                extraBean.value = null
+            }
+        })
     }
 
 //    fun obtainAllComments(id: Int) {

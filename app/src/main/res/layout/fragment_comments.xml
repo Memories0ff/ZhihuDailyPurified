@@ -4,9 +4,11 @@
 
     <data>
 
+        <import type="androidx.databinding.ObservableField" />
+
         <variable
             name="commentsNum"
-            type="int" />
+            type="ObservableField&lt;Integer>" />
 
         <variable
             name="longCommentsNum"

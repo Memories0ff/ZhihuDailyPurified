@@ -173,6 +173,9 @@ class WebViewPool : LifecycleObserver {
                 javaScriptCanOpenWindowsAutomatically = false
                 cacheMode = WebSettings.LOAD_NO_CACHE
                 blockNetworkImage = false
+                allowFileAccess = false;
+                allowFileAccessFromFileURLs = false;
+                allowUniversalAccessFromFileURLs = false;
             }
         }
     }

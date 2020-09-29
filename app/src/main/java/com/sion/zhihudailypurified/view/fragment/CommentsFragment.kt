@@ -1,5 +1,7 @@
 package com.sion.zhihudailypurified.view.fragment
 
+import android.widget.Toast
+import androidx.databinding.ObservableField
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -19,19 +21,27 @@ class CommentsFragment : BaseFragment<FragmentCommentsBinding, CommentsViewModel
     override fun setViewModel(): Class<out CommentsViewModel> = CommentsViewModel::class.java
 
     override fun initView() {
+        ui.commentsNum = ObservableField<Int>()
         ui.btnBackToContent.setOnClickListener {
             back()
         }
         vm.storyId = arguments!!.getInt(STORY_ID)   //必须先赋值id
 //        closeDefaultAnimator(ui.rvComments)         //关闭RecyclerView局部刷新动画
-        val adapter =
-            CommentsAdapter(this@CommentsFragment)
-        ui.rvComments.layoutManager = LinearLayoutManager(this@CommentsFragment.context)
-        ui.rvComments.adapter = adapter
-        ui.rvComments.addItemDecoration(CommentsDecoration(this@CommentsFragment))
-        vm.comments.observe(this@CommentsFragment, Observer {
-            adapter.submitList(it)
+        vm.extraBean.observe(this, Observer {
+            vm.commentsNum = it?.comments ?: 0
+            vm.longCommentsNum = it?.long_comments ?: 0
+            vm.shortCommentsNum = it?.short_comments ?: 0
+            ui.commentsNum?.set(vm.commentsNum)
+            if (it == null) {
+                toast(resources.getText(R.string.extra_bean_info_loading_failed).toString())
+            }
+            initCommentList()
         })
+        if (vm.commentsNum == 0) {
+            vm.obtainExtraBean(vm.storyId)
+        } else {
+            initCommentList()
+        }
 
     }
 
@@ -39,7 +49,7 @@ class CommentsFragment : BaseFragment<FragmentCommentsBinding, CommentsViewModel
         vm.commentsNum = arguments!!.getInt(COMMENTS_NUM)
         vm.longCommentsNum = arguments!!.getInt(LONG_COMMENTS_NUM)
         vm.shortCommentsNum = arguments!!.getInt(SHORT_COMMENTS_NUM)
-        ui.commentsNum = vm.commentsNum
+        ui.commentsNum?.set(vm.commentsNum)
     }
 
     /**
@@ -55,6 +65,20 @@ class CommentsFragment : BaseFragment<FragmentCommentsBinding, CommentsViewModel
 //        }
 //    }
 
+    private fun initCommentList() {
+        val adapter =
+            CommentsAdapter(this@CommentsFragment)
+        ui.rvComments.layoutManager = LinearLayoutManager(this@CommentsFragment.context)
+        ui.rvComments.adapter = adapter
+        ui.rvComments.addItemDecoration(CommentsDecoration(this@CommentsFragment))
+        vm.comments.observe(this@CommentsFragment, Observer {
+            adapter.submitList(it)
+        })
+    }
+
+    fun toast(s: String) {
+        Toast.makeText(requireContext(), s, Toast.LENGTH_SHORT).show()
+    }
 
     companion object {
         const val TAG = "COMMENTS_FRAGMENT"
