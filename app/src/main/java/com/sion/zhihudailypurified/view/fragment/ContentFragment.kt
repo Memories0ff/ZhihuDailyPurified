@@ -34,9 +34,8 @@ class ContentFragment(private val displayType: Int) :
     }
 
     private val webView: WebView by lazy {
-        //TODO 不再使用WebViewPool
         getWebViewPool()
-            .getWebView()
+            .getWebView(requireContext())
             .apply {
                 settings.apply {
                     //先加载文字再加载图片

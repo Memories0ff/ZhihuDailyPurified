@@ -27,7 +27,6 @@ class ContentViewModel : BaseViewModel() {
     fun obtainStoryContentAndExtra(id: Int) {
         //1、从数据库中获取内容和额外信息，没有则从网络中加载并展示
         //2、额外信息从网络中获取并更新到数据库中并展示
-        //TODO 额外信息不需要更新到数据库
         GlobalScope.launch(Dispatchers.Main) {
             var isContentFromWeb = false
             val storyContent = withContext(Dispatchers.IO) {

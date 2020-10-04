@@ -170,7 +170,7 @@ class Banner(context: Context, attrs: AttributeSet?) : FrameLayout(context, attr
                 }
             }
         }
-        //TODO java.lang.IllegalStateException: Task already scheduled or cancelled
+        //TODO java.lang.IllegalStateException: Task already scheduled or cancelled（是否解决待验证）
         timer!!.schedule(timerTask, period, period)
     }
 

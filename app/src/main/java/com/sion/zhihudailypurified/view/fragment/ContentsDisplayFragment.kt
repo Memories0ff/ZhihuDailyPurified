@@ -78,7 +78,6 @@ class ContentsDisplayFragment(val displayType: Int, private val initialPos: Int)
                                 else -> it.topStories.value!![ui.vpContents.currentItem]!!.id
                             }
                         },
-                    //TODO monkey测试未通过，NullPointerException（待测试）
                     vm.contentExtraField.get()?.comments ?: 0,
                     vm.contentExtraField.get()?.long_comments ?: 0,
                     vm.contentExtraField.get()?.short_comments ?: 0

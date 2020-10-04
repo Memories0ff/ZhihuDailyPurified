@@ -19,15 +19,19 @@ class WebViewPool : LifecycleObserver {
     private val inUse by lazy {
         ArrayList<WebView>()
     }
-    private var context: Context? = null
+
+    //    private var context: Context? = null
     private val maxSize = 16
 
     companion object {
+        private val lock = byteArrayOf()
+
+        @Volatile
         private var instance: WebViewPool? = null
 
         fun getInstance(): WebViewPool {
             if (instance == null) {
-                synchronized(this) {
+                synchronized(WebViewPool::class.java) {
                     if (instance == null) {
                         instance = WebViewPool()
                     }
@@ -38,39 +42,43 @@ class WebViewPool : LifecycleObserver {
 
     }
 
-    @Synchronized
-    fun getWebView(): WebView =
-        if (available.size > 0) {
-            val webViewTemp = available[0]
-            //防止有未从ViewGroup移出的WebView添加到其他ViewGroup中
-            (webViewTemp.parent as ViewGroup?)?.removeView(webViewTemp)
-            available.removeAt(0)
-            inUse.add(webViewTemp)
-            logd(
-                "执行getWebView, " +
-                        "available.size = ${available.size}, " +
-                        "inUse.size = ${inUse.size}, "
-            )
-            webViewTemp
-        } else {
-            if (context == null) {
-                throw Exception("WebViewPool需要被注册为生命周期观察者")         //TODO monkey测试未通过（线程安全问题导致）
+    fun getWebView(context: Context): WebView {
+        synchronized(lock) {
+            if (available.size > 0) {
+                val webViewTemp = available[0]
+                //防止有未从ViewGroup移出的WebView添加到其他ViewGroup中
+                (webViewTemp.parent as ViewGroup?)?.removeView(webViewTemp)
+                available.removeAt(0)
+                inUse.add(webViewTemp)
+                logd(
+                    "执行getWebView, " +
+                            "available.size = ${available.size}, " +
+                            "inUse.size = ${inUse.size}, "
+                )
+                return webViewTemp
+            } else {
+                if (context == null) {
+                    throw Exception("获取WebView需要Context")
+                }
+                val webViewTemp = WebView(context)
+                initWebView(webViewTemp)
+                inUse.add(webViewTemp)
+                logd(
+                    "执行getWebView, " +
+                            "available已空, " +
+                            "available.size = ${available.size}, " +
+                            "inUse.size = ${inUse.size}, "
+                )
+                return webViewTemp
             }
-            val webViewTemp = WebView(context)
-            initWebView(webViewTemp)
-            inUse.add(webViewTemp)
-            logd(
-                "执行getWebView, " +
-                        "available已空, " +
-                        "available.size = ${available.size}, " +
-                        "inUse.size = ${inUse.size}, "
-            )
-            webViewTemp
         }
+    }
 
     @Synchronized
     fun removeWebView(_webView: WebView?) {
-        removeWebViewWithoutSync(_webView)
+        synchronized(lock) {
+            removeWebViewWithoutSync(_webView)
+        }
     }
 
     private fun removeWebViewWithoutSync(_webView: WebView?) {
@@ -84,16 +92,7 @@ class WebViewPool : LifecycleObserver {
         }
         (webView.parent as ViewGroup?)?.removeView(webView)
         if (available.size < maxSize) {
-            webView.apply {
-                stopLoading()
-                removeAllViews()
-                loadUrl("about:blank")
-                webViewClient = null
-                webChromeClient = null
-                clearCache(true)
-                clearHistory()
-                initWebViewSettings(this)
-            }
+            recycleWebView(webView)
             available.add(webView)
             logd(
                 "执行removeWebView, " +
@@ -115,40 +114,67 @@ class WebViewPool : LifecycleObserver {
 
     @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
     @MainThread
-    @Synchronized
-    fun onLifecycleOwnerCreate(owner: LifecycleOwner) {
-        if (owner !is Context) {
-            throw Exception("LifeCycleOwner必须是Context的子类")
+    fun create(owner: LifecycleOwner) {
+        synchronized(lock) {
+            if (owner !is Context) {
+                throw Exception("Context必须实现LifeCycleOwner接口")
+            }
+            for (i in 0 until maxSize) {
+                val webView = WebView(owner)
+                initWebView(webView)
+                available.add(webView)
+            }
         }
-        context = owner
-        for (i in 0 until maxSize) {
-            val webView = WebView(owner)
-            initWebView(webView)
-            available.add(webView)
+    }
+
+    @MainThread
+    fun create(context: Context) {
+        synchronized(lock) {
+            for (i in 0 until maxSize) {
+                val webView = WebView(context)
+                initWebView(webView)
+                available.add(webView)
+            }
         }
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     @MainThread
-    @Synchronized
-    fun onLifecycleOwnerDestroy(owner: LifecycleOwner) {
-        inUse.forEach {
-            it.stopLoading()
-            it.settings.javaScriptEnabled = false
-            it.clearCache(true)
-            it.clearHistory()
+    fun destroy(owner: LifecycleOwner) {
+        synchronized(this) {
+            inUse.forEach {
+                it.stopLoading()
+                it.settings.javaScriptEnabled = false
+                it.clearCache(false)
+                it.clearHistory()
+            }
+            available.forEach {
+                it.stopLoading()
+            }
         }
-        available.forEach {
-            it.stopLoading()
-        }
-        context = null
     }
 
-    @Synchronized
+    @MainThread
+    fun destroy() {
+        synchronized(this) {
+            inUse.forEach {
+                it.stopLoading()
+                it.settings.javaScriptEnabled = false
+                it.clearCache(false)
+                it.clearHistory()
+            }
+            available.forEach {
+                it.stopLoading()
+            }
+        }
+    }
+
     fun cleanCache() {
-        Log.d("WebViewPool", "CleanCache")
-        while (inUse.isNotEmpty()) {
-            removeWebViewWithoutSync(inUse.last())
+        synchronized(lock) {
+            Log.d("WebViewPool", "CleanCache")
+            while (inUse.isNotEmpty()) {
+                removeWebViewWithoutSync(inUse.last())
+            }
         }
     }
 
@@ -173,10 +199,23 @@ class WebViewPool : LifecycleObserver {
                 javaScriptCanOpenWindowsAutomatically = false
                 cacheMode = WebSettings.LOAD_NO_CACHE
                 blockNetworkImage = false
-                allowFileAccess = false;
-                allowFileAccessFromFileURLs = false;
-                allowUniversalAccessFromFileURLs = false;
+                allowFileAccess = false
+                allowFileAccessFromFileURLs = false
+                allowUniversalAccessFromFileURLs = false
             }
+        }
+    }
+
+    private fun recycleWebView(webView: WebView) {
+        webView.apply {
+            stopLoading()
+            removeAllViews()
+            loadUrl("about:blank")
+            webViewClient = null
+            webChromeClient = null
+            clearCache(false)
+            clearHistory()
+            initWebViewSettings(this)
         }
     }
 
