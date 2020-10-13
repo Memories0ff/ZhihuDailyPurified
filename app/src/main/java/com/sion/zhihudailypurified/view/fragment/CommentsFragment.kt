@@ -1,5 +1,6 @@
 package com.sion.zhihudailypurified.view.fragment
 
+import android.util.Log
 import android.widget.Toast
 import androidx.databinding.ObservableField
 import androidx.lifecycle.Observer
@@ -10,9 +11,9 @@ import com.sion.zhihudailypurified.R
 import com.sion.zhihudailypurified.view.adapter.CommentsAdapter
 import com.sion.zhihudailypurified.base.BaseFragment
 import com.sion.zhihudailypurified.databinding.FragmentCommentsBinding
+import com.sion.zhihudailypurified.datasource.PagedListLoadingStatus
 import com.sion.zhihudailypurified.view.itemDecoration.CommentsDecoration
 import com.sion.zhihudailypurified.viewModel.fragment.CommentsViewModel
-
 
 class CommentsFragment : BaseFragment<FragmentCommentsBinding, CommentsViewModel>() {
 
@@ -21,11 +22,36 @@ class CommentsFragment : BaseFragment<FragmentCommentsBinding, CommentsViewModel
     override fun setViewModel(): Class<out CommentsViewModel> = CommentsViewModel::class.java
 
     override fun initView() {
+        vm.storyId = arguments!!.getInt(STORY_ID)   //必须先赋值id
         ui.commentsNum = ObservableField<Int>()
         ui.btnBackToContent.setOnClickListener {
             back()
         }
-        vm.storyId = arguments!!.getInt(STORY_ID)   //必须先赋值id
+        vm.pagedListLoadingStatus.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                PagedListLoadingStatus.INITIAL_LOADING -> {
+                    Log.d("CommentsFragment", "initView: Initial loading")
+                }
+                PagedListLoadingStatus.INITIAL_LOADED -> {
+                    Log.d("CommentsFragment", "initView: Initial loaded")
+                }
+                PagedListLoadingStatus.INITIAL_FAILED -> {
+                    Log.d("CommentsFragment", "initView: Initial failed")
+                }
+                PagedListLoadingStatus.AFTER_LOADING -> {
+                    Log.d("CommentsFragment", "initView: After loading")
+                }
+                PagedListLoadingStatus.AFTER_LOADED -> {
+                    Log.d("CommentsFragment", "initView: After loaded")
+                }
+                PagedListLoadingStatus.AFTER_FAILED -> {
+                    Log.d("CommentsFragment", "initView: After failed")
+                }
+                else -> {
+                    Log.d("CommentsFragment", "initView: Completed")
+                }
+            }
+        })
 //        closeDefaultAnimator(ui.rvComments)         //关闭RecyclerView局部刷新动画
         vm.extraBean.observe(this, Observer {
             vm.commentsNum = it?.comments ?: 0

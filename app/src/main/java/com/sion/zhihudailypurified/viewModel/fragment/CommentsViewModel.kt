@@ -1,6 +1,7 @@
 package com.sion.zhihudailypurified.viewModel.fragment
 
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import com.sion.zhihudailypurified.base.BaseViewModel
@@ -23,12 +24,17 @@ class CommentsViewModel : BaseViewModel() {
         MutableLiveData<StoryContentExtraBean?>()
     }
 
-//    var currentLongCommentNum = 0
-//    var currentShortCommentNum = 0
+    //    var currentLongCommentNum = 0
+    //    var currentShortCommentNum = 0
+    private val factory by lazy { CommentsDataSourceFactory(storyId) }
+
+    val pagedListLoadingStatus by lazy {
+        Transformations.switchMap(factory.dataSource) { it.loadingStatus }
+    }
 
     val comments by lazy {
         LivePagedListBuilder(
-            CommentsDataSourceFactory(storyId),
+            factory,
             PagedList.Config.Builder()
                 .setPageSize(35)
                 .setEnablePlaceholders(false)
@@ -54,6 +60,11 @@ class CommentsViewModel : BaseViewModel() {
                 extraBean.value = null
             }
         })
+    }
+
+    //列表加载失败的重试
+    fun retry() {
+        factory.dataSource.value?.retry?.invoke()
     }
 
 //    fun obtainAllComments(id: Int) {

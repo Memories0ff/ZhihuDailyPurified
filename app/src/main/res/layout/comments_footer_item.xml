@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+        <import type="com.sion.zhihudailypurified.datasource.PagedListLoadingStatus" />
+
+        <import type="android.view.View" />
+
+        <variable
+            name="status"
+            type="PagedListLoadingStatus" />
+
+    </data>
+
+    <LinearLayout
+        android:id="@+id/llBtnRetry"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:clickable="@{status==PagedListLoadingStatus.AFTER_FAILED}"
+        android:gravity="center"
+        android:padding="10dp">
+
+        <ProgressBar
+            android:id="@+id/pbLoading"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="@{status==PagedListLoadingStatus.AFTER_LOADING?View.VISIBLE:View.GONE}" />
+
+        <TextView
+            android:id="@+id/tvLoading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:text="@string/loading"
+            android:visibility="@{status==PagedListLoadingStatus.AFTER_LOADING?View.VISIBLE:View.GONE}" />
+
+        <TextView
+            android:id="@+id/tvLoadingFailed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/loading_failed"
+            android:visibility="@{status==PagedListLoadingStatus.AFTER_FAILED?View.VISIBLE:View.GONE}" />
+
+        <TextView
+            android:id="@+id/tvComplete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/loading_complete"
+            android:visibility="@{status==PagedListLoadingStatus.COMPLETED?View.VISIBLE:View.GONE}" />
+    </LinearLayout>
+</layout>
