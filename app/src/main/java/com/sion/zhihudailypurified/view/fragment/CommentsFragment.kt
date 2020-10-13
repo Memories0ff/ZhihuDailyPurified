@@ -27,31 +27,6 @@ class CommentsFragment : BaseFragment<FragmentCommentsBinding, CommentsViewModel
         ui.btnBackToContent.setOnClickListener {
             back()
         }
-        vm.pagedListLoadingStatus.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                PagedListLoadingStatus.INITIAL_LOADING -> {
-                    Log.d("CommentsFragment", "initView: Initial loading")
-                }
-                PagedListLoadingStatus.INITIAL_LOADED -> {
-                    Log.d("CommentsFragment", "initView: Initial loaded")
-                }
-                PagedListLoadingStatus.INITIAL_FAILED -> {
-                    Log.d("CommentsFragment", "initView: Initial failed")
-                }
-                PagedListLoadingStatus.AFTER_LOADING -> {
-                    Log.d("CommentsFragment", "initView: After loading")
-                }
-                PagedListLoadingStatus.AFTER_LOADED -> {
-                    Log.d("CommentsFragment", "initView: After loaded")
-                }
-                PagedListLoadingStatus.AFTER_FAILED -> {
-                    Log.d("CommentsFragment", "initView: After failed")
-                }
-                else -> {
-                    Log.d("CommentsFragment", "initView: Completed")
-                }
-            }
-        })
 //        closeDefaultAnimator(ui.rvComments)         //关闭RecyclerView局部刷新动画
         vm.extraBean.observe(this, Observer {
             vm.commentsNum = it?.comments ?: 0
@@ -93,7 +68,33 @@ class CommentsFragment : BaseFragment<FragmentCommentsBinding, CommentsViewModel
 
     private fun initCommentList() {
         val adapter =
-            CommentsAdapter(this@CommentsFragment)
+            CommentsAdapter(this@CommentsFragment, PagedListLoadingStatus.INITIAL_LOADING, vm)
+        vm.pagedListLoadingStatus.observe(viewLifecycleOwner, Observer {
+            adapter.updateLoadingStatus(it)
+            when (it) {
+                PagedListLoadingStatus.INITIAL_LOADING -> {
+                    Log.d("CommentsFragment", "initView: Initial loading")
+                }
+                PagedListLoadingStatus.INITIAL_LOADED -> {
+                    Log.d("CommentsFragment", "initView: Initial loaded")
+                }
+                PagedListLoadingStatus.INITIAL_FAILED -> {
+                    Log.d("CommentsFragment", "initView: Initial failed")
+                }
+                PagedListLoadingStatus.AFTER_LOADING -> {
+                    Log.d("CommentsFragment", "initView: After loading")
+                }
+                PagedListLoadingStatus.AFTER_LOADED -> {
+                    Log.d("CommentsFragment", "initView: After loaded")
+                }
+                PagedListLoadingStatus.AFTER_FAILED -> {
+                    Log.d("CommentsFragment", "initView: After failed")
+                }
+                else -> {
+                    Log.d("CommentsFragment", "initView: Completed")
+                }
+            }
+        })
         ui.rvComments.layoutManager = LinearLayoutManager(this@CommentsFragment.context)
         ui.rvComments.adapter = adapter
         ui.rvComments.addItemDecoration(CommentsDecoration(this@CommentsFragment))
