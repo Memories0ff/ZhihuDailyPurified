@@ -5,13 +5,8 @@ import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import com.sion.zhihudailypurified.base.BaseViewModel
 import com.sion.zhihudailypurified.datasource.CommentsDataSourceFactory
-import com.sion.zhihudailypurified.entity.CommentBean
 import com.sion.zhihudailypurified.entity.StoryContentExtraBean
 import com.sion.zhihudailypurified.network.apiServices
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
