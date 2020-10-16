@@ -1,21 +1,31 @@
 package com.sion.zhihudailypurified.view.fragment
 
 import android.util.Log
+import android.view.View
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.databinding.ObservableField
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.SimpleItemAnimator
 import com.sion.zhihudailypurified.R
-import com.sion.zhihudailypurified.view.adapter.CommentsAdapter
 import com.sion.zhihudailypurified.base.BaseFragment
 import com.sion.zhihudailypurified.databinding.FragmentCommentsBinding
 import com.sion.zhihudailypurified.datasource.PagedListLoadingStatus
+import com.sion.zhihudailypurified.view.adapter.CommentsAdapter
 import com.sion.zhihudailypurified.view.itemDecoration.CommentsDecoration
 import com.sion.zhihudailypurified.viewModel.fragment.CommentsViewModel
 
 class CommentsFragment : BaseFragment<FragmentCommentsBinding, CommentsViewModel>() {
+
+    //出错界面
+    private val errorUI by lazy {
+        ui.vsError.viewStub!!.inflate().findViewById<LinearLayout>(R.id.llClickRetry).apply {
+            setOnClickListener {
+                update()
+                hideError()
+            }
+        }
+    }
 
     override fun setLayoutId(): Int = R.layout.fragment_comments
 
@@ -66,6 +76,7 @@ class CommentsFragment : BaseFragment<FragmentCommentsBinding, CommentsViewModel
 //        }
 //    }
 
+    //初始化CommentList的辅助方法
     private fun initCommentList() {
         val adapter =
             CommentsAdapter(this@CommentsFragment, PagedListLoadingStatus.INITIAL_LOADING, vm)
@@ -77,9 +88,11 @@ class CommentsFragment : BaseFragment<FragmentCommentsBinding, CommentsViewModel
                 }
                 PagedListLoadingStatus.INITIAL_LOADED -> {
                     Log.d("CommentsFragment", "initView: Initial loaded")
+                    initialLoadingFinish()
                 }
                 PagedListLoadingStatus.INITIAL_FAILED -> {
                     Log.d("CommentsFragment", "initView: Initial failed")
+                    showError()
                 }
                 PagedListLoadingStatus.AFTER_LOADING -> {
                     Log.d("CommentsFragment", "initView: After loading")
@@ -105,6 +118,24 @@ class CommentsFragment : BaseFragment<FragmentCommentsBinding, CommentsViewModel
 
     fun toast(s: String) {
         Toast.makeText(requireContext(), s, Toast.LENGTH_SHORT).show()
+    }
+
+    //初始加载完毕
+    private fun initialLoadingFinish() {
+        //显示界面
+        ui.rvComments.visibility = View.VISIBLE
+    }
+
+    private fun showError() {
+        errorUI.visibility = View.VISIBLE
+    }
+
+    private fun hideError() {
+        errorUI.visibility = View.GONE
+    }
+
+    private fun update() {
+        vm.updateData()
     }
 
     companion object {

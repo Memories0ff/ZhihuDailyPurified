@@ -62,6 +62,11 @@ class CommentsViewModel : BaseViewModel() {
         })
     }
 
+    //刷新评论列表
+    fun updateData() {
+        factory.dataSource.value?.invalidate()
+    }
+
     //列表加载失败的重试
     fun retry() {
         factory.dataSource.value?.retry?.invoke()
