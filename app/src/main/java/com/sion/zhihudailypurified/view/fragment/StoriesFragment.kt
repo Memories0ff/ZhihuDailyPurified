@@ -5,6 +5,7 @@ import android.view.View
 import android.widget.LinearLayout
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.sion.zhihudailypurified.R
 import com.sion.zhihudailypurified.base.BaseFragment
 import com.sion.zhihudailypurified.databinding.FragmentStoriesBinding
@@ -20,13 +21,15 @@ class StoriesFragment : BaseFragment<FragmentStoriesBinding, StoriesViewModel>()
     private val errorUI: LinearLayout by lazy {
         ui.vsError.viewStub!!.inflate().findViewById<LinearLayout>(R.id.llClickRetry).apply {
             setOnClickListener {
-                update()
                 hideError()
+                update()
             }
         }
     }
 
-    private lateinit var adapter: StoriesAdapter
+    private val adapter by lazy {
+        StoriesAdapter(this, PagedListLoadingStatus.INITIAL_LOADING, vm)
+    }
 
     override fun setLayoutId(): Int {
         return R.layout.fragment_stories
@@ -71,8 +74,9 @@ class StoriesFragment : BaseFragment<FragmentStoriesBinding, StoriesViewModel>()
             when (it) {
                 TopStoriesLoadingStatus.LOADED -> {
                     //保证加载完top再加载今日stories
-                    val adapter = StoriesAdapter(this, PagedListLoadingStatus.INITIAL_LOADING, vm)
-                    this@StoriesFragment.adapter = adapter
+//                    val adapter = StoriesAdapter(this, PagedListLoadingStatus.INITIAL_LOADING, vm)
+//                    this@StoriesFragment.adapter = adapter
+                    removeAllDecorations(ui.rvStories)
                     ui.rvStories.adapter = adapter
                     ui.rvStories.layoutManager = LinearLayoutManager(activity)
                     ui.rvStories.addItemDecoration(DateDecoration(this))
@@ -92,6 +96,9 @@ class StoriesFragment : BaseFragment<FragmentStoriesBinding, StoriesViewModel>()
                 }
             }
         })
+        ui.srlIndexRefresh.setOnRefreshListener {
+            update()
+        }
     }
 
     override fun onHide() {
@@ -106,9 +113,18 @@ class StoriesFragment : BaseFragment<FragmentStoriesBinding, StoriesViewModel>()
         adapter.banner?.startRolling()
     }
 
+    //删除RecyclerView所有decoration，防止decoration随着刷新间距变大
+    private fun removeAllDecorations(recyclerView: RecyclerView) {
+        recyclerView.invalidateItemDecorations()
+        for (n in 0 until recyclerView.itemDecorationCount) {
+            recyclerView.removeItemDecorationAt(0)
+        }
+    }
+
     //初始加载完毕
     private fun initialLoadingFinish() {
         //显示界面
+        ui.srlIndexRefresh.isRefreshing = false
         ui.llStoriesRoot.visibility = View.VISIBLE
     }
 
@@ -119,15 +135,19 @@ class StoriesFragment : BaseFragment<FragmentStoriesBinding, StoriesViewModel>()
 
     //更新
     private fun update() {
+        adapter.banner?.stopRolling()
+        ui.llStoriesRoot.visibility = View.GONE
         vm.updateData()
     }
 
     //显示和隐藏错误信息
     private fun showError() {
+        ui.srlIndexRefresh.isRefreshing = false
         errorUI.visibility = View.VISIBLE
     }
 
     private fun hideError() {
+        ui.srlIndexRefresh.isRefreshing = true
         errorUI.visibility = View.GONE
     }
 
