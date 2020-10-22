@@ -1,7 +1,6 @@
 package com.sion.zhihudailypurified.view.itemDecoration
 
 import android.graphics.*
-import android.util.Log
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView

@@ -38,7 +38,7 @@ class CommentsFragment : BaseFragment<FragmentCommentsBinding, CommentsViewModel
             back()
         }
 //        closeDefaultAnimator(ui.rvComments)         //关闭RecyclerView局部刷新动画
-        vm.extraBean.observe(this, Observer {
+        vm.extraBean.observe(viewLifecycleOwner, Observer {
             vm.commentsNum = it?.comments ?: 0
             vm.longCommentsNum = it?.long_comments ?: 0
             vm.shortCommentsNum = it?.short_comments ?: 0
@@ -111,7 +111,7 @@ class CommentsFragment : BaseFragment<FragmentCommentsBinding, CommentsViewModel
         ui.rvComments.layoutManager = LinearLayoutManager(this@CommentsFragment.context)
         ui.rvComments.adapter = adapter
         ui.rvComments.addItemDecoration(CommentsDecoration(this@CommentsFragment))
-        vm.comments.observe(this@CommentsFragment, Observer {
+        vm.comments.observe(this@CommentsFragment.viewLifecycleOwner, Observer {
             adapter.submitList(it)
         })
     }

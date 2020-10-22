@@ -132,7 +132,7 @@ class ContentFragment(private val displayType: Int) :
 
         ui.llContent.addView(webView)
 
-        vm.content.observe(this, Observer {
+        vm.content.observe(viewLifecycleOwner, Observer {
             //加载失败传入null
             if (it == null) {
                 //内容加载失败的处理
@@ -156,7 +156,7 @@ class ContentFragment(private val displayType: Int) :
                 loadData(htmlData, "text/html;charset=UTF-8", null)
             }
         })
-        vm.extra.observe(this, Observer {
+        vm.extra.observe(viewLifecycleOwner, Observer {
             if (this.lifecycle.currentState == Lifecycle.State.RESUMED) {
                 vm.updateExtraInfo(it ?: StoryContentExtraBean(0, 0, 0, 0), this@ContentFragment)
             }

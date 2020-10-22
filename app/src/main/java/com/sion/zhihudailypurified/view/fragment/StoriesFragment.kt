@@ -40,33 +40,41 @@ class StoriesFragment : BaseFragment<FragmentStoriesBinding, StoriesViewModel>()
     }
 
     override fun initView() {
-
+        vm.stories.observe(
+            viewLifecycleOwner,
+            Observer { t -> adapter.submitList(t) }
+        )
+        vm.lastPos.observe(viewLifecycleOwner, Observer {
+            Log.d("lastPos.observe", "initView: ${it + 1}")
+            adapter.smoothMoveToPosition(ui.rvStories, it + 1)
+        })
         vm.pagedListLoadingStatus.observe(viewLifecycleOwner, Observer {
             adapter.updateLoadingStatus(it)
             when (it) {
                 PagedListLoadingStatus.INITIAL_LOADING -> {
-                    Log.d("StoriesFragment", "initView: Initial loading")
+//                    Log.d("StoriesFragment", "initView: Initial loading")
                 }
                 PagedListLoadingStatus.INITIAL_LOADED -> {
-                    Log.d("StoriesFragment", "initView: Initial loaded")
+//                    Log.d("StoriesFragment", "initView: Initial loaded")
                     //今日stories加载完再显示界面
                     initialLoadingFinish()
                 }
                 PagedListLoadingStatus.INITIAL_FAILED -> {
-                    Log.d("StoriesFragment", "initView: Initial failed")
+//                    Log.d("StoriesFragment", "initView: Initial failed")
                     showError()
                 }
                 PagedListLoadingStatus.AFTER_LOADING -> {
                     Log.d("StoriesFragment", "initView: After loading")
                 }
                 PagedListLoadingStatus.AFTER_LOADED -> {
+                    //TODO 刷新时不应该被调用一次
                     Log.d("StoriesFragment", "initView: After loaded")
                 }
                 PagedListLoadingStatus.AFTER_FAILED -> {
-                    Log.d("StoriesFragment", "initView: After failed")
+//                    Log.d("StoriesFragment", "initView: After failed")
                 }
                 else -> {
-                    Log.d("StoriesFragment", "initView: Completed")
+//                    Log.d("StoriesFragment", "initView: Completed")
                 }
             }
         })
@@ -83,10 +91,6 @@ class StoriesFragment : BaseFragment<FragmentStoriesBinding, StoriesViewModel>()
 
                     //与变量adapter关联的操作
                     //保证先初始化stories列表再执行这些操作
-                    vm.stories.observe(this, Observer { adapter.submitList(it) })
-                    vm.lastPos.observe(this, Observer {
-                        adapter.smoothMoveToPosition(ui.rvStories, it + 1)
-                    })
                 }
                 TopStoriesLoadingStatus.FAILED -> {
                     showError()
@@ -97,6 +101,9 @@ class StoriesFragment : BaseFragment<FragmentStoriesBinding, StoriesViewModel>()
             }
         })
         ui.srlIndexRefresh.setOnRefreshListener {
+            if (errorUI.visibility == View.VISIBLE) {
+                hideError()
+            }
             update()
         }
     }
@@ -121,11 +128,21 @@ class StoriesFragment : BaseFragment<FragmentStoriesBinding, StoriesViewModel>()
         }
     }
 
+//    //关闭默认局部刷新动画
+//    private fun closeDefaultAnimator(recyclerView: RecyclerView) {
+//        recyclerView.itemAnimator?.addDuration = 0
+//        recyclerView.itemAnimator?.changeDuration = 0
+//        recyclerView.itemAnimator?.moveDuration = 0
+//        recyclerView.itemAnimator?.removeDuration = 0
+//        (recyclerView.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
+//    }
+
     //初始加载完毕
     private fun initialLoadingFinish() {
         //显示界面
         ui.srlIndexRefresh.isRefreshing = false
         ui.llStoriesRoot.visibility = View.VISIBLE
+        ui.rvStories.visibility = View.VISIBLE
     }
 
 
@@ -136,6 +153,7 @@ class StoriesFragment : BaseFragment<FragmentStoriesBinding, StoriesViewModel>()
     //更新
     private fun update() {
         adapter.banner?.stopRolling()
+        ui.rvStories.visibility = View.GONE
         ui.llStoriesRoot.visibility = View.GONE
         vm.updateData()
     }

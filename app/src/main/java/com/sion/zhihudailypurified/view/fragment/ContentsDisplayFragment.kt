@@ -36,7 +36,7 @@ class ContentsDisplayFragment(val displayType: Int, private val initialPos: Int)
             getWebViewPool().cleanCache()
             back()
         }
-        (requireActivity() as IndexActivity).vm.isOnline.observe(this, Observer {
+        (requireActivity() as IndexActivity).vm.isOnline.observe(viewLifecycleOwner, Observer {
             //可以联网时才可左右滑动
             ui.vpContents.isUserInputEnabled = it
         })
