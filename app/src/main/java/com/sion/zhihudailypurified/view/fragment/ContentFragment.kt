@@ -159,6 +159,7 @@ class ContentFragment(private val displayType: Int) :
         vm.extra.observe(viewLifecycleOwner, Observer {
             if (this.lifecycle.currentState == Lifecycle.State.RESUMED) {
                 vm.updateExtraInfo(it ?: StoryContentExtraBean(0, 0, 0, 0), this@ContentFragment)
+                vm.updateCollectionInfo(storyId, this@ContentFragment)
             }
         })
     }
@@ -172,6 +173,7 @@ class ContentFragment(private val displayType: Int) :
         //更新底部点赞评论数信息
         vm.extra.value.let {
             vm.updateExtraInfo(it ?: StoryContentExtraBean(0, 0, 0, 0), this)
+            vm.updateCollectionInfo(storyId, this)
         }
     }
 

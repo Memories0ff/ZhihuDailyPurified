@@ -42,6 +42,11 @@ class ContentsDisplayFragment(val displayType: Int, private val initialPos: Int)
         })
         //用于更新额外信息，立即在ui响应
         ui.contentExtraField = vm.contentExtraField
+        //用于更新是否收藏图标信息，立即在ui响应
+        ui.collectionImageField = vm.collectionImageField
+        vm.collectionImageLiveData.observe(viewLifecycleOwner, Observer {
+            ui.collectionImageField!!.set(vm.queryCollection(it))
+        })
         //设置viewpager
         ui.vpContents.apply {
             adapter = ContentsVPAdapter(
@@ -82,6 +87,30 @@ class ContentsDisplayFragment(val displayType: Int, private val initialPos: Int)
                     vm.contentExtraField.get()?.long_comments ?: 0,
                     vm.contentExtraField.get()?.short_comments ?: 0
                 )
+            } else {
+                toast(resources.getText(R.string.retry_after_resume_connection).toString())
+            }
+        }
+        ui.ivBtnCollect.setOnClickListener {
+            if (isOnline() == true) {
+                val storyId = (requireActivity()
+                    .supportFragmentManager
+                    .findFragmentByTag(StoriesFragment.TAG) as StoriesFragment)
+                    .vm.let {
+                        when (displayType) {
+                            STORIES -> it.stories.value!![ui.vpContents.currentItem]!!.id
+                            else -> it.topStories.value!![ui.vpContents.currentItem]!!.id
+                        }
+                    }
+                if (vm.queryCollection(storyId)) {
+                    //取消收藏
+                    vm.removeCollection(storyId)
+                    ui.collectionImageField!!.set(false)
+                } else {
+                    //进行收藏
+                    vm.insertCollection(storyId)
+                    ui.collectionImageField!!.set(true)
+                }
             } else {
                 toast(resources.getText(R.string.retry_after_resume_connection).toString())
             }

@@ -3,6 +3,7 @@ package com.sion.zhihudailypurified
 import android.app.Application
 import android.content.Context
 import android.content.res.Resources
+import com.tencent.mmkv.MMKV
 
 class App : Application() {
 
@@ -10,6 +11,7 @@ class App : Application() {
         super.onCreate()
         appContext = applicationContext
         appResources = resources
+        MMKV.initialize(this)
     }
 
     companion object {

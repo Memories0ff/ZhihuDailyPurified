@@ -116,4 +116,11 @@ class ContentViewModel : BaseViewModel() {
             .findFragmentByTag(ContentsDisplayFragment.TAG) as ContentsDisplayFragment?)
             ?.vm?.contentExtraField?.set(storyContentExtraBean)
     }
+
+    //更新是否收藏
+    fun updateCollectionInfo(storyId: Int, fragment: Fragment) {
+        (fragment.requireActivity().supportFragmentManager
+            .findFragmentByTag(ContentsDisplayFragment.TAG) as ContentsDisplayFragment?)
+            ?.vm?.collectionImageLiveData?.value = storyId
+    }
 }

@@ -10,6 +10,10 @@
             name="contentExtraField"
             type="androidx.databinding.ObservableField&lt;StoryContentExtraBean>" />
 
+        <variable
+            name="collectionImageField"
+            type="androidx.databinding.ObservableField&lt;Boolean>" />
+
     </data>
 
     <LinearLayout
@@ -117,12 +121,12 @@
                 android:layout_weight="1" />
 
             <ImageView
-                android:id="@+id/ivBtnShare"
+                android:id="@+id/ivBtnCollect"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_gravity="center_vertical"
                 android:layout_marginEnd="30dp"
-                android:src="@drawable/ic_round_star_border_96" />
+                android:src="@{collectionImageField ? @drawable/ic_round_star_96 : @drawable/ic_round_star_border_96}" />
 
         </LinearLayout>
 
