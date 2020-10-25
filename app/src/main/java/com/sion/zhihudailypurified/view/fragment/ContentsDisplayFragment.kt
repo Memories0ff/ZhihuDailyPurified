@@ -47,6 +47,11 @@ class ContentsDisplayFragment(val displayType: Int, private val initialPos: Int)
         vm.collectionImageLiveData.observe(viewLifecycleOwner, Observer {
             ui.collectionImageField!!.set(vm.queryCollection(it))
         })
+        //用于更新是否点赞图标信息，立即在ui响应
+        ui.likeImageField = vm.likeImageField
+        vm.likeImageLiveData.observe(viewLifecycleOwner, Observer {
+            ui.likeImageField!!.set(vm.queryLike(it))
+        })
         //设置viewpager
         ui.vpContents.apply {
             adapter = ContentsVPAdapter(
@@ -87,6 +92,30 @@ class ContentsDisplayFragment(val displayType: Int, private val initialPos: Int)
                     vm.contentExtraField.get()?.long_comments ?: 0,
                     vm.contentExtraField.get()?.short_comments ?: 0
                 )
+            } else {
+                toast(resources.getText(R.string.retry_after_resume_connection).toString())
+            }
+        }
+        ui.llBtnLikes.setOnClickListener {
+            if (isOnline() == true) {
+                val storyId = (requireActivity()
+                    .supportFragmentManager
+                    .findFragmentByTag(StoriesFragment.TAG) as StoriesFragment)
+                    .vm.let {
+                        when (displayType) {
+                            STORIES -> it.stories.value!![ui.vpContents.currentItem]!!.id
+                            else -> it.topStories.value!![ui.vpContents.currentItem]!!.id
+                        }
+                    }
+                if (vm.queryLike(storyId)) {
+                    //已点过赞，取消点赞
+                    vm.removeLike(storyId)
+                    ui.likeImageField!!.set(false)
+                } else {
+                    //未点过赞，进行点赞
+                    vm.insertLike(storyId)
+                    ui.likeImageField!!.set(true)
+                }
             } else {
                 toast(resources.getText(R.string.retry_after_resume_connection).toString())
             }

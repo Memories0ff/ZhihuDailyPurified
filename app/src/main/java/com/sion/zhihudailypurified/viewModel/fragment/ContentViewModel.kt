@@ -123,4 +123,11 @@ class ContentViewModel : BaseViewModel() {
             .findFragmentByTag(ContentsDisplayFragment.TAG) as ContentsDisplayFragment?)
             ?.vm?.collectionImageLiveData?.value = storyId
     }
+
+    //更新是否点赞
+    fun updateLikeInfo(storyId: Int, fragment: Fragment) {
+        (fragment.requireActivity().supportFragmentManager
+            .findFragmentByTag(ContentsDisplayFragment.TAG) as ContentsDisplayFragment?)
+            ?.vm?.likeImageLiveData?.value = storyId
+    }
 }

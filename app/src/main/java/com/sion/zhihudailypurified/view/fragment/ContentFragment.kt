@@ -160,6 +160,7 @@ class ContentFragment(private val displayType: Int) :
             if (this.lifecycle.currentState == Lifecycle.State.RESUMED) {
                 vm.updateExtraInfo(it ?: StoryContentExtraBean(0, 0, 0, 0), this@ContentFragment)
                 vm.updateCollectionInfo(storyId, this@ContentFragment)
+                vm.updateLikeInfo(storyId, this@ContentFragment)
             }
         })
     }
@@ -174,6 +175,7 @@ class ContentFragment(private val displayType: Int) :
         vm.extra.value.let {
             vm.updateExtraInfo(it ?: StoryContentExtraBean(0, 0, 0, 0), this)
             vm.updateCollectionInfo(storyId, this)
+            vm.updateLikeInfo(storyId, this)
         }
     }
 

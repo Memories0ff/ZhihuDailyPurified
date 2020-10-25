@@ -10,7 +10,10 @@ class ContentsDisplayViewModel : BaseViewModel() {
     //用于额外信息显示和更新
     val contentExtraField = ObservableField<StoryContentExtraBean>()
 
-    //用于更新收藏Icon
+    /**
+     * 收藏
+     */
+    //用于更新收藏图标
     val collectionImageField = ObservableField<Boolean>()
     val collectionImageLiveData = MutableLiveData<Int>()
 
@@ -31,7 +34,35 @@ class ContentsDisplayViewModel : BaseViewModel() {
         collectedMMKV.removeValueForKey(storyId.toString())
     }
 
+    /**
+     * 点赞
+     */
+    //点赞图标
+    val likeImageField = ObservableField<Boolean>()
+    val likeImageLiveData = MutableLiveData<Int>()
+
+    //点赞数
+//    val likeNumTxtField = ObservableField<Int>()
+
+    private val likedMMKV = MMKV.mmkvWithID(LIKED_MMKV);
+
+    //添加点赞
+    fun insertLike(storyId: Int) {
+        likedMMKV.encode(storyId.toString(), true)
+    }
+
+    //查询点赞（存在返回true）
+    fun queryLike(storyId: Int): Boolean {
+        return likedMMKV.decodeBool(storyId.toString(), false)
+    }
+
+    //删除点赞
+    fun removeLike(storyId: Int) {
+        likedMMKV.removeValueForKey(storyId.toString())
+    }
+
     companion object {
         const val COLLECTED_MMKV = "COLLECTED_MMKV"
+        const val LIKED_MMKV = "LIKED_MMKV"
     }
 }

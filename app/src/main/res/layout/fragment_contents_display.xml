@@ -14,6 +14,10 @@
             name="collectionImageField"
             type="androidx.databinding.ObservableField&lt;Boolean>" />
 
+        <variable
+            name="likeImageField"
+            type="androidx.databinding.ObservableField&lt;Boolean>" />
+
     </data>
 
     <LinearLayout
@@ -99,7 +103,7 @@
                     android:layout_width="25dp"
                     android:layout_height="25dp"
                     android:layout_gravity="center_vertical"
-                    android:src="@drawable/ic_outline_thumb_up_96" />
+                    android:src="@{likeImageField ? @drawable/ic_baseline_thumb_up_96:@drawable/ic_outline_thumb_up_96}" />
 
                 <TextView
                     android:id="@+id/tvLikesNum"
@@ -107,7 +111,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
                     android:layout_marginStart="5dp"
-                    android:text="@{String.valueOf(contentExtraField.popularity)}"
+                    android:text="@{String.valueOf(contentExtraField.popularity + (likeImageField ? 1 : 0))}"
                     android:textColor="#FF000000"
                     android:textSize="10sp"
                     android:textStyle="bold"
