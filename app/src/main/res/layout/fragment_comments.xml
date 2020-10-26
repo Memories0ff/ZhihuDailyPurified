@@ -54,17 +54,31 @@
             android:layout_height="1px"
             android:background="#1F000000" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvComments"
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/srlCommentRefresh"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="gone" />
+            android:layout_height="match_parent">
 
-        <ViewStub
-            android:id="@+id/vsError"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout="@layout/view_stub_error" />
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvComments"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:visibility="gone" />
+
+                <ViewStub
+                    android:id="@+id/vsError"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout="@layout/view_stub_error" />
+
+            </FrameLayout>
+
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
 
     </LinearLayout>
 </layout>

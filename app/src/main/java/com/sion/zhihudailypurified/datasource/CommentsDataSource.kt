@@ -16,10 +16,13 @@ class CommentsDataSource(private val id: Int) : PageKeyedDataSource<Int, Comment
     var commentId = 0
     var pageNum = 1
 
+    var isInitialFailed = false
+
     override fun loadInitial(
         params: LoadInitialParams<Int>,
         callback: LoadInitialCallback<Int, CommentBean>
     ) {
+        isInitialFailed = false
         postLoadingStatus(PagedListLoadingStatus.INITIAL_LOADING)
         Log.d("CommentsDataSource", "requestedLoadSize:${params.requestedLoadSize}")
         GlobalScope.launch(Dispatchers.Main) {
@@ -33,7 +36,11 @@ class CommentsDataSource(private val id: Int) : PageKeyedDataSource<Int, Comment
                         }
                 } catch (e: Exception) {
                     postLoadingStatus(PagedListLoadingStatus.INITIAL_FAILED)
+                    isInitialFailed = true
                 }
+            }
+            if (isInitialFailed) {
+                return@launch
             }
             val longCommentsNum = result.size
             withContext(Dispatchers.IO) {
@@ -45,7 +52,11 @@ class CommentsDataSource(private val id: Int) : PageKeyedDataSource<Int, Comment
                         }
                 } catch (e: Exception) {
                     postLoadingStatus(PagedListLoadingStatus.INITIAL_FAILED)
+                    isInitialFailed = true
                 }
+            }
+            if (isInitialFailed) {
+                return@launch
             }
             if (!result.isNullOrEmpty()) {
                 //设置第一条长评短评标记

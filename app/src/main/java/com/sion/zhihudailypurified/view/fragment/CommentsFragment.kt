@@ -7,6 +7,8 @@ import android.widget.Toast
 import androidx.databinding.ObservableField
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.SimpleItemAnimator
 import com.sion.zhihudailypurified.R
 import com.sion.zhihudailypurified.base.BaseFragment
 import com.sion.zhihudailypurified.databinding.FragmentCommentsBinding
@@ -38,7 +40,13 @@ class CommentsFragment : BaseFragment<FragmentCommentsBinding, CommentsViewModel
         ui.btnBackToContent.setOnClickListener {
             back()
         }
-//        closeDefaultAnimator(ui.rvComments)         //关闭RecyclerView局部刷新动画
+        ui.srlCommentRefresh.setOnRefreshListener {
+            update()
+            if (errorUI.visibility == View.VISIBLE) {
+                hideError()
+            }
+        }
+        closeDefaultAnimator(ui.rvComments)         //关闭RecyclerView局部刷新动画
         vm.extraBean.observe(viewLifecycleOwner, Observer {
             vm.commentsNum = it?.comments ?: 0
             vm.longCommentsNum = it?.long_comments ?: 0
@@ -47,13 +55,13 @@ class CommentsFragment : BaseFragment<FragmentCommentsBinding, CommentsViewModel
             if (it == null) {
                 toast(resources.getText(R.string.extra_bean_info_loading_failed).toString())
             }
-            initCommentList()
+//            initCommentList()
         })
-        if (vm.commentsNum == 0) {
-            vm.obtainExtraBean(vm.storyId)
-        } else {
-            initCommentList()
-        }
+//        if (vm.commentsNum == 0) {
+//            vm.obtainExtraBean(vm.storyId)
+//        } else {
+        initCommentList()
+//        }
 
     }
 
@@ -67,15 +75,15 @@ class CommentsFragment : BaseFragment<FragmentCommentsBinding, CommentsViewModel
     /**
      * 关闭RecyclerView局部刷新动画
      */
-//    private fun closeDefaultAnimator(recyclerView: RecyclerView) {
-//        recyclerView.itemAnimator?.apply {
-//            addDuration = 0
-//            changeDuration = 0
-//            moveDuration = 0
-//            removeDuration = 0
-//            (this as SimpleItemAnimator?)?.supportsChangeAnimations = false
-//        }
-//    }
+    private fun closeDefaultAnimator(recyclerView: RecyclerView) {
+        recyclerView.itemAnimator?.apply {
+            addDuration = 0
+            changeDuration = 0
+            moveDuration = 0
+            removeDuration = 0
+            (this as SimpleItemAnimator?)?.supportsChangeAnimations = false
+        }
+    }
 
     //初始化CommentList的辅助方法
     private fun initCommentList() {
@@ -123,11 +131,15 @@ class CommentsFragment : BaseFragment<FragmentCommentsBinding, CommentsViewModel
 
     //初始加载完毕
     private fun initialLoadingFinish() {
+        ui.srlCommentRefresh.isRefreshing = false
+        ui.rvComments.scrollToPosition(0)
         //显示界面
         ui.rvComments.visibility = View.VISIBLE
     }
 
     private fun showError() {
+        ui.rvComments.visibility = View.GONE
+        ui.srlCommentRefresh.isRefreshing = false
         errorUI.visibility = View.VISIBLE
     }
 
@@ -136,6 +148,8 @@ class CommentsFragment : BaseFragment<FragmentCommentsBinding, CommentsViewModel
     }
 
     private fun update() {
+        //先隐藏界面
+        ui.rvComments.visibility = View.GONE
         vm.updateData()
     }
 
