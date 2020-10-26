@@ -103,7 +103,7 @@
                     android:layout_width="25dp"
                     android:layout_height="25dp"
                     android:layout_gravity="center_vertical"
-                    android:src="@{likeImageField ? @drawable/ic_baseline_thumb_up_96:@drawable/ic_outline_thumb_up_96}" />
+                    android:src="@{likeImageField ? @drawable/ic_baseline_thumb_up_96 : @drawable/ic_outline_thumb_up_96}" />
 
                 <TextView
                     android:id="@+id/tvLikesNum"

@@ -3,6 +3,7 @@ package com.sion.zhihudailypurified.view.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.databinding.ObservableField
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -31,7 +32,29 @@ class CommentsAdapter(
                     R.layout.comment_item,
                     parent,
                     false
-                )
+                ).apply {
+                    commentLikeImageField = ObservableField<Boolean>()
+                    ivBtnCommentLike.setOnClickListener {
+                        if (fragment.isOnline() == true) {
+                            if (vm.queryCommentLike(comment!!.id, comment!!.time)) {
+                                //已点过赞，取消点赞
+                                vm.removeCommentLike(comment!!.id, comment!!.time)
+                                commentLikeImageField!!.set(false)
+                            } else {
+                                //未点过赞，继续操作
+                                vm.insertCommentLike(comment!!.id, comment!!.time)
+                                commentLikeImageField!!.set(true)
+                            }
+                        } else {
+                            fragment.apply {
+                                toast(
+                                    resources.getText(R.string.retry_after_resume_connection)
+                                        .toString()
+                                )
+                            }
+                        }
+                    }
+                }
             )
             else -> CommentsFooterHolder(DataBindingUtil.inflate<CommentsFooterItemBinding>(
                 LayoutInflater.from(fragment.context),
@@ -49,6 +72,7 @@ class CommentsAdapter(
         when (holder) {
             is CommentVH -> holder.binding.apply {
                 comment = getItem(position)
+                commentLikeImageField!!.set(vm.queryCommentLike(comment!!.id, comment!!.time))
             }
             else -> {
                 (holder as CommentsFooterHolder).binding.status = loadingStatus

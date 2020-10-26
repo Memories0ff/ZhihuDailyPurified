@@ -8,6 +8,7 @@ import com.sion.zhihudailypurified.base.BaseViewModel
 import com.sion.zhihudailypurified.datasource.CommentsDataSourceFactory
 import com.sion.zhihudailypurified.entity.StoryContentExtraBean
 import com.sion.zhihudailypurified.network.apiServices
+import com.tencent.mmkv.MMKV
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -62,6 +63,28 @@ class CommentsViewModel : BaseViewModel() {
         })
     }
 
+
+    /**
+     * 评论点赞操作
+     */
+    private val commentMMKV = MMKV.mmkvWithID(COMMENT_MMKV)
+
+    //查询评论点赞信息
+    fun queryCommentLike(userId: Int, time: Long): Boolean {
+        val key = userId.toString() + time.toString()
+        return commentMMKV.decodeBool(key, false)
+    }
+
+    fun insertCommentLike(userId: Int, time: Long) {
+        val key = userId.toString() + time.toString()
+        commentMMKV.encode(key, true)
+    }
+
+    fun removeCommentLike(userId: Int, time: Long) {
+        val key = userId.toString() + time.toString()
+        commentMMKV.removeValueForKey(key)
+    }
+
     //刷新评论列表
     fun updateData() {
         factory.dataSource.value?.invalidate()
@@ -70,6 +93,10 @@ class CommentsViewModel : BaseViewModel() {
     //列表加载失败的重试
     fun retry() {
         factory.dataSource.value?.retry?.invoke()
+    }
+
+    companion object {
+        const val COMMENT_MMKV = "COMMENT_MMKV"
     }
 
 //    fun obtainAllComments(id: Int) {

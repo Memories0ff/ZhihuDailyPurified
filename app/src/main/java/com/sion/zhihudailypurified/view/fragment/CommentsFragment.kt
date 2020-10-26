@@ -11,6 +11,7 @@ import com.sion.zhihudailypurified.R
 import com.sion.zhihudailypurified.base.BaseFragment
 import com.sion.zhihudailypurified.databinding.FragmentCommentsBinding
 import com.sion.zhihudailypurified.datasource.PagedListLoadingStatus
+import com.sion.zhihudailypurified.view.activity.IndexActivity
 import com.sion.zhihudailypurified.view.adapter.CommentsAdapter
 import com.sion.zhihudailypurified.view.itemDecoration.CommentsDecoration
 import com.sion.zhihudailypurified.viewModel.fragment.CommentsViewModel
@@ -137,6 +138,8 @@ class CommentsFragment : BaseFragment<FragmentCommentsBinding, CommentsViewModel
     private fun update() {
         vm.updateData()
     }
+
+    fun isOnline() = (requireActivity() as IndexActivity).vm.isOnline.value
 
     companion object {
         const val TAG = "COMMENTS_FRAGMENT"

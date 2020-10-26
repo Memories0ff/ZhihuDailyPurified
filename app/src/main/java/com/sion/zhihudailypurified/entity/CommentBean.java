@@ -3,8 +3,6 @@ package com.sion.zhihudailypurified.entity;
 import androidx.annotation.Nullable;
 import androidx.databinding.ObservableField;
 
-import kotlinx.android.parcel.Parcelize;
-
 public class CommentBean {
 
     /**
@@ -22,7 +20,7 @@ public class CommentBean {
     private String author;
     private String content;
     private String avatar;
-    private int time;
+    private long time;
     private ReplyToBean reply_to;
     private boolean voted;
     private int id;
@@ -70,11 +68,11 @@ public class CommentBean {
         this.avatar = avatar;
     }
 
-    public int getTime() {
+    public long getTime() {
         return time;
     }
 
-    public void setTime(int time) {
+    public void setTime(long time) {
         this.time = time;
     }
 

@@ -5,13 +5,19 @@
 
     <data>
 
+        <import type="android.view.View" />
+
+        <import type="com.sion.zhihudailypurified.utils.DateUtilsKt" />
+
+        <import type="android.graphics.Color" />
+
         <variable
             name="comment"
             type="com.sion.zhihudailypurified.entity.CommentBean" />
 
-        <import type="android.view.View" />
-
-        <import type="com.sion.zhihudailypurified.utils.DateUtilsKt" />
+        <variable
+            name="commentLikeImageField"
+            type="androidx.databinding.ObservableField&lt;Boolean>" />
 
     </data>
 
@@ -144,17 +150,18 @@
                         android:layout_height="match_parent"
                         android:layout_marginStart="5dp"
                         android:gravity="center"
-                        android:text="@{String.valueOf(comment.likes)}"
+                        android:text="@{String.valueOf(comment.likes + (commentLikeImageField ? 1 : 0))}"
+                        android:textColor="@{Color.parseColor(commentLikeImageField ? `#349DF1` : `#7E7E7E`)}"
                         android:textSize="13sp"
                         tools:text="点赞数" />
 
                     <ImageView
+                        android:id="@+id/ivBtnCommentLike"
                         android:layout_width="15dp"
                         android:layout_height="15dp"
                         android:layout_gravity="center_vertical"
                         android:layout_marginStart="5dp"
-                        android:alpha="0.4"
-                        android:src="@drawable/ic_outline_thumb_up_96" />
+                        android:src="@{commentLikeImageField ? @drawable/ic_baseline_thumb_up_comment_96 : @drawable/ic_outline_thumb_up_comment_96}" />
 
                 </LinearLayout>
 
