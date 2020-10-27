@@ -1,6 +1,7 @@
 package com.sion.zhihudailypurified.datasource
 
 import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PageKeyedDataSource
 import com.sion.zhihudailypurified.entity.CommentBean
@@ -125,7 +126,7 @@ class CommentsDataSource(private val id: Int) : PageKeyedDataSource<Int, Comment
 
     //对外提供只读的成员
     private val _loadingStatus = MutableLiveData<PagedListLoadingStatus>()
-    val loadingStatus: MutableLiveData<PagedListLoadingStatus>
+    val loadingStatus: LiveData<PagedListLoadingStatus>
         get() = _loadingStatus
 
     //向LiveData发送加载状态

@@ -118,6 +118,19 @@ class CommentsFragment : BaseFragment<FragmentCommentsBinding, CommentsViewModel
             }
         })
         ui.rvComments.layoutManager = LinearLayoutManager(this@CommentsFragment.context)
+        //规避Inconsistency detected崩溃问题
+//        ui.rvComments.layoutManager = object : LinearLayoutManager(this@CommentsFragment.context) {
+//            override fun onLayoutChildren(
+//                recycler: RecyclerView.Recycler?,
+//                state: RecyclerView.State?
+//            ) {
+//                try {
+//                    super.onLayoutChildren(recycler, state)
+//                } catch (e: IndexOutOfBoundsException) {
+//                    Log.e("TAG", "meet a IOOBE in RecyclerView");
+//                }
+//            }
+//        }
         ui.rvComments.adapter = adapter
         ui.rvComments.addItemDecoration(CommentsDecoration(this@CommentsFragment))
         vm.comments.observe(this@CommentsFragment.viewLifecycleOwner, Observer {
