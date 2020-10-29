@@ -14,6 +14,7 @@ import com.sion.zhihudailypurified.base.BaseFragment
 import com.sion.zhihudailypurified.databinding.FragmentContentBinding
 import com.sion.zhihudailypurified.entity.StoryContentExtraBean
 import com.sion.zhihudailypurified.utils.HtmlUtils
+import com.sion.zhihudailypurified.utils.toast
 import com.sion.zhihudailypurified.view.activity.IndexActivity
 import com.sion.zhihudailypurified.viewModel.fragment.ContentViewModel
 
@@ -41,7 +42,10 @@ class ContentFragment(private val displayType: Int) :
                     //先加载文字再加载图片
                     blockNetworkImage = true
 //                TODO addJavascriptInterface()显示和保存图片界面
+                    //启用JS，与原生交互
+                    javaScriptEnabled = true
                 }
+                addJavascriptInterface(JSInterface(), "JSInterface")
                 webViewClient = object : WebViewClient() {
                     override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
                         //开始加载网页时显示ProgressBar
@@ -56,6 +60,8 @@ class ContentFragment(private val displayType: Int) :
                                 loadsImagesAutomatically = true
                             }
                         }
+                        //注入图片点击事件
+                        view?.let { addImageClickListener(it) }
                         //加载完显示WebView
                         uiChangeForFinish()
                     }
@@ -218,6 +224,53 @@ class ContentFragment(private val displayType: Int) :
 
     private fun getWebViewPool() =
         (requireActivity() as IndexActivity).getWebViewPool()
+
+    /**
+     * JS-原生交互
+     */
+    // 注入js函数监听
+    private fun addImageClickListener(webView: WebView) {
+        // 这段js函数的功能就是，遍历所有的img几点，并添加onclick函数，
+        //函数的功能是在图片点击的时候调用本地java接口并传递url过去
+        webView.loadUrl(
+            "javascript:(function () {\n" +
+                    "        const contentImgs = document.getElementsByClassName('content-image');\n" +
+                    "        const needImgs = [];\n" +
+                    "        const srcs = [];\n" +
+                    "        for (let i = 0; i < contentImgs.length; i++) {\n" +
+                    "            if (contentImgs[i].getAttribute('src').indexOf('https://www.zhihu.com/equation?tex=') === -1) {\n" +
+                    "                needImgs.push(contentImgs[i]);\n" +
+                    "                srcs.push(contentImgs[i].getAttribute('src'))\n" +
+                    "            }\n" +
+                    "        }\n" +
+                    "        for (let j = 0; j < needImgs.length; j++) {\n" +
+                    "            needImgs[j].onclick = function () {\n" +
+                    "                javascript:JSInterface.openImagesGallery(j,srcs.length,srcs);\n" +
+                    "            }\n" +
+                    "        }\n" +
+                    "    })();"
+        )
+    }
+
+    inner class JSInterface {
+
+        @JavascriptInterface
+        fun openImagesGallery(initialIndex: Int, picNum: Int, picUrls: Array<String>) {
+            val activity: IndexActivity = this@ContentFragment.activity as IndexActivity
+            activity.switchToGallery(
+                activity.supportFragmentManager.findFragmentByTag(ContentsDisplayFragment.TAG) as ContentsDisplayFragment,
+                initialIndex,
+                picNum,
+                picUrls
+            )
+        }
+
+        @JavascriptInterface
+        fun showToast(s: String) {
+            toast(s)
+        }
+
+    }
 
     companion object {
         const val TAG = "CONTENT_FRAGMENT"

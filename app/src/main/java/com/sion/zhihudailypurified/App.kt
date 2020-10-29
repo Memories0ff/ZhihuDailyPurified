@@ -11,6 +11,8 @@ class App : Application() {
         super.onCreate()
         appContext = applicationContext
         appResources = resources
+        //允许WebView调试
+//        WebView.setWebContentsDebuggingEnabled(true)
         MMKV.initialize(this)
     }
 
