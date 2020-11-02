@@ -10,7 +10,7 @@ import com.sion.zhihudailypurified.network.WebViewPool
 import com.sion.zhihudailypurified.utils.toast
 import com.sion.zhihudailypurified.view.fragment.CommentsFragment
 import com.sion.zhihudailypurified.view.fragment.ContentsDisplayFragment
-import com.sion.zhihudailypurified.view.fragment.ImagesGalleryFragment
+import com.sion.zhihudailypurified.view.fragment.GalleryFragment
 import com.sion.zhihudailypurified.view.fragment.StoriesFragment
 import com.sion.zhihudailypurified.viewModel.activity.IndexViewModel
 
@@ -94,14 +94,14 @@ class IndexActivity : BaseActivity<ActivityIndexBinding, IndexViewModel>(), Life
             .hide(fragment)
             .add(
                 R.id.flFragmentContainer,
-                ImagesGalleryFragment().apply {
+                GalleryFragment().apply {
                     arguments = Bundle().apply {
-                        putInt(ImagesGalleryFragment.INITIAL_INDEX, initialIndex)
-                        putInt(ImagesGalleryFragment.PIC_NUM, picNum)
-                        putStringArray(ImagesGalleryFragment.PIC_URLS, picUrls)
+                        putInt(GalleryFragment.INITIAL_INDEX, initialIndex)
+                        putInt(GalleryFragment.PIC_NUM, picNum)
+                        putStringArray(GalleryFragment.PIC_URLS, picUrls)
                     }
                 },
-                ImagesGalleryFragment.TAG
+                GalleryFragment.TAG
             )
             .addToBackStack(null)
             .commit()

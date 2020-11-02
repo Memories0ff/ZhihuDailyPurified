@@ -7,10 +7,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.sion.zhihudailypurified.R
 import com.sion.zhihudailypurified.databinding.GalleryItemBinding
-import com.sion.zhihudailypurified.view.fragment.ImagesGalleryFragment
+import com.sion.zhihudailypurified.view.fragment.GalleryFragment
 import com.sion.zhihudailypurified.viewModel.fragment.ImagesGalleryViewModel
 
-class GalleryVPAdapter(val fragment: ImagesGalleryFragment, val vm: ImagesGalleryViewModel) :
+class GalleryVPAdapter(val fragment: GalleryFragment, val vm: ImagesGalleryViewModel) :
     RecyclerView.Adapter<GalleryViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GalleryViewHolder {
         DataBindingUtil.inflate<GalleryItemBinding>(

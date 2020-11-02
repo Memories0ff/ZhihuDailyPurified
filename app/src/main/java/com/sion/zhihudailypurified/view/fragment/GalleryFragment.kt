@@ -7,7 +7,7 @@ import com.sion.zhihudailypurified.databinding.FragmentGalleryBinding
 import com.sion.zhihudailypurified.view.adapter.GalleryVPAdapter
 import com.sion.zhihudailypurified.viewModel.fragment.ImagesGalleryViewModel
 
-class ImagesGalleryFragment : BaseFragment<FragmentGalleryBinding, ImagesGalleryViewModel>() {
+class GalleryFragment : BaseFragment<FragmentGalleryBinding, ImagesGalleryViewModel>() {
 
     override fun setLayoutId(): Int = R.layout.fragment_gallery
 
