@@ -3,12 +3,16 @@ package com.sion.zhihudailypurified.view.fragment
 import android.content.Intent
 import android.graphics.Bitmap
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
 import android.webkit.*
 import android.widget.LinearLayout
+import androidx.core.graphics.drawable.toBitmap
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
 import com.bumptech.glide.Glide
+import com.maning.imagebrowserlibrary.MNImageBrowser
+import com.maning.imagebrowserlibrary.model.ImageBrowserConfig
 import com.sion.zhihudailypurified.R
 import com.sion.zhihudailypurified.base.BaseFragment
 import com.sion.zhihudailypurified.databinding.FragmentContentBinding
@@ -17,6 +21,12 @@ import com.sion.zhihudailypurified.utils.HtmlUtils
 import com.sion.zhihudailypurified.utils.toast
 import com.sion.zhihudailypurified.view.activity.IndexActivity
 import com.sion.zhihudailypurified.viewModel.fragment.ContentViewModel
+import com.yanzhenjie.permission.AndPermission
+import com.yanzhenjie.permission.runtime.Permission
+import kotlinx.android.synthetic.main.gallery_shade.view.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class ContentFragment(private val displayType: Int) :
     BaseFragment<FragmentContentBinding, ContentViewModel>() {
@@ -41,7 +51,6 @@ class ContentFragment(private val displayType: Int) :
                 settings.apply {
                     //先加载文字再加载图片
                     blockNetworkImage = true
-//                TODO addJavascriptInterface()显示和保存图片界面
                     //启用JS，与原生交互
                     javaScriptEnabled = true
                 }
@@ -254,15 +263,52 @@ class ContentFragment(private val displayType: Int) :
 
     inner class JSInterface {
 
+        /**
+         * 点击网页图片打开图片浏览器
+         * @param initialIndex 打开的是第几张图片
+         * @param picNum 图片个数
+         * @param picUrls 所有图片的URL
+         */
         @JavascriptInterface
         fun openImagesGallery(initialIndex: Int, picNum: Int, picUrls: Array<String>) {
-            val activity: IndexActivity = this@ContentFragment.activity as IndexActivity
-            activity.switchToGallery(
-                activity.supportFragmentManager.findFragmentByTag(ContentsDisplayFragment.TAG) as ContentsDisplayFragment,
-                initialIndex,
-                picNum,
-                picUrls
-            )
+//            val activity: IndexActivity = this@ContentFragment.activity as IndexActivity
+//            activity.switchToGallery(
+//                activity.supportFragmentManager.findFragmentByTag(ContentsDisplayFragment.TAG) as ContentsDisplayFragment,
+//                initialIndex,
+//                picNum,
+//                picUrls
+//            )
+            val shadeView =
+                LayoutInflater.from(requireContext()).inflate(R.layout.gallery_shade, null)
+            shadeView.tvNumIndication.text =
+                getString(R.string.images_gallery_indicator, initialIndex + 1, picNum)
+            shadeView.ivBtnDownloadPic.setOnClickListener {
+                //保存图片
+                savePic(MNImageBrowser.getCurrentImageView().drawable.toBitmap())
+            }
+            MNImageBrowser.with(requireContext())
+                .setTransformType(ImageBrowserConfig.TransformType.Transform_Default)
+                .setIndicatorHide(false)
+                .setCustomShadeView(shadeView)
+                .setCurrentPosition(initialIndex)
+                .setImageEngine { context, url, imageView, progressView, customImageView ->
+                    Glide.with(context)
+                        .load(url)
+                        .fitCenter()
+                        .placeholder(R.drawable.ic_baseline_pic_placeholder_96)
+                        .error(R.drawable.ic_baseline_pic_broken_96)
+                        .into(imageView)
+                }
+                .setImageList(picUrls.toCollection(arrayListOf()))
+                .setScreenOrientationType(ImageBrowserConfig.ScreenOrientationType.ScreenOrientation_Portrait)
+                .setOnPageChangeListener {
+                    shadeView.tvNumIndication.text =
+                        getString(R.string.images_gallery_indicator, it + 1, picNum)
+                }
+                .setOpenPullDownGestureEffect(true)
+                .setActivityOpenAnime(R.anim.activity_in)
+                .setActivityExitAnime(R.anim.activity_out)
+                .show(webView)
         }
 
         @JavascriptInterface
@@ -270,6 +316,26 @@ class ContentFragment(private val displayType: Int) :
             toast(s)
         }
 
+    }
+
+    fun savePic(bitmap: Bitmap) {
+        AndPermission
+            .with(requireContext())
+            .runtime()
+            .permission(Permission.WRITE_EXTERNAL_STORAGE)
+            .onGranted {
+                GlobalScope.launch(Dispatchers.Main) {
+                    if (vm.savePic(bitmap, requireContext().contentResolver)) {
+                        toast("保存成功")
+                    } else {
+                        toast("保存失败")
+                    }
+                }
+            }
+            .onDenied {
+                toast("保存失败，请授予文件写入权限")
+            }
+            .start()
     }
 
     companion object {

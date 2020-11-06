@@ -1,5 +1,9 @@
 package com.sion.zhihudailypurified.viewModel.fragment
 
+import android.content.ContentResolver
+import android.content.ContentValues
+import android.graphics.Bitmap
+import android.provider.MediaStore
 import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
@@ -129,5 +133,20 @@ class ContentViewModel : BaseViewModel() {
         (fragment.requireActivity().supportFragmentManager
             .findFragmentByTag(ContentsDisplayFragment.TAG) as ContentsDisplayFragment?)
             ?.vm?.likeImageLiveData?.value = storyId
+    }
+
+    //保存图片
+    suspend fun savePic(bitmap: Bitmap, contentResolver: ContentResolver): Boolean {
+        val saveUri =
+            contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, ContentValues())
+                ?: return false
+        val outputStream = contentResolver.openOutputStream(saveUri) ?: return false
+        var saveResult = false
+        outputStream.use {
+            withContext(Dispatchers.IO) {
+                saveResult = bitmap.compress(Bitmap.CompressFormat.PNG, 100, it)
+            }
+        }
+        return saveResult
     }
 }
