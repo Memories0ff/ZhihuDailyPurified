@@ -10,4 +10,6 @@
     <string name="extra_bean_info_loading_failed">评论数目信息加载失败</string>
     <string name="images_gallery_indicator">%d/%d</string>
     <string name="save_pic">保存图片</string>
+    <string name="refresh">刷新</string>
+    <string name="run_in_browser">在浏览器中打开</string>
 </resources>

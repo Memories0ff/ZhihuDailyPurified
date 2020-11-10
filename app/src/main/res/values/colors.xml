@@ -7,4 +7,12 @@
     <!--    <color name="colorPrimary">#FFFFFF</color>-->
     <!--        <color name="colorPrimaryDark">#FFFFFF</color>-->
     <!--    <color name="colorAccent">#FFFFFF</color>-->
+
+    <!--    浏览器界面-->
+    <!--    <color name="colorBrowserPrimary">#FFFFFF</color>-->
+    <!--    <color name="colorBrowserPrimaryDark">#0B2E51</color>-->
+    <!--    <color name="colorBrowserAccent">#000000</color>-->
+    <!--    <color name="colorBrowserAccentDark">#FFFFFF</color>-->
+    <!--    <color name="colorTitleTextColor">#000000</color>-->
+    <!--    <color name="colorBrowserControlNormal">#000000</color>-->
 </resources>

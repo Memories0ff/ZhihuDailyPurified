@@ -7,7 +7,17 @@
     <!--        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>-->
     <!--        <item name="colorAccent">@color/colorAccent</item>-->
     <!--    </style>-->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+
+    <!--    浏览器界面-->
+    <style name="AppTheme" parent="Theme.AppCompat.Light">
+        <!--        <item name="colorPrimary">@color/colorBrowserPrimary</item>-->
+        <!--        <item name="colorPrimaryDark">@color/colorBrowserPrimaryDark</item>-->
+        <!--        <item name="colorAccent">@color/colorBrowserAccent</item>-->
+        <!--        <item name="titleTextColor">@color/colorTitleTextColor</item>-->
+        <!--        <item name="colorControlNormal">@color/colorBrowserControlNormal</item>-->
+    </style>
+
+    <style name="AppThemeNoActionBar" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>

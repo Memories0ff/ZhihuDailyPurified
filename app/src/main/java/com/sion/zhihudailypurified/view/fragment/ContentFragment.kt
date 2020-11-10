@@ -2,7 +2,6 @@ package com.sion.zhihudailypurified.view.fragment
 
 import android.content.Intent
 import android.graphics.Bitmap
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.webkit.*
@@ -19,6 +18,7 @@ import com.sion.zhihudailypurified.databinding.FragmentContentBinding
 import com.sion.zhihudailypurified.entity.StoryContentExtraBean
 import com.sion.zhihudailypurified.utils.HtmlUtils
 import com.sion.zhihudailypurified.utils.toast
+import com.sion.zhihudailypurified.view.activity.BrowserActivity
 import com.sion.zhihudailypurified.view.activity.IndexActivity
 import com.sion.zhihudailypurified.viewModel.fragment.ContentViewModel
 import com.yanzhenjie.permission.AndPermission
@@ -91,35 +91,19 @@ class ContentFragment(private val displayType: Int) :
                         view: WebView?,
                         request: WebResourceRequest?
                     ): Boolean {
-                        //TODO 跳转到知乎app
-                        //TODO 先检查是否有知乎app再打开
-                        if (request != null) {
-                            var url = request.url.toString()
-                            url = when {
-                                url.startsWith("https://www.", true) -> {
-                                    url.replace("https://www.zhihu.com/", "", true)
-                                }
-                                url.startsWith("http://www.", true) -> {
-                                    url.replace("http://www.zhihu.com/", "", true)
-                                }
-                                else -> {
-                                    return true
-                                }
+                        return if (request != null) {
+                            //跳转到BrowserActivity
+                            val intent = Intent(
+                                (activity as IndexActivity),
+                                BrowserActivity::class.java
+                            ).apply {
+                                putExtra(BrowserActivity.URL, request.url.toString())
                             }
-                            url = String.format(
-                                "%s$url%s",
-                                "intent://",
-                                "/#Intent;scheme=zhihu;package=com.zhihu.android;end"
-                            )
-                            val intent = Intent(url)
-                            if (intent.resolveActivity(context.packageManager) != null) {
-                                startActivity(intent)
-                            } else {
-                                //TODO 弹窗请求下载知乎
-                                Log.d("shouldOverrideUrl", "下载知乎")
-                            }
+                            startActivity(intent)
+                            true
+                        } else {
+                            false
                         }
-                        return true
                     }
                 }
                 webChromeClient = object : WebChromeClient() {
