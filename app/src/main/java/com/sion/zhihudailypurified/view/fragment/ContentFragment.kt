@@ -81,9 +81,6 @@ class ContentFragment(private val displayType: Int) :
                         error: WebResourceError?
                     ) {
                         settings.blockNetworkImage = true
-//                        uiChangeForError()
-//                        toast("网页加载失败")
-                        //TODO 显示错误信息
                         super.onReceivedError(view, request, error)
                     }
 
@@ -188,7 +185,6 @@ class ContentFragment(private val displayType: Int) :
     }
 
     override fun onShow() {
-        //TODO 此处添加加载失败后自动重新加载功能
 
     }
 

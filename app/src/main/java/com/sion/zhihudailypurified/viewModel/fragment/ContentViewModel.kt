@@ -37,7 +37,6 @@ class ContentViewModel : BaseViewModel() {
                 val contentList = dbContentServices.obtainStoryContentBeanById(id)
                 if (contentList.isNullOrEmpty()) {
                     isContentFromWeb = true
-                    //TODO 超时错误未处理
                     try {
                         apiServices.obtainContent(id.toString()).execute().body()
                     } catch (e: SocketTimeoutException) {

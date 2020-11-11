@@ -152,7 +152,6 @@ class ContentsDisplayFragment(val displayType: Int, private val initialPos: Int)
 
     override fun onDestroy() {
         super.onDestroy()
-        //TODO 普通新闻退出内容界面后列表滚动到此新闻的位置，实现不完美
         //限于stories
         if (displayType == STORIES) {
             ((activity as FragmentActivity).supportFragmentManager.findFragmentByTag(StoriesFragment.TAG) as StoriesFragment?)?.vm?.lastPos?.value =

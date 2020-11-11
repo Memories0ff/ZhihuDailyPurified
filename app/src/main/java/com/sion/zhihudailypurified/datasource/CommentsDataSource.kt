@@ -29,7 +29,6 @@ class CommentsDataSource(private val id: Int) : PageKeyedDataSource<Int, Comment
         GlobalScope.launch(Dispatchers.Main) {
             val result = arrayListOf<CommentBean>()
             withContext(Dispatchers.IO) {
-                //TODO 未处理异常:SocketTimeoutException: timeout(待测试)
                 try {
                     apiServices.obtainLongComments(id.toString()).execute().body()
                         ?.let { commentList ->
@@ -45,7 +44,6 @@ class CommentsDataSource(private val id: Int) : PageKeyedDataSource<Int, Comment
             }
             val longCommentsNum = result.size
             withContext(Dispatchers.IO) {
-                //TODO 未处理异常:SocketTimeoutException: timeout(待测试)
                 try {
                     apiServices.obtainShortComments(id.toString()).execute().body()
                         ?.let { commentList ->

@@ -82,7 +82,7 @@ class WebViewPool : LifecycleObserver {
     }
 
     private fun removeWebViewWithoutSync(_webView: WebView?) {
-        //TODO 是否存在问题未知
+        //TODO 留意是否存在问题（暂未发现）
         var webView: WebView? = _webView
         if (webView == null) {
             return

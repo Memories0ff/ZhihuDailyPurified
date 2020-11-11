@@ -67,7 +67,7 @@ class StoriesFragment : BaseFragment<FragmentStoriesBinding, StoriesViewModel>()
                     Log.d("StoriesFragment", "initView: After loading")
                 }
                 PagedListLoadingStatus.AFTER_LOADED -> {
-                    //TODO 刷新时不应该被调用一次
+                    //刷新时不应该被调用一次（已解决，对于连续执行postValue，只会接收执行最后一次输入）
                     Log.d("StoriesFragment", "initView: After loaded")
                 }
                 PagedListLoadingStatus.AFTER_FAILED -> {
