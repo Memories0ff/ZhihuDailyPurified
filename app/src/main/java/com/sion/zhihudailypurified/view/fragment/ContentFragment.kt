@@ -15,6 +15,7 @@ import com.maning.imagebrowserlibrary.model.ImageBrowserConfig
 import com.sion.zhihudailypurified.R
 import com.sion.zhihudailypurified.base.BaseFragment
 import com.sion.zhihudailypurified.databinding.FragmentContentBinding
+import com.sion.zhihudailypurified.entity.StoryContentBean
 import com.sion.zhihudailypurified.entity.StoryContentExtraBean
 import com.sion.zhihudailypurified.utils.HtmlUtils
 import com.sion.zhihudailypurified.utils.toast
@@ -44,6 +45,11 @@ class ContentFragment(private val displayType: Int) :
         }
     }
 
+    private lateinit var contentBeanTemp: StoryContentBean
+
+    //是否加载完毕
+    private var loadingFinished = false
+
     private val webView: WebView by lazy {
         getWebViewPool()
             .getWebView(requireContext())
@@ -62,6 +68,11 @@ class ContentFragment(private val displayType: Int) :
                     }
 
                     override fun onPageFinished(view: WebView?, url: String?) {
+                        loadingFinished = true
+                        if (this@ContentFragment.lifecycle.currentState == Lifecycle.State.RESUMED) {
+                            //已读标记在网页加载完进行
+                            vm.markRead(displayType, contentBeanTemp, this@ContentFragment)
+                        }
                         //先加载文字再加载图片
                         settings.apply {
                             blockNetworkImage = false
@@ -137,10 +148,7 @@ class ContentFragment(private val displayType: Int) :
             }
             ui.tvTitle.text = it.title
             ui.tvSubTitle.text = it.image_source
-            if (this.lifecycle.currentState == Lifecycle.State.RESUMED) {
-                //TODO 已读标记在网页加载完进行
-                vm.markRead(displayType, it, this@ContentFragment)
-            }
+            contentBeanTemp = it
             Glide.with(this@ContentFragment)
                 .load(it.image)
                 .placeholder(R.drawable.ic_baseline_pic_placeholder_96)
@@ -165,7 +173,9 @@ class ContentFragment(private val displayType: Int) :
         super.onResume()
         //通过左右滑动浏览的新闻标记为已读
         vm.content.value?.let {
-            vm.markRead(displayType, it, this@ContentFragment)
+            if (loadingFinished) {
+                vm.markRead(displayType, it, this@ContentFragment)
+            }
         }
         //更新底部点赞评论数信息
         vm.extra.value.let {
