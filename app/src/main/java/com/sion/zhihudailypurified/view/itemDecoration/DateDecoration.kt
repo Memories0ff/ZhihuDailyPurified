@@ -4,10 +4,10 @@ import android.graphics.*
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.sion.zhihudailypurified.R
 import com.sion.zhihudailypurified.datasource.PagedListLoadingStatus
 import com.sion.zhihudailypurified.utils.dp
 import com.sion.zhihudailypurified.utils.eightDateDeleteZeroAndYear
+import com.sion.zhihudailypurified.utils.sp
 import com.sion.zhihudailypurified.view.adapter.StoriesAdapter
 import com.sion.zhihudailypurified.view.fragment.StoriesFragment
 
@@ -15,9 +15,8 @@ class DateDecoration(private val storiesFragment: StoriesFragment) : RecyclerVie
 
     private val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = Color.parseColor("#7F000000")
-        textSize =
-            storiesFragment.context!!.resources.getDimensionPixelSize(R.dimen.index_stories_item_decoration_text_size)
-                .toFloat()
+        textSize = 14F.sp
+//            storiesFragment.context!!.resources.getDimensionPixelSize(R.dimen.index_stories_item_decoration_text_size).toFloat()
         typeface = Typeface.DEFAULT_BOLD
     }
     private val decorationHeight = 20.dp

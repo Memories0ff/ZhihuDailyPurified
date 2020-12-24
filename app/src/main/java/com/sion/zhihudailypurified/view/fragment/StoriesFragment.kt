@@ -91,10 +91,11 @@ class StoriesFragment : BaseFragment<FragmentStoriesBinding, StoriesViewModel>()
                     //保证加载完top再加载今日stories
 //                    val adapter = StoriesAdapter(this, PagedListLoadingStatus.INITIAL_LOADING, vm)
 //                    this@StoriesFragment.adapter = adapter
-                    removeAllDecorations(ui.rvStories)
+
+//                    removeAllDecorations(ui.rvStories)
                     ui.rvStories.adapter = adapter
                     ui.rvStories.layoutManager = LinearLayoutManager(activity)
-                    ui.rvStories.addItemDecoration(DateDecoration(this))
+//                    ui.rvStories.addItemDecoration(DateDecoration(this))
 
                     //与变量adapter关联的操作
                     //保证先初始化stories列表再执行这些操作
@@ -130,12 +131,12 @@ class StoriesFragment : BaseFragment<FragmentStoriesBinding, StoriesViewModel>()
     }
 
     //删除RecyclerView所有decoration，防止decoration随着刷新间距变大
-    private fun removeAllDecorations(recyclerView: RecyclerView) {
-        recyclerView.invalidateItemDecorations()
-        for (n in 0 until recyclerView.itemDecorationCount) {
-            recyclerView.removeItemDecorationAt(0)
-        }
-    }
+//    private fun removeAllDecorations(recyclerView: RecyclerView) {
+//        recyclerView.invalidateItemDecorations()
+//        for (n in 0 until recyclerView.itemDecorationCount) {
+//            recyclerView.removeItemDecorationAt(0)
+//        }
+//    }
 
 //    //关闭默认局部刷新动画
 //    private fun closeDefaultAnimator(recyclerView: RecyclerView) {
