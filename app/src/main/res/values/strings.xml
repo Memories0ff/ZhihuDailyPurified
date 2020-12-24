@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ZhihuDailyPurified</string>
+    <string name="app_name">知乎日报分享</string>
     <string name="zhihu_daily">知乎日报</string>
     <string name="error">你似乎来到了没有知识存在的荒原</string>
     <string name="click_retry"><u>点击重试</u></string>
