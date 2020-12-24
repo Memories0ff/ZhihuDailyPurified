@@ -5,7 +5,10 @@ import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.sion.zhihudailypurified.R
+import com.sion.zhihudailypurified.datasource.PagedListLoadingStatus
+import com.sion.zhihudailypurified.utils.dp
 import com.sion.zhihudailypurified.utils.eightDateDeleteZeroAndYear
+import com.sion.zhihudailypurified.view.adapter.StoriesAdapter
 import com.sion.zhihudailypurified.view.fragment.StoriesFragment
 
 class DateDecoration(private val storiesFragment: StoriesFragment) : RecyclerView.ItemDecoration() {
@@ -17,12 +20,15 @@ class DateDecoration(private val storiesFragment: StoriesFragment) : RecyclerVie
                 .toFloat()
         typeface = Typeface.DEFAULT_BOLD
     }
-    private val decorationHeight =
-        storiesFragment.context!!.resources.getDimensionPixelSize(R.dimen.index_stories_item_decoration_height)
-    private val decorationMarginLeft =
-        storiesFragment.context!!.resources.getDimensionPixelSize(R.dimen.index_stories_item_decoration_margin_left)
-    private val decorationMarginRight =
-        storiesFragment.context!!.resources.getDimensionPixelSize(R.dimen.index_stories_item_decoration_margin_right)
+    private val decorationHeight = 20.dp
+    //        storiesFragment.context!!.resources.getDimensionPixelSize(R.dimen.index_stories_item_decoration_height)
+
+    private val decorationMarginLeft = 15.dp
+    //        storiesFragment.context!!.resources.getDimensionPixelSize(R.dimen.index_stories_item_decoration_margin_left)
+
+    private val decorationMarginRight = 15.dp
+//        storiesFragment.context!!.resources.getDimensionPixelSize(R.dimen.index_stories_item_decoration_margin_right)
+
 
     override fun getItemOffsets(
         outRect: Rect,
@@ -80,5 +86,19 @@ class DateDecoration(private val storiesFragment: StoriesFragment) : RecyclerVie
         c.drawText(dateStr, left, midY + (paint.textSize / 2.25/*文字中线与横线对齐*/).toInt(), paint)
         val lineStartX = left + paint.measureText(dateStr) + decorationMarginLeft
         c.drawLine(lineStartX, midY, right, midY, paint)
+    }
+
+    private fun hasFooter(adapter: StoriesAdapter): Boolean {
+        return adapter.loadingStatus in arrayListOf(
+            PagedListLoadingStatus.INITIAL_LOADING,
+            PagedListLoadingStatus.INITIAL_FAILED,
+            PagedListLoadingStatus.AFTER_LOADING,
+            PagedListLoadingStatus.AFTER_FAILED,
+            PagedListLoadingStatus.COMPLETED
+        )
+    }
+
+    companion object {
+        const val TAG = "DateDecoration"
     }
 }

@@ -20,7 +20,7 @@ import com.sion.zhihudailypurified.viewModel.fragment.StoriesViewModel
 
 class StoriesAdapter(
     private val fragment: StoriesFragment,
-    private var loadingStatus: PagedListLoadingStatus,
+    var loadingStatus: PagedListLoadingStatus,
     private val vm: StoriesViewModel
 ) :
     PagedListAdapter<StoryBean, RecyclerView.ViewHolder>(

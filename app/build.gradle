@@ -97,5 +97,6 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 
     implementation project(path: ':banner')
+    implementation project(path: ':swipedownlayout')
 
 }

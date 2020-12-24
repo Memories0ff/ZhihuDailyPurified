@@ -108,7 +108,7 @@ class TextBackView(context: Context, backViewParent: BackViewParent) :
         }
     private val loadingAnimation by lazy {
         ObjectAnimator.ofFloat(this, "fraction", 1F, 0F, 1F).apply {
-            duration = 1000
+            duration = 2000
             repeatCount = ObjectAnimator.INFINITE
             doOnStart {
                 textPaintAlphaSave = textPaint.alpha
@@ -135,7 +135,7 @@ class TextBackView(context: Context, backViewParent: BackViewParent) :
      */
     private val loadingFinishAnimation by lazy {
         ValueAnimator.ofFloat(0F).apply {
-            duration = 1500
+            duration = 500
             doOnEnd {
                 backViewParent.onAfterLoadingFinishAnimation()
             }

@@ -10,10 +10,13 @@ import com.sion.zhihudailypurified.R
 import com.sion.zhihudailypurified.base.BaseFragment
 import com.sion.zhihudailypurified.databinding.FragmentStoriesBinding
 import com.sion.zhihudailypurified.datasource.PagedListLoadingStatus
+import com.sion.zhihudailypurified.utils.toast
+import com.sion.zhihudailypurified.view.activity.IndexActivity
 import com.sion.zhihudailypurified.view.adapter.StoriesAdapter
 import com.sion.zhihudailypurified.view.itemDecoration.DateDecoration
 import com.sion.zhihudailypurified.viewModel.fragment.StoriesViewModel
 import com.sion.zhihudailypurified.viewModel.fragment.TopStoriesLoadingStatus
+import kotlinx.android.synthetic.main.fragment_stories.*
 
 class StoriesFragment : BaseFragment<FragmentStoriesBinding, StoriesViewModel>() {
 
@@ -21,8 +24,10 @@ class StoriesFragment : BaseFragment<FragmentStoriesBinding, StoriesViewModel>()
     private val errorUI: LinearLayout by lazy {
         ui.vsError.viewStub!!.inflate().findViewById<LinearLayout>(R.id.llClickRetry).apply {
             setOnClickListener {
-                hideError()
+//                if (isOnline()) {
+//                hideError()
                 update()
+//                }
             }
         }
     }
@@ -61,6 +66,8 @@ class StoriesFragment : BaseFragment<FragmentStoriesBinding, StoriesViewModel>()
                 }
                 PagedListLoadingStatus.INITIAL_FAILED -> {
 //                    Log.d("StoriesFragment", "initView: Initial failed")
+                    ui.sdlIndexRefresh.refreshingFinish(false)
+                    hideContent()
                     showError()
                 }
                 PagedListLoadingStatus.AFTER_LOADING -> {
@@ -93,6 +100,8 @@ class StoriesFragment : BaseFragment<FragmentStoriesBinding, StoriesViewModel>()
                     //保证先初始化stories列表再执行这些操作
                 }
                 TopStoriesLoadingStatus.FAILED -> {
+                    ui.sdlIndexRefresh.refreshingFinish(false)
+                    hideContent()
                     showError()
                 }
                 else -> {
@@ -100,10 +109,10 @@ class StoriesFragment : BaseFragment<FragmentStoriesBinding, StoriesViewModel>()
                 }
             }
         })
-        ui.srlIndexRefresh.setOnRefreshListener {
-            if (errorUI.visibility == View.VISIBLE) {
-                hideError()
-            }
+        ui.sdlIndexRefresh.setOnRefreshingListener {
+//            if (errorUI.visibility == View.VISIBLE) {
+//                hideError()
+//            }
             update()
         }
     }
@@ -140,9 +149,10 @@ class StoriesFragment : BaseFragment<FragmentStoriesBinding, StoriesViewModel>()
     //初始加载完毕
     private fun initialLoadingFinish() {
         //显示界面
-        ui.srlIndexRefresh.isRefreshing = false
-        ui.llStoriesRoot.visibility = View.VISIBLE
-        ui.rvStories.visibility = View.VISIBLE
+        Log.d("StoriesFragment", "initialLoadingFinish")
+        ui.rvStories.scrollToPosition(0)
+        ui.sdlIndexRefresh.refreshingFinish(true)
+        showContent()
     }
 
 
@@ -152,22 +162,39 @@ class StoriesFragment : BaseFragment<FragmentStoriesBinding, StoriesViewModel>()
 
     //更新
     private fun update() {
+        if (!(activity as IndexActivity).isOnline()) {
+            sdlIndexRefresh.refreshingFinish(false)
+            toast(resources.getString(R.string.retry_after_resume_connection))
+            return
+        }
         adapter.banner?.stopRolling()
-        ui.rvStories.visibility = View.GONE
-        ui.llStoriesRoot.visibility = View.GONE
+        hideError()
+//        ui.rvStories.visibility = View.GONE
+//        ui.llStoriesRoot.visibility = View.GONE
         vm.updateData()
+    }
+
+    //显示和隐藏内容
+    private fun showContent() {
+        rvStories.visibility = View.VISIBLE
+        sdlIndexRefresh.visibility = View.VISIBLE
+    }
+
+    private fun hideContent() {
+        sdlIndexRefresh.visibility = View.GONE
+        rvStories.visibility = View.GONE
     }
 
     //显示和隐藏错误信息
     private fun showError() {
-        ui.srlIndexRefresh.isRefreshing = false
         errorUI.visibility = View.VISIBLE
     }
 
     private fun hideError() {
-        ui.srlIndexRefresh.isRefreshing = true
         errorUI.visibility = View.GONE
     }
+
+    fun isOnline(): Boolean = (context as IndexActivity).isOnline()
 
     companion object {
         const val TAG = "STORIES_FRAGMENT"

@@ -378,7 +378,7 @@ class SwipeDownLayout : FrameLayout, BackViewParent {
         // 动画操作，后面的操作均要在动画结束后执行
         closingAnimation.setValues(PropertyValuesHolder.ofInt("top", currentBackViewHeight, 0))
         closingAnimation.duration =
-            (500F * (currentBackViewHeight.toFloat() / loadThresholds.toFloat())).toLong()
+            (200F * (currentBackViewHeight.toFloat() / loadThresholds.toFloat())).toLong()
         closingAnimation.start()
     }
 

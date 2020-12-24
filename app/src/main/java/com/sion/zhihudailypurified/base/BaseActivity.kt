@@ -77,4 +77,11 @@ abstract class BaseActivity<B : ViewDataBinding, VM : BaseViewModel> : AppCompat
     private fun unRegisterNetworkReceiver() {
         unregisterReceiver(networkReceiver)
     }
+
+    /**
+     * 是否联网
+     */
+    fun isOnline(): Boolean {
+        return vm.isOnline.value ?: false
+    }
 }

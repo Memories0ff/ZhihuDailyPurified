@@ -93,42 +93,48 @@
         <!--                android:layout_height="match_parent">-->
 
 
-        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-            android:id="@+id/srlIndexRefresh"
+        <!--        android:nestedScrollingEnabled="false"-->
+        <!--        android:overScrollMode="never"-->
+        <!--        android:descendantFocusability="blocksDescendants"-->
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <!--        android:nestedScrollingEnabled="false"-->
-            <!--        android:overScrollMode="never"-->
-            <!--        android:descendantFocusability="blocksDescendants"-->
-            <FrameLayout
+            <!--            <LinearLayout-->
+            <!--                android:id="@+id/llStoriesRoot"-->
+            <!--                android:layout_width="match_parent"-->
+            <!--                android:layout_height="match_parent"-->
+            <!--                android:orientation="vertical"-->
+            <!--                android:visibility="gone">-->
+
+            <com.sion.swipedownlayout.SwipeDownLayout
+                android:id="@+id/sdlIndexRefresh"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:touchscreenBlocksFocus="true"
+                android:visibility="gone">
 
-                <LinearLayout
-                    android:id="@+id/llStoriesRoot"
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvStories"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:orientation="vertical"
-                    android:visibility="gone">
+                    android:overScrollMode="never"
+                    android:visibility="gone" />
 
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/rvStories"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:visibility="gone" />
+            </com.sion.swipedownlayout.SwipeDownLayout>
 
-                </LinearLayout>
+            <!--            </LinearLayout>-->
 
-                <ViewStub
-                    android:id="@+id/vsError"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout="@layout/view_stub_error" />
+            <ViewStub
+                android:id="@+id/vsError"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout="@layout/view_stub_error" />
 
-            </FrameLayout>
 
-        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+        </FrameLayout>
 
 
         <!--            </FrameLayout>-->
